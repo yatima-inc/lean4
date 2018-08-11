@@ -21,6 +21,7 @@ size_t obj_byte_size(object * o) {
     case object_kind::String:          return string_byte_size(o);
     case object_kind::MPZ:             return sizeof(mpz_object);
     case object_kind::Thunk:           return sizeof(thunk_object);
+    case object_kind::Task:            return sizeof(task_object);
     case object_kind::External:        lean_unreachable();
     }
     lean_unreachable();
@@ -35,6 +36,7 @@ size_t obj_header_size(object * o) {
     case object_kind::String:          return sizeof(string_object);
     case object_kind::MPZ:             return sizeof(mpz_object);
     case object_kind::Thunk:           return sizeof(thunk_object);
+    case object_kind::Task:            return sizeof(task_object);
     case object_kind::External:        lean_unreachable();
     }
     lean_unreachable();
@@ -106,6 +108,11 @@ void del(object * o) {
             dec(to_thunk(o)->m_closure, todo);
             if (object * v = to_thunk(o)->m_value) dec(v, todo);
             free(o);
+            break;
+        case object_kind::Task:
+            dec_ref(to_task(o)->m_thunk, todo);
+            dec_ref(to_task(o)->m_reverse_deps, todo);
+            dealloc_task(o);
             break;
         case object_kind::External:
             dealloc_external(o); break;
@@ -222,6 +229,54 @@ bool string_lt(object * s1, object * s2) {
     int r      = std::memcmp(string_data(s1), string_data(s2), std::min(sz1, sz2));
     return r < 0 || (r == 0 && sz1 < sz2);
 }
+
+/* Tasks */
+
+static unsigned g_num_workers = 0;
+
+void init_task_manager(unsigned num_workers) {
+#if defined(LEAN_MULTI_THREAD)
+    g_num_workers = num_workers;
+    // TODO: allocated queue
+#endif
+}
+
+task_object::task_object(object * t):
+    object(object_kind::Task), m_thunk(t), m_state(Waiting), m_reverse_deps(box(0)), m_interrupted(false) {
+    lean_assert(is_thunk(t));
+    inc_ref(t);
+}
+
+object * alloc_task(object * t) {
+    return new (malloc(sizeof(task_object))) task_object(t); // NOLINT
+}
+
+object * task_start(object * t) {
+}
+
+static object * task_pure_aux_fn(object * a, object *) {
+    return a;
+}
+
+object * task_pure(object * a) {
+    object * c = alloc_closure(static_cast<lean_cfun>(task_pure_aux_fn), 2, 1);
+    inc_ref(a);
+    closure_set_arg(c, 0, a);
+    object * t = alloc_thunk(c);
+
+
+#if defined(LEAN_MULTI_THREAD)
+    if (g_num_workers > 0) {
+    }
+#endif
+
+}
+
+/* task.bind (t : task A) (c : A -> task B) : task B */
+object * task_bind(object * t, object * c);
+/* task.get (t : task A) : A */
+object * task_get(object * t);
+
 
 /* Natural numbers */
 
