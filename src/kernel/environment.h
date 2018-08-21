@@ -121,6 +121,11 @@ class environment {
         m_header(env.m_header), m_id(environment_id::mk_descendant(env.m_id)), m_quot_initialized(env.m_quot_initialized), m_declarations(ds), m_extensions(env.m_extensions) {}
     environment(environment const & env, extensions const & exts):
         m_header(env.m_header), m_id(environment_id::mk_descendant(env.m_id)), m_quot_initialized(env.m_quot_initialized), m_declarations(env.m_declarations), m_extensions(exts) {}
+
+    /* \brief Add (mutually recursive) inductive declarations.
+       \pre is_inductive(decl) */
+    environment add_inductive(inductive_decl const & decl) const;
+
 public:
     environment(unsigned trust_lvl = 0);
     environment(unsigned trust_lvl, std::unique_ptr<normalizer_extension> ext);
@@ -172,9 +177,6 @@ public:
 
     /* \brief Add `quot` type. */
     environment add_quot() const;
-
-    /* \brief Add (mutually recursive) inductive declarations */
-    environment add(inductive_decl const & decl) const;
 
     /** \brief Register an environment extension. Every environment
         object may contain this extension. The argument \c initial is

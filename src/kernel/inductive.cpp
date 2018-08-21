@@ -265,7 +265,8 @@ public:
     }
 };
 
-environment environment::add(inductive_decl const & decl) const {
+environment environment::add_inductive(inductive_decl const & decl) const {
+    lean_assert(is_inductive(decl));
     return add_inductive_fn(*this, decl)();
 }
 
