@@ -8,6 +8,7 @@ Author: Gabriel Ebner
 #include "library/util.h"
 #include "library/eval_helper.h"
 #include "library/io_state.h"
+#include "library/tactic/tactic_state.h"
 
 namespace lean {
 
@@ -37,6 +38,22 @@ vm_obj eval_helper::invoke_fn() {
     return m_vms.invoke(m_fn, m_args.size(), m_args.data());
 }
 
+optional<vm_obj> eval_helper::try_exec_tac() {
+    if (is_constant(get_app_fn(m_ty), get_tactic_name())) {
+        auto tac_st = mk_tactic_state_for(m_env, m_opts, m_fn, m_tc.mctx(), m_tc.lctx(), mk_true());
+        m_args.push_back(tactic::to_obj(tac_st));
+        auto r = invoke_fn();
+        if (tactic::is_result_success(r)) {
+            return optional<vm_obj>(tactic::get_success_value(r));
+        } else if (auto ex = tactic::is_exception(m_vms, r)) {
+            throw formatted_exception(std::get<1>(*ex), std::get<0>(*ex));
+        } else {
+            throw exception("tactic failed");
+        }
+    }
+    return optional<vm_obj>();
+}
+
 optional<vm_obj> eval_helper::try_exec_io() {
     if (is_app_of(m_ty, get_io_name(), 1)) {
         m_args.push_back(mk_vm_simple(0)); // "world state"
@@ -56,6 +73,7 @@ optional<vm_obj> eval_helper::try_exec_io() {
 
 optional<vm_obj> eval_helper::try_exec() {
     if (auto res = try_exec_io()) return res;
+    if (auto res = try_exec_tac()) return res;
     return optional<vm_obj>();
 }
 

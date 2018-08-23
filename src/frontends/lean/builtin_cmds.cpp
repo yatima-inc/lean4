@@ -464,7 +464,6 @@ static environment eval_cmd(parser & p) {
         if (eval_instance) {
             /* Modify the 'program' to (has_eval.eval e) */
             e             = mk_app(tc, get_has_eval_eval_name(), 3, type, *eval_instance, e);
-            tout() << e << "\n";
             type          = tc.infer(e);
         }
     } catch (exception &) {}
