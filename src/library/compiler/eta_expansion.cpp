@@ -87,6 +87,7 @@ class eta_expand_fn : public compiler_step_visitor {
                 first_minor_idx       = nparams + rec_val.get_nmotives();
             } else {
                 unsigned nindices = I_val.get_nindices();
+                nminors           = length(I_val.get_cnstrs());
                 first_minor_idx   = nparams + 1 /*motive*/ + nindices + 1 /*major*/;
             }
             if (first_minor_idx + nminors > args.size()) {
