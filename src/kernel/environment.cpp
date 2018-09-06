@@ -17,8 +17,6 @@ Author: Leonardo de Moura
 namespace lean {
 environment_extension::~environment_extension() {}
 
-environment::~environment() {}
-
 optional<constant_info> environment::find(name const & n) const {
     constant_info const * r = m_constants.find(n);
     return r ? some_constant_info(*r) : none_constant_info();

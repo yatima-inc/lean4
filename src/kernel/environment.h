@@ -72,8 +72,10 @@ class environment {
     environment add_inductive(declaration const & d) const;
 
 public:
-    environment(unsigned trust_lvl = 0):m_trust_lvl(trust_lvl) {}
-    ~environment();
+    environment(unsigned trust_lvl = 0):
+        m_trust_lvl(trust_lvl),
+        m_extensions(std::make_shared<environment_extensions const>()) {}
+    ~environment() {}
 
     /** \brief Return the trust level of this environment. */
     unsigned trust_lvl() const { return m_trust_lvl; }

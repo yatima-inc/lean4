@@ -71,6 +71,8 @@ static void throw_invalid_motive(expr const & C) {
                     "and I is a constant");
 }
 
+static name * g_user_rec_fresh = nullptr;
+
 recursor_info mk_recursor_info(environment const & env, name const & r, optional<unsigned> const & _given_major_pos) {
     /* The has_given_major_pos/given_major_pos hack is used to workaround a g++ false warning.
        Note that the pragma
@@ -122,7 +124,7 @@ recursor_info mk_recursor_info(environment const & env, name const & r, optional
         given_major_pos       = num_params + num_motives + num_indices;
     }
     constant_info info = env.get(r);
-    name_generator ngen("_user_rec_fresh");
+    name_generator ngen(*g_user_rec_fresh);
     local_ctx lctx;
     buffer<expr> tele;
     expr rtype    = to_telescope(env, lctx, ngen, info.get_type(), tele);
@@ -375,6 +377,8 @@ void initialize_user_recursors() {
                                                                                 << "invalid [recursor] declaration, expected at most one parameter");
                                                     return add_user_recursor(env, n, head_opt(data.m_idxs), persistent);
                                                 }));
+    g_user_rec_fresh = new name("_user_rec_fresh");
+    register_name_generator_prefix(*g_user_rec_fresh);
 }
 
 void finalize_user_recursors() {

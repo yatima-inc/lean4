@@ -18,6 +18,8 @@ Author: Leonardo de Moura
 #include "library/compiler/compiler_step_visitor.h"
 
 namespace lean {
+static name * g_rec_arg_fresh = nullptr;
+
 /* Store in `rec_args` the recursive arguments of constructor application \c `e`.
    The result is false if `e` is not a constructor application.
    The unsigned value at rec_args represents the arity of the recursive argument.
@@ -35,7 +37,7 @@ static void get_constructor_rec_arg_mask(environment const & env, name const & n
     constant_info info = env.get(n);
     lean_assert(info.is_constructor());
     local_ctx lctx;
-    name_generator ngen("_rec_arg_fresh");
+    name_generator ngen(*g_rec_arg_fresh);
     name I_name = info.to_constructor_val().get_induct();
     expr type   = type_checker(env).whnf(info.get_type());
     while (is_pi(type)) {
@@ -305,5 +307,14 @@ expr elim_recursors(environment & env, abstract_context_cache & cache,
     expr new_e = fn(e);
     env = fn.env();
     return new_e;
+}
+
+void initialize_elim_recursors() {
+    g_rec_arg_fresh = new name("_rec_arg_fresh");
+    register_name_generator_prefix(*g_rec_arg_fresh);
+}
+
+void finalize_elim_recursors() {
+    delete g_rec_arg_fresh;
 }
 }
