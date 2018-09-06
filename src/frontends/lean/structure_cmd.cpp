@@ -1066,8 +1066,8 @@ struct structure_cmd_fn {
         expr intro_type     = mk_intro_type();
         names lnames        = names(m_level_names);
         bool is_meta        = m_meta_info.m_modifiers.m_is_meta;
-        constructor cnstr(m_mk, Pi_p(m_params, intro_type));
-        inductive_type S(m_name, Pi_p(m_params, structure_type), constructors(cnstr));
+        constructor cnstr(m_mk, intro_type);
+        inductive_type S(m_name, structure_type, constructors(cnstr));
         declaration decl    = mk_inductive_decl(lnames, nat(m_params.size()), inductive_types(S), is_meta);
         m_env = module::add(m_env, decl);
         name rec_name = mk_rec_name(m_name);
