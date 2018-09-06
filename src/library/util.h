@@ -64,6 +64,24 @@ bool has_eq_decls(environment const & env);
 bool has_heq_decls(environment const & env);
 bool has_and_decls(environment const & env);
 
+inline bool is_inductive(environment const & env, name const & n) {
+    if (optional<constant_info> info = env.find(n))
+        return info->is_inductive();
+    return false;
+}
+
+inline bool is_constructor(environment const & env, name const & n) {
+    if (optional<constant_info> info = env.find(n))
+        return info->is_constructor();
+    return false;
+}
+
+inline bool is_recursor(environment const & env, name const & n) {
+    if (optional<constant_info> info = env.find(n))
+        return info->is_recursor();
+    return false;
+}
+
 /** \brief Return true iff \c n is the name of a recursive datatype in \c env.
     That is, it must be an inductive datatype AND contain a recursive constructor.
 

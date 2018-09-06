@@ -9,6 +9,7 @@ Author: Leonardo de Moura
 #include "kernel/instantiate.h"
 #include "kernel/for_each_fn.h"
 #include "library/constants.h"
+#include "library/util.h"
 #include "library/projection.h"
 #include "library/aux_recursors.h"
 #include "library/sorry.h"

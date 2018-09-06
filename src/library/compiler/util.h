@@ -19,22 +19,4 @@ unsigned get_constructor_arity(environment const & env, name const & n);
 
 /** \brief Return true iff \c n is an auxiliary cases_on recursor */
 bool is_cases_on_recursor(environment const & env, name const & n);
-
-inline bool is_inductive(environment const & env, name const & n) {
-    if (optional<constant_info> info = env.find(n))
-        return info->is_inductive();
-    return false;
-}
-
-inline bool is_constructor(environment const & env, name const & n) {
-    if (optional<constant_info> info = env.find(n))
-        return info->is_constructor();
-    return false;
-}
-
-inline bool is_recursor(environment const & env, name const & n) {
-    if (optional<constant_info> info = env.find(n))
-        return info->is_recursor();
-    return false;
-}
 }

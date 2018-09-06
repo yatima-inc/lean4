@@ -796,7 +796,7 @@ static bool is_structure_instance(environment const & env, expr const & e, bool 
     expr const & fn = get_app_fn(e);
     if (!is_constant(fn)) return false;
     name const & mk_name = const_name(fn);
-    if (!env.get(mk_name).is_constructor()) return false;
+    if (!is_constructor(env, mk_name)) return false;
     name const & S       = mk_name.get_prefix();
     if (!is_structure(env, S)) return false;
     /* If implicit arguments is true, and the structure has parameters, we should not
