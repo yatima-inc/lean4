@@ -78,7 +78,7 @@ static environment mk_below(environment const & env, name const & n, bool ibelow
     Type_result        = mk_sort(rlvl);
     buffer<expr> ref_args;
     to_telescope(lctx, ngen, ref_type, ref_args);
-    lean_assert(ref_args.size() != nparams + ntypeformers + nminors + ind_val.get_nindices() + 1);
+    lean_assert(ref_args.size() == nparams + ntypeformers + nminors + ind_val.get_nindices() + 1);
 
     // args contains the below/ibelow arguments
     buffer<expr> args;
@@ -220,7 +220,7 @@ static environment mk_brec_on(environment const & env, name const & n, bool ind)
     }
     buffer<expr> ref_args;
     to_telescope(lctx, ngen, ref_type, ref_args);
-    lean_assert(ref_args.size() != nparams + ntypeformers + nminors + ind_val.get_nindices() + 1);
+    lean_assert(ref_args.size() == nparams + ntypeformers + nminors + ind_val.get_nindices() + 1);
 
     // args contains the brec_on/binduction_on arguments
     buffer<expr> args;

@@ -286,11 +286,11 @@ void get_constructor_relevant_fields(environment const & env, name const & n, bu
     for (unsigned i = nparams; i < telescope.size(); i++) {
         expr ftype = lctx.get_type(telescope[i]);
         if (type_checker(env, lctx).is_prop(ftype)) {
-            result.push_back(true);
+            result.push_back(false);
         } else {
             buffer<expr> tmp;
             expr n_ftype = to_telescope(env, lctx, ngen, ftype, tmp);
-            result.push_back(is_sort(n_ftype) || type_checker(env, lctx).is_prop(n_ftype));
+            result.push_back(!is_sort(n_ftype) && !type_checker(env, lctx).is_prop(n_ftype));
         }
     }
 }
