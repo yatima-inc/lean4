@@ -102,7 +102,7 @@ class lambda_lifting_fn : public compiler_step_visitor {
 
         if (is_constant(fn)) {
             name const & n = const_name(fn);
-            if (!env().get(n).is_constructor() && !is_cases_on_recursor(env(), n) && !is_projection(env(), n))
+            if (!is_constructor(env(), n) && !is_cases_on_recursor(env(), n) && !is_projection(env(), n))
                 return some_expr(new_value);
         }
 

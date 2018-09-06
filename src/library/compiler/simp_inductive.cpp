@@ -220,7 +220,7 @@ class erase_trivial_structures_fn : public simp_inductive_core_fn {
             name const & n = const_name(fn);
             if (is_cases_on_recursor(env(), n)) {
                 return visit_cases_on(n, args);
-            } else if (env().get(n).is_constructor()) {
+            } else if (is_constructor(env(), n)) {
                 return visit_constructor(n, args);
             } else if (is_projection(env(), n)) {
                 return visit_projection(n, args);
@@ -373,7 +373,7 @@ class simp_inductive_fn : public simp_inductive_core_fn {
             name const & n = const_name(fn);
             if (is_cases_on_recursor(env(), n)) {
                 return visit_cases_on(n, args);
-            } else if (env().get(n).is_constructor()) {
+            } else if (is_constructor(env(), n)) {
                 return visit_constructor(n, args);
             } else if (is_projection(env(), n)) {
                 return visit_projection(n, args);
@@ -386,7 +386,7 @@ class simp_inductive_fn : public simp_inductive_core_fn {
         name const & n = const_name(e);
         if (is_vm_builtin_function(n)) {
             return e;
-        } else if (env().get(n).is_constructor()) {
+        } else if (is_constructor(env(), n)) {
             return mk_cnstr(get_constructor_idx(env(), n));
         } else {
             return e;

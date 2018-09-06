@@ -22,9 +22,9 @@ class eta_expand_fn : public compiler_step_visitor {
     bool m_saw_sorry = false;
 
     bool is_projection(name const & n) { return ::lean::is_projection(env(), n); }
-    bool is_constructor(name const & n) { return env().get(n).is_recursor(); }
+    bool is_constructor(name const & n) { return ::lean::is_constructor(env(), n); }
     bool is_cases_on(name const & n) { return is_cases_on_recursor(env(), n); }
-    bool is_rec(name const & n) { return env().get(n).is_recursor(); }
+    bool is_rec(name const & n) { return ::lean::is_recursor(env(), n); }
     bool is_no_confusion(name const & n) { return ::lean::is_no_confusion(env(), n);  }
     bool is_quot_mk(name const & n) { return n == get_quot_mk_name(); }
     bool is_quot_lift(name const & n) { return n == get_quot_lift_name(); }

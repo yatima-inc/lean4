@@ -286,7 +286,7 @@ protected:
         expr const & fn = get_app_fn(e);
         if (is_constant(fn)) {
             name const & n = const_name(fn);
-            if (env().get(n).is_recursor() && is_recursive_recursor(n)) {
+            if (is_recursor(env(), n) && is_recursive_recursor(n)) {
                 return visit_recursor_app(e);
             }
         }

@@ -387,7 +387,7 @@ class erase_irrelevant_fn : public compiler_step_visitor {
                 return visit_subtype_rec(args);
             } else if (is_cases_on_recursor(env(), n)) {
                 return visit_cases_on(fn, args);
-            } else if (env().get(n).is_recursor()) {
+            } else if (is_recursor(env(), n)) {
                 return visit_rec(fn, args);
             } else if (is_no_confusion(env(), n)) {
                 return visit_no_confusion(fn, args);
