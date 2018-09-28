@@ -18,6 +18,8 @@ Author: Leonardo de Moura
 #include "library/aux_match.h"
 #include "library/compiler/util.h"
 
+#include "library/trace.h"
+
 namespace lean {
 class to_lcnf_fn {
     typedef rb_expr_map<expr> cache;
@@ -42,6 +44,15 @@ public:
     expr whnf_infer_type(expr const & e) {
         type_checker tc(m_st, m_lctx);
         return tc.whnf(tc.infer(e));
+    }
+
+    void check(expr const & e) {
+        try {
+            type_checker(m_st, m_lctx, false).check(e);
+        } catch (exception & ex) {
+            tout() << "TYPE ERROR\n" << e << "\n";
+            lean_unreachable();
+        }
     }
 
     static bool is_lc_proof(expr const & e) {
@@ -84,14 +95,18 @@ public:
             args.push_back(arg);
             e_type = whnf(instantiate(binding_body(e_type), arg));
         }
-        return m_lctx.mk_lambda(args, mk_app(e, args));
+        expr r = m_lctx.mk_lambda(args, mk_app(e, args));
+        check(r);
+        return r;
     }
 
     expr visit_projection(expr const & fn, buffer<expr> & args, bool root) {
         constant_info info = env().get(const_name(fn));
         expr fn_val        = instantiate_value_lparams(info, const_levels(fn));
         std::reverse(args.begin(), args.end());
-        return visit(apply_beta(fn_val, args.size(), args.data()), root);
+        expr r = visit(apply_beta(fn_val, args.size(), args.data()), root);
+        check(r);
+        return r;
     }
 
     unsigned get_constructor_nfields(name const & n) {
@@ -129,8 +144,11 @@ public:
             expr new_cases = visit(mk_app(fn, arity, args.data()), false);
             return visit(mk_app(new_cases, args.size() - arity, args.data() + arity), root);
         } else {
+            buffer<expr> old_args = args;
+            check(mk_app(fn, args));
             expr const & motive = args[nparams];
             bool nondep_elim    = is_nondep_elim(motive, nindices);
+            bool replaced_k     = false;
             for (unsigned i = 0; i < first_minor_idx; i++) {
                 args[i] = visit(args[i], false);
             }
@@ -166,6 +184,7 @@ public:
                 if (is_lambda(new_minor))
                     new_minor = mk_let_decl(new_minor, false);
                 new_minor      = mk_let(old_fvars_size, new_minor);
+                check(new_minor);
                 if (nondep_elim) {
                     /* Create a constructor application with the "fields" of the minor premise.
                        Then, replace `k` with major premise at new_minor.
@@ -184,13 +203,38 @@ public:
                             if (e == k) return some_expr(major);
                             else return none_expr();
                         });
-                    if (new_new_minor != new_minor)
-                        new_minor = elim_trivial_let_decls(new_new_minor);
+                    if (new_new_minor != new_minor) {
+                        replaced_k = true;
+                        new_minor  = elim_trivial_let_decls(new_new_minor);
+                    }
+                    check(new_minor);
                 }
                 new_minor      = m_lctx.mk_lambda(minor_fvars, new_minor);
+                check(new_minor);
                 args[i]        = new_minor;
             }
-            return mk_let_decl(mk_app(fn, args), root);
+            expr r = mk_let_decl(mk_app(fn, args), root);
+            try {
+                type_checker(m_st, m_lctx, false).check(r);
+            } catch (exception & ex) {
+                tout() << "TYPE ERROR\n" << r << "\n";
+                tout() << "INPUT:\n" << mk_app(fn, old_args) << "\n";
+                tout() << "OLD MAJOR:\n" << old_args[major_idx] << "\n: " << infer_type(old_args[major_idx]) << "\n";
+                expr new_type = infer_type(args[major_idx]);
+                tout() << "NEW MAJOR:\n" << args[major_idx] << "\n: " << new_type << "\n";
+                expr target = app_arg(app_fn(app_arg(new_type)));
+                tout() << target << "\n";
+                local_decl decl = m_lctx.get_local_decl(target);
+                tout() << target << " := " << *decl.get_value() << "\n";
+                buffer<expr> tval_args; get_app_args(*decl.get_value(), tval_args);
+                expr x_26 = tval_args[1];
+                tout() << "x_26: " << x_26 << "\n";
+                local_decl x_26_decl = m_lctx.get_local_decl(x_26);
+                tout() << x_26 << " := " << *x_26_decl.get_value() << "\n";
+                throw;
+            }
+            check(r);
+            return r;
         }
     }
 
@@ -411,7 +455,9 @@ public:
             new_body      = mk_let(old_fvars_size, new_body);
             r = m_lctx.mk_lambda(binding_fvars, new_body);
         }
-        return mk_let_decl(r, root);
+        r = mk_let_decl(r, root);
+        check(r);
+        return r;
     }
 
     expr visit_let(expr e, bool root) {
@@ -490,15 +536,18 @@ public:
     }
 
     expr operator()(expr const & e) {
-        expr r = visit(e, true);
+        check(e);
+        expr new_e = unfold_aux_match(env(), e);
+        check(new_e);
+        new_e      = unfold_macro_defs(env(), new_e);
+        check(new_e);
+        expr r = visit(new_e, true);
         return m_lctx.mk_lambda(m_fvars, r);
     }
 };
 
 expr to_lcnf(environment const & env, local_ctx const & lctx, expr const & e) {
-    expr new_e = unfold_aux_match(env, e);
-    new_e      = unfold_macro_defs(env, new_e);
-    return to_lcnf_fn(env, lctx)(new_e);
+    return to_lcnf_fn(env, lctx)(e);
 }
 
 void initialize_lcnf() {

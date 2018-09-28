@@ -47,8 +47,9 @@ class csimp_fn {
 
     void check(expr const & e) {
         try {
-            type_checker(m_st, m_lctx).check(e);
-        } catch (exception &) {
+            type_checker(m_st, m_lctx, false).check(e);
+        } catch (exception & ex) {
+            tout() << "TYPE ERROR\n" << e << "\n";
             lean_unreachable();
         }
     }
@@ -300,6 +301,8 @@ class csimp_fn {
        This method main fail because of dependent types. */
     optional<expr> mk_join_point_float_cases_on(expr const & fvar, expr const & e, expr const & c, buffer<expr> & new_jps) {
         lean_assert(is_cases_on_app(env(), c));
+        check(e);
+        check(c);
         expr const & c_fn = get_app_fn(c);
         inductive_val I_val    = get_cases_on_inductive_val(env(), c_fn);
         unsigned code_increase = get_lcnf_size(env(), e)*(I_val.get_ncnstrs() - 1);
@@ -391,6 +394,7 @@ class csimp_fn {
                 lean_trace(name({"compiler", "simp"}),
                            tout() << "mk_join " << fvar << "\n" << c << "\n---\n"
                            << e << "\n======>\n" << mk_app(fn, args) << "\n";);
+                check(mk_app(fn, args));
                 return some_expr(mk_app(fn, args));
             }
         }
@@ -448,6 +452,7 @@ class csimp_fn {
         local_decl jp_decl = m_lctx.get_local_decl(jp);
         lean_assert(is_join_point_name(jp_decl.get_user_name()));
         expr jp_val = *jp_decl.get_value();
+        check(jp_val);
         buffer<expr> zs;
         unsigned saved_fvars_size = m_fvars.size();
         jp_val = visit(get_lambda_body(jp_val, zs), false);
@@ -485,6 +490,7 @@ class csimp_fn {
         }
         new_jp_val = mk_let(saved_fvars_size, new_jp_val);
         new_jp_val = m_lctx.mk_lambda(zs, new_jp_val);
+        check(new_jp_val);
         mark_simplified(new_jp_val);
         expr new_jp_type = cheap_beta_reduce(infer_type(new_jp_val));
         expr new_jp_var  = m_lctx.mk_local_decl(ngen(), next_jp_name(), new_jp_type, new_jp_val);
@@ -509,6 +515,8 @@ class csimp_fn {
       ``` */
     optional<expr> float_cases_on_core(expr const & x, expr const & e, expr const & c, buffer<expr> & new_jps, expr_map<expr> & new_jp_cache) {
         lean_assert(is_cases_on_app(env(), c));
+        check(c);
+        check(e);
         local_decl x_decl     = m_lctx.get_local_decl(x);
         expr result_type         = whnf_infer_type(e);
         buffer<expr> c_args;
@@ -568,6 +576,7 @@ class csimp_fn {
         lean_trace(name({"compiler", "simp"}),
                    tout() << "float_cases_on [" << get_lcnf_size(env(), e) << "]\n" << c << "\n----\n" << e << "\n=====>\n"
                    << mk_app(c_fn, c_args) << "\n";);
+        check(mk_app(c_fn, c_args));
         return some_expr(mk_app(c_fn, c_args));
     }
 
@@ -833,6 +842,7 @@ class csimp_fn {
         new_body      = mk_let(saved_fvars_size, new_body);
         expr r        = m_lctx.mk_lambda(binding_fvars, new_body);
         mark_simplified(r);
+        check(r);
         return r;
     }
 
@@ -859,15 +869,18 @@ class csimp_fn {
             fn = binding_body(fn);
         }
         expr r = instantiate_rev(fn, i, args);
+        check(r);
         if (is_lambda(r)) {
             lean_assert(i == nargs);
-            return visit(r, is_let_val);
+            r = visit(r, is_let_val);
         } else {
             r = visit(r, false);
             if (!is_lcnf_atom(r))
                 r = mk_let_decl(r);
-            return visit(mk_app(r, nargs - i, args + i), is_let_val);
+            r = visit(mk_app(r, nargs - i, args + i), is_let_val);
         }
+        check(r);
+        return r;
     }
 
     /* Remark: if `fn` is not a lambda expression, then this function
@@ -892,6 +905,7 @@ class csimp_fn {
             m_fvars.resize(saved_fvars_size);
             return none_expr();
         }
+        check(r);
         return some_expr(r);
     }
 
@@ -901,7 +915,9 @@ class csimp_fn {
         expr const & k        = get_app_args(k_app, args);
         constructor_val k_val = env().get(const_name(k)).to_constructor_val();
         lean_assert(k_val.get_nparams() + proj_idx < args.size());
-        return args[k_val.get_nparams() + proj_idx];
+        expr r = args[k_val.get_nparams() + proj_idx];
+        check(r);
+        return r;
     }
 
     expr visit_proj(expr const & e, bool is_let_val) {
@@ -926,7 +942,9 @@ class csimp_fn {
         unsigned first_minor_idx = nparams + 1 /* typeformer/motive */ + I_val.get_nindices() + 1 /* major */;
         constructor_val k_val = env().get(const_name(k)).to_constructor_val();
         expr const & minor    = args[first_minor_idx + k_val.get_cidx()];
-        return beta_reduce(minor, k_args.size() - nparams, k_args.data() + nparams, is_let_val);
+        expr r = beta_reduce(minor, k_args.size() - nparams, k_args.data() + nparams, is_let_val);
+        check(r);
+        return r;
     }
 
     /* Just simplify minor premises. */
@@ -951,6 +969,7 @@ class csimp_fn {
             args[minor_idx] = new_minor;
         }
         expr r = mk_app(c, args);
+        check(r);
         mark_simplified(r);
         return r;
     }
@@ -1084,7 +1103,10 @@ class csimp_fn {
             return e;
         if (is_recursive(c)) return e;
         expr new_fn = instantiate_value_lparams(*info, const_levels(fn));
-        return beta_reduce(new_fn, e, is_let_val);
+        check(new_fn);
+        expr r = beta_reduce(new_fn, e, is_let_val);
+        check(r);
+        return r;
     }
 
     expr visit_app(expr const & e, bool is_let_val) {
@@ -1094,6 +1116,8 @@ class csimp_fn {
             return reduce_lc_cast(e);
         }
         expr fn = find(get_app_fn(e));
+        check(e);
+        check(fn);
         if (is_lambda(fn)) {
             return beta_reduce(fn, e, is_let_val);
         } else if (is_cases_on_app(env(), fn) && m_cfg.m_float_cases_app) {
@@ -1137,6 +1161,7 @@ public:
         m_st(env), m_lctx(lctx), m_cfg(cfg), m_x("_x"), m_j("j") {}
 
     expr operator()(expr const & e) {
+        check(e);
         expr r = visit(e, false);
         return m_lctx.mk_lambda(m_fvars, r);
     }

@@ -178,12 +178,18 @@ class preprocess_fn {
     name_set       m_decl_names; /* name of the functions being compiled */
 
     bool check(constant_info const & d, expr const & v) {
-        bool non_meta_only = false;
-        type_checker tc(m_env, non_meta_only);
-        expr t = tc.check(v, d.get_lparams());
-        if (!tc.is_def_eq(d.get_type(), t))
-            throw exception("preprocess failed");
-        return true;
+        try {
+            bool non_meta_only = false;
+            type_checker tc(m_env, non_meta_only);
+            expr t = tc.check(v, d.get_lparams());
+            if (!tc.is_def_eq(d.get_type(), t)) {
+                lean_unreachable();
+                // throw exception("preprocess failed");
+            }
+            return true;
+        } catch (exception & ex) {
+            lean_unreachable();
+        }
     }
 
     void display(buffer<procedure> const & procs) {
@@ -237,13 +243,17 @@ class preprocess_fn {
         name n  = get_real_name(d.get_name());
         // timeit timer(std::cout, (sstream() << "compiling " << n).str().c_str(), 0.05);
         expr v  = d.get_value();
+        // check(d, v);
         // TODO(Leo): add option for disabling eta-expansion
         v       = type_checker(m_env, local_ctx()).eta_expand(v);
+        check(d, v);
         lean_trace(name({"compiler", "eta_expand"}), tout() << n << "\n" << v << "\n";);
         v       = to_lcnf(m_env, local_ctx(), v);
+        check(d, v);
         lean_trace(name({"compiler", "lcnf"}), tout() << n << "\n" << v << "\n";);
         lean_cond_assert("compiler", check(d, v));
-        v       = cce(m_env, local_ctx(), v);
+        // v       = cce(m_env, local_ctx(), v);
+        // check(d, v);
         lean_trace(name({"compiler", "cce"}), tout() << n << "\n" << v << "\n";);
         lean_cond_assert("compiler", check(d, v));
         v       = csimp(m_env, local_ctx(), v);
@@ -265,7 +275,7 @@ class preprocess_fn {
            We should store this information in a different place. In the meantime,
            I just invoke `module::add` with `check = false`. This is a temporary
            solution since we will not have this parameter in the final version. */
-        m_env = module::add(m_env, simp_decl, false);
+        m_env = module::add(m_env, simp_decl, true);
     }
 
     name get_real_name(name const & n) {
