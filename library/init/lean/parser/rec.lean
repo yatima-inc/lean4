@@ -24,15 +24,18 @@ def recurse (a : α) : rec_t α δ m δ :=
 do x ← read,
    monad_lift (x a)
 
+@[specialize]
 private def run_aux (base : α → m δ) (rec : α → rec_t α δ m δ) : nat → α → m δ
 | 0     := base
 | (n+1) := λ a, (rec a).run (run_aux n)
 
 /-- Execute `x`, executing `rec a` whenever `recurse a` is called.
     After `max_rec` recursion steps, `base` is executed instead. -/
+@[specialize]
 protected def run (x : rec_t α δ m β) (base : α → m δ) (rec : α → rec_t α δ m δ) (max_rec : ℕ) : m β :=
 x.run (run_aux base rec max_rec)
 
+@[specialize]
 protected def run_parsec {γ : Type} [inhabited γ] [monad_parsec γ m] (x : rec_t α δ m β)
   (rec : α → rec_t α δ m δ) : m β :=
 do it ← monad_parsec.left_over,

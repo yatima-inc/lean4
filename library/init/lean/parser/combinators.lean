@@ -19,6 +19,7 @@ variables {α : Type} {m : Type → Type}
 local notation `parser` := m syntax
 variables [monad m] [monad_except (parsec.message syntax) m] [monad_parsec syntax m] [alternative m]
 
+@[specialize]
 def node' (k : option syntax_node_kind) (rs : list parser) : parser :=
 do args ← rs.mfoldl (λ (p : list syntax) r, do
      args ← pure p,
@@ -30,8 +31,11 @@ do args ← rs.mfoldl (λ (p : list syntax) r, do
    ) [],
    pure $ syntax.node ⟨k, args.reverse⟩
 
-@[reducible] def seq : list parser → parser := node' none
-@[reducible] def node (k : syntax_node_kind) : list parser → parser := node' (some k)
+@[reducible, specialize]
+def seq : list parser → parser := node' none
+
+@[reducible, specialize]
+def node (k : syntax_node_kind) : list parser → parser := node' (some k)
 
 instance node'.tokens (k) (rs : list parser) [parser.has_tokens rs] : parser.has_tokens (node' k rs) :=
 ⟨tokens rs⟩
@@ -41,6 +45,7 @@ instance node.view (k) (rs : list parser) [i : has_view k α] : parser.has_view 
 
 -- Each parser combinator comes equipped with `has_view` and `has_tokens` instances
 
+@[specialize]
 private def many1_aux (p : parser) : list syntax → nat → parser
 | as 0     := error "unreachable"
 | as (n+1) := do
@@ -49,6 +54,7 @@ private def many1_aux (p : parser) : list syntax → nat → parser
     syntax.node ⟨none, (syntax.missing::msg.custom::as).reverse⟩}),
   many1_aux (a::as) n <|> pure (syntax.node ⟨none, (a::as).reverse⟩)
 
+@[specialize]
 def many1 (r : parser) : parser :=
 do rem ← remaining, many1_aux r [] (rem+1)
 
@@ -61,6 +67,7 @@ instance many1.view (r : parser) [parser.has_view r α] : parser.has_view (many1
     | _ := [has_view.view r syntax.missing],
   review := λ as, syntax.node ⟨none, as.map (review r)⟩ }
 
+@[specialize]
 def many (r : parser) : parser :=
 many1 r <|> pure (syntax.node ⟨none, []⟩)
 
@@ -71,6 +78,7 @@ instance many.view (r : parser) [has_view r α] : parser.has_view (many r) (list
 /- Remark: `many1.view` can handle empty list. -/
 {..many1.view r}
 
+@[specialize]
 private def sep_by_aux (p : m syntax) (sep : parser) (allow_trailing_sep : bool) : bool → list syntax → nat → parser
 | p_opt as 0     := error "unreachable"
 | p_opt as (n+1) := do
@@ -85,9 +93,11 @@ private def sep_by_aux (p : m syntax) (sep : parser) (allow_trailing_sep : bool)
     | pure (syntax.node ⟨none, (a::as).reverse⟩),
   sep_by_aux allow_trailing_sep (s::a::as) n
 
+@[specialize]
 def sep_by (p sep : parser) (allow_trailing_sep := tt) : parser :=
 do rem ← remaining, sep_by_aux p sep allow_trailing_sep tt [] (rem+1)
 
+@[specialize]
 def sep_by1 (p sep : parser) (allow_trailing_sep := tt) : parser :=
 do rem ← remaining, sep_by_aux p sep allow_trailing_sep ff [] (rem+1)
 
@@ -118,6 +128,7 @@ instance sep_by1.view {α β} (p sep : parser) (a) [parser.has_view p α] [parse
   parser.has_view (sep_by1 p sep a) (list (α × option β)) :=
 {..sep_by.view p sep a}
 
+@[specialize]
 def optional (r : parser) : parser :=
 do r ← optional $
      -- on error, wrap in "some"
@@ -141,7 +152,7 @@ instance optional.view_default (r : parser) [parser.has_view r α] : parser.has_
 /-- Parse a list `[p1, ..., pn]` of parsers as `p1 <|> ... <|> pn`.
     Note that there is NO explicit encoding of which parser was chosen;
     parsers should instead produce distinct node names for disambiguation. -/
-def any_of (rs : list parser) : parser :=
+@[specialize] def any_of (rs : list parser) : parser :=
 match rs with
 | [] := error "any_of"
 | (r::rs) := rs.foldl (<|>) r
@@ -154,7 +165,7 @@ instance any_of.view (rs : list parser) : parser.has_view (any_of rs) syntax := 
     If the result is ambiguous, wrap it in a `choice` node.
     Note that there is NO explicit encoding of which parser was chosen;
     parsers should instead produce distinct node names for disambiguation. -/
-def longest_match (rs : list parser) : parser :=
+@[specialize] def longest_match (rs : list parser) : parser :=
 do stxs ← monad_parsec.longest_match rs,
    match stxs with
    | [stx] := pure stx
@@ -174,7 +185,7 @@ def choice_aux : list parser → nat → parser
        pure $ syntax.node ⟨some ⟨name.mk_numeral name.anonymous i⟩, [stx]⟩ }
   <|> choice_aux rs (i+1)
 
-def choice (rs : list parser) : parser :=
+@[specialize] def choice (rs : list parser) : parser :=
 choice_aux rs 0
 
 instance choice.tokens (rs : list parser) [parser.has_tokens rs] : parser.has_tokens (choice rs) :=
