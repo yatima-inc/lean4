@@ -135,7 +135,7 @@ environment compile(environment const & env, options const & opts, names const &
     ds = apply(erase_irrelevant, new_env, ds);
     trace_compiler(name({"compiler", "erase_irrelevant"}), ds);
     ds = apply(esimp, new_env, ds);
-    trace_compiler(name({"compiler", "simp"}), ds);
+    trace_compiler(name({"compiler", "esimp"}), ds);
     ds = apply(elim_dead_let, ds);
     trace_compiler(name({"compiler", "elim_dead_let"}), ds);
     ds = apply(cse, new_env, ds);
@@ -167,6 +167,7 @@ void initialize_compiler() {
     register_trace_class({"compiler", "lcnf"});
     register_trace_class({"compiler", "cce"});
     register_trace_class({"compiler", "simp"});
+    register_trace_class({"compiler", "esimp"});
     register_trace_class({"compiler", "simp_detail"});
     register_trace_class({"compiler", "elim_dead_let"});
     register_trace_class({"compiler", "cse"});

@@ -77,7 +77,7 @@ class csimp_fn {
     }
 
     bool is_small_join_point(expr const & e) const {
-        return get_lcnf_size(env(), e) <= m_cfg.m_inline_jp_threshold;
+        return m_before_erasure && get_lcnf_size(env(), e) <= m_cfg.m_inline_jp_threshold;
     }
 
     expr find(expr const & e, bool skip_mdata = true) const {
@@ -492,6 +492,7 @@ class csimp_fn {
         auto it = new_jp_cache.find(jp);
         if (it != new_jp_cache.end())
             return it->second;
+        std::cout << "mk_new_join_point: " << jp << " WITH " << x << " AND " << e << "\n";
         local_decl jp_decl = m_lctx.get_local_decl(jp);
         lean_assert(is_join_point_name(jp_decl.get_user_name()));
         expr jp_val = *jp_decl.get_value();
@@ -641,6 +642,7 @@ class csimp_fn {
         i = fvars.size();
         while (i > 0) {
             --i;
+            // lean_assert(m_before_erasure || !is_cases_on_app(env(), vals[i]));
             expr new_value = abstract(vals[i], i, fvars.data());
             expr new_type  = abstract(types[i], i, fvars.data());
             e = ::lean::mk_let(user_names[i], new_type, new_value, e);
@@ -703,6 +705,21 @@ class csimp_fn {
         std::reverse(entries_ndep_x.begin(), entries_ndep_x.end());
     }
 
+    /* Auxiliary method for `mk_let`.
+       Move new join points in `new_jps` to `entries` and update cache `entries_fvars` of free variables used `entries`. */
+    void move_jp_to_entries(buffer<expr> & new_jps, name_set & entries_fvars, buffer<pair<expr, expr>> & entries) {
+        while (!new_jps.empty()) {
+            expr jp_fvar = new_jps.back();
+            new_jps.pop_back();
+            local_decl jp_decl = m_lctx.get_local_decl(jp_fvar);
+            expr jp_type       = jp_decl.get_type();
+            expr jp_val        = *jp_decl.get_value();
+            collect_used(jp_type, entries_fvars);
+            collect_used(jp_val, entries_fvars);
+            entries.emplace_back(jp_fvar, jp_val);
+        }
+    }
+
     /* Create a let-expression with body `e`, and
        all "used" let-declarations `m_fvars[i]` for `i in [saved_fvars_size, m_fvars.size)`.
 
@@ -753,31 +770,41 @@ class csimp_fn {
 
             if (is_cases_on_app(env(), val)) {
                 /* Float cases transformation. */
-                if (m_cfg.m_float_cases && m_before_erasure) {
-                    /* We first create a let-declaration with all entries that depends on the current
-                       `x` which is a cases_on application. */
+                if (!m_before_erasure || m_cfg.m_float_cases) {
+                    /* After erasure, we don't want expressions of the form `let x := cases_on ... in t` */
+                    buffer<expr> new_jps;
                     buffer<pair<expr, expr>> entries_dep_curr;
                     buffer<pair<expr, expr>> entries_ndep_curr;
                     split_entries(entries, x, entries_dep_curr, entries_ndep_curr);
                     expr new_e = mk_let(entries_dep_curr, e);
-                    buffer<expr> new_jps;
-                    if (optional<expr> new_e_opt = float_cases_on(x, new_e, val, new_jps)) {
-                        e       = *new_e_opt;
+                    optional<expr> new_e_opt;
+                    if (m_before_erasure) {
+                        new_e_opt = float_cases_on(x, new_e, val, new_jps);
+                    } else {
+                        if (!is_app(new_e) || is_cases_on_app(env(), new_e)) {
+                            if (is_lambda(new_e))
+                                new_e = mk_trivial_let(new_e);
+                            expr jp_val  = ::lean::mk_lambda(x_decl.get_user_name(), type, abstract(new_e, x));
+                            mark_simplified(jp_val);
+                            expr jp_var  = m_lctx.mk_local_decl(ngen(), next_jp_name(), mk_enf_object_type(), jp_val);
+                            std::cout << "NEW JP: " << jp_var << "\n";
+                            entries_ndep_curr.emplace_back(jp_var, jp_val);
+                            new_e        = mk_app(jp_var, x);
+                        }
+                        std::cout << ">> " << new_e << " @ " << get_app_fn(val) << "\n";
+                        expr_map<expr> new_jp_cache;
+                        new_e_opt = float_cases_on_core(x, new_e, val, new_jps, new_jp_cache);
+                    }
+                    if (new_e_opt) {
+                        e          = *new_e_opt;
+                        lean_assert(is_cases_on_app(env(), e));
+                        e_is_cases = true;
                         /* Reset `e_fvars` and `entries_fvars`, we need to reconstruct them. */
                         e_fvars.clear(); entries_fvars.clear();
                         collect_used(e, e_fvars);
                         /* Join points may have been generated, we move them to entries. */
                         entries.clear();
-                        while (!new_jps.empty()) {
-                            expr jp_fvar = new_jps.back();
-                            new_jps.pop_back();
-                            local_decl jp_decl = m_lctx.get_local_decl(jp_fvar);
-                            expr jp_type       = jp_decl.get_type();
-                            expr jp_val        = *jp_decl.get_value();
-                            collect_used(jp_type, entries_fvars);
-                            collect_used(jp_val, entries_fvars);
-                            entries.emplace_back(jp_fvar, jp_val);
-                        }
+                        move_jp_to_entries(new_jps, entries_fvars, entries);
                         /* Copy `entries_ndep_curr` to `entries` */
                         for (unsigned i = 0; i < entries_ndep_curr.size(); i++) {
                             pair<expr, expr> const & ndep_entry = entries_ndep_curr[i];
