@@ -43,11 +43,6 @@ vm_obj get_io_result(vm_obj const & r) {
     return cfield(r, 0);
 }
 
-vm_obj run_io(vm_obj const & act) {
-    auto r = invoke(act, REAL_WORLD);
-    return cfield(r, 0);
-}
-
 vm_obj mk_ioe_result(vm_obj const & r) {
     return mk_io_result(mk_vm_constructor(1, r));
 }
@@ -279,10 +274,10 @@ static vm_obj io_process_wait(vm_obj const & ch, vm_obj const &) {
 */
 
 /* (iterate  : Π (α β : Type), α → (α → io (sum α β)) → io β) */
-static vm_obj io_iterate(vm_obj const &, vm_obj const &, vm_obj const & a, vm_obj const & fn, vm_obj const &) {
+static vm_obj io_iterate(vm_obj const &, vm_obj const &, vm_obj const & a, vm_obj const & fn, vm_obj const & s) {
     vm_obj r = a;
     while (true) {
-        vm_obj sum = cfield(invoke(fn, r, REAL_WORLD), 0);
+        vm_obj sum = cfield(invoke(fn, r, s), 0);
         if (cidx(sum) == 1) {
             return mk_io_result(cfield(sum, 0));
         } else {

@@ -39,7 +39,7 @@ vm_obj eval_helper::invoke_fn() {
 
 optional<vm_obj> eval_helper::try_exec_io() {
     if (is_app_of(m_ty, get_io_name(), 1)) {
-        m_args.push_back(mk_vm_simple(0)); // "world state"
+        m_args.push_back(mk_vm_constructor(0, mk_vm_simple(0), mk_vm_simple(0))); // "world state"
         auto r = invoke_fn();
         /* TODO? if (auto error = is_ioe_error(r)) {
             throw exception(io_error_to_string(*error));

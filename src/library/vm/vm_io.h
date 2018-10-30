@@ -15,8 +15,6 @@ namespace lean {
 vm_obj mk_io_result(vm_obj const & r);
 /* `(st : α × real_world) → α` */
 vm_obj get_io_result(vm_obj const & st);
-/* `(act : io α) → α` */
-vm_obj run_io(vm_obj const & act);
 /* `(r : α) → (except ε α × real_world)` */
 vm_obj mk_ioe_result(vm_obj const & r);
 /* `(e : ε) → (except ε α × real_world)` */

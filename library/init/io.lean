@@ -216,7 +216,7 @@ local attribute [reducible] io
     TODO(Leo): replace `state_t io.real_world id` with `io` as soon as we fix inductive_cmd
 -/
 inductive coroutine_io (α δ β: Type) : Type
-| mk    {} : (α → io.real_world → (coroutine_result_core.{0 0 0} coroutine_io α δ β) × io.real_world) → coroutine_io
+| mk    {} : (α → (unit × io.real_world) → (coroutine_result_core.{0 0 0} coroutine_io α δ β) × io.real_world) → coroutine_io
 
 abbreviation coroutine_result_io (α δ β: Type) : Type :=
 coroutine_result_core.{0 0 0} (coroutine_io α δ β) α δ β
