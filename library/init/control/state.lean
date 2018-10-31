@@ -52,7 +52,7 @@ section
   @[inline] protected def put : σ → state_t σ m punit :=
   λ s' ⟨_, s⟩, pure (⟨⟩, s')
 
-  protected def modify (f : σ → σ) : state_t σ m punit :=
+  @[inline] protected def modify (f : σ → σ) : state_t σ m punit :=
   λ ⟨_, s⟩, pure (⟨⟩, f s)
 
   @[inline] protected def lift {α : Type u} (t : m α) : state_t σ m α :=
