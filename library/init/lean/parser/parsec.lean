@@ -21,8 +21,8 @@ namespace parsec
 
 structure message (μ : Type := unit) :=
 (it         : iterator)
-(unexpected : string       := "")          -- unexpected input
-(expected   : dlist string := dlist.empty) -- expected productions
+(unexpected : string       := "") -- unexpected input
+(expected   : list string  := []) -- expected productions
 (custom     : option μ)
 
 def expected.to_string : list string → string
@@ -36,7 +36,7 @@ let (line, col) := msg.it.to_string.line_column msg.it.offset in
 -- always print ":"; we assume at least one of `unexpected` and `expected` to be non-empty
 let loc := ["error at line " ++ to_string line ++ ", column " ++ to_string col ++ ":"] in
 let unexpected := (if msg.unexpected = "" then [] else ["unexpected " ++ msg.unexpected]) in
-let ex_list := msg.expected.to_list in
+let ex_list := msg.expected in
 let expected := if ex_list = [] then [] else ["expected " ++ expected.to_string ex_list] in
 "\n".intercalate $ loc ++ unexpected ++ expected
 
@@ -53,11 +53,11 @@ They contain the error that would have occurred if a
 successful "epsilon" alternative was not taken.
 -/
 inductive result (μ α : Type)
-| ok {} (a : α) (it : iterator) (expected : option $ dlist string) : result
-| error {} (msg : message μ) (consumed : bool)                     : result
+| ok {} (a : α) (it : iterator) (expected : option $ list string) : result
+| error {} (msg : message μ) (consumed : bool)                    : result
 
 @[inline] def result.mk_eps {μ α : Type} (a : α) (it : iterator) : result μ α :=
-result.ok a it (some dlist.empty)
+result.ok a it (some [])
 end parsec
 
 open parsec
@@ -91,7 +91,7 @@ protected def failure : parsec_t μ m α :=
 def merge (msg₁ msg₂ : message μ) : message μ :=
 { expected := msg₁.expected ++ msg₂.expected, ..msg₁ }
 
-@[inline_if_reduce] def bind_mk_res (ex₁ : option (dlist string)) (r : result μ β) : result μ β :=
+@[inline_if_reduce] def bind_mk_res (ex₁ : option (list string)) (r : result μ β) : result μ β :=
 match ex₁, r with
 | none,     ok b it _          := ok b it none
 | none,     error msg _        := error msg tt
@@ -135,15 +135,15 @@ instance : has_monad_lift m (parsec_t μ m) :=
 { monad_lift := λ α x it, do a ← x, pure (mk_eps a it) }
 
 def expect (msg : message μ) (exp : string) : message μ :=
-{expected := dlist.singleton exp, ..msg}
+{expected := [exp], ..msg}
 
-@[inline_if_reduce] def labels_mk_res (r : result μ α) (lbls : dlist string) : result μ α :=
+@[inline_if_reduce] def labels_mk_res (r : result μ α) (lbls : list string) : result μ α :=
 match r with
   | ok a it (some _) := ok a it (some lbls)
   | error msg ff     := error {expected := lbls, ..msg} ff
   | other            := other
 
-@[inline] def labels (p : parsec_t μ m α) (lbls : dlist string) : parsec_t μ m α :=
+@[inline] def labels (p : parsec_t μ m α) (lbls : list string) : parsec_t μ m α :=
 λ it, do
   r ← p it,
   pure $ labels_mk_res r lbls
@@ -257,7 +257,7 @@ namespace monad_parsec
 open parsec_t
 variables {m : Type → Type} [monad m] [monad_parsec μ m] {α β : Type}
 
-def error {α : Type} (unexpected : string) (expected : dlist string := dlist.empty)
+def error {α : Type} (unexpected : string) (expected : list string := [])
           (it : option iterator := none) (custom : option μ := none) : m α :=
 lift $ λ it', result.error { unexpected := unexpected, expected := expected, it := it.get_or_else it', custom := custom } ff
 
@@ -268,16 +268,16 @@ lift $ λ it, result.mk_eps it it
 @[inline] def remaining : m nat :=
 string.iterator.remaining <$> left_over
 
-@[inline] def labels (p : m α) (lbls : dlist string) : m α :=
+@[inline] def labels (p : m α) (lbls : list string) : m α :=
 map (λ m' inst β p, @parsec_t.labels m' inst μ β p lbls) p
 
 @[inline] def label (p : m α) (lbl : string) : m α :=
-labels p (dlist.singleton lbl)
+labels p [lbl]
 
 infixr ` <?> `:2 := label
 
 @[inline] def hidden (p : m α) : m α :=
-labels p dlist.empty
+labels p []
 
 /--
 `try p` behaves like `p`, but it pretends `p` hasn't
@@ -366,7 +366,7 @@ def str (s : string) : m string :=
 if s.is_empty then pure ""
 else lift $ λ it, match str_aux s.length s.mk_iterator it with
   | some it' := result.ok s it' none
-  | none     := result.error { it := it, expected := dlist.singleton (repr s), custom := none } ff
+  | none     := result.error { it := it, expected := [repr s], custom := none } ff
 
 private def take_aux : nat → string → iterator → result μ string
 | 0     r it := result.ok r it none
@@ -454,7 +454,7 @@ string.to_nat <$> (take_while1 char.is_digit)
 def ensure (n : nat) : m unit :=
 do it ← left_over,
    if n ≤ it.remaining then pure ()
-   else error "end of input" (dlist.singleton ("at least " ++ to_string n ++ " characters"))
+   else error "end of input" ["at least " ++ to_string n ++ " characters"]
 
 /-- Return the current position. -/
 def pos : m position :=
@@ -463,12 +463,12 @@ string.iterator.offset <$> left_over
 @[inline] def not_followed_by [monad_except (message μ) m] (p : m α) (msg : string := "input") : m unit :=
 do it ← left_over,
    b ← lookahead $ catch (p *> pure ff) (λ _, pure tt),
-   if b then pure () else error msg dlist.empty it
+   if b then pure () else error msg [] it
 
 def eoi : m unit :=
 do it ← left_over,
    if it.remaining = 0 then pure ()
-   else error (repr it.curr) (dlist.singleton ("end of input"))
+   else error (repr it.curr) ["end of input"]
 
 @[specialize] def many1_aux [alternative m] (p : m α) : nat → m (list α)
 | 0     := do a ← p, pure [a]
@@ -527,7 +527,7 @@ def unexpected (msg : string) : m α :=
 error msg
 
 def unexpected_at (msg : string) (it : iterator) : m α :=
-error msg dlist.empty it
+error msg [] it
 
 /- Execute all parsers in `ps` and return the result of the longest parse(s) if any,
    or else the result of the furthest error. If there are two parses of

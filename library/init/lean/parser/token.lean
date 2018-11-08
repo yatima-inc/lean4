@@ -200,9 +200,9 @@ def symbol (sym : string) (lbp := 0) : parser :=
 let sym := sym.trim in
 lift $ try $ do {
   it ← left_over,
-  stx@(syntax.atom ⟨_, sym'⟩) ← token | error "" (dlist.singleton sym) it,
+  stx@(syntax.atom ⟨_, sym'⟩) ← token | error "" [sym] it,
   when (sym ≠ sym') $
-    error ("token " ++ sym') (dlist.singleton sym) it,
+    error ("token " ++ sym') [sym] it,
   pure stx
 } <?> sym
 
@@ -220,7 +220,7 @@ def number.parser : parser :=
 lift $ try $ do {
   it ← left_over,
   stx ← token,
-  some _ ← pure $ try_view number stx | error "" (dlist.singleton "number") it,
+  some _ ← pure $ try_view number stx | error "" ["number"] it,
   pure stx
 } <?> "number"
 
@@ -239,7 +239,7 @@ def string_lit.parser : parser :=
 lift $ try $ do {
   it ← left_over,
   stx ← token,
-  some _ ← pure $ try_view string_lit stx | error "" (dlist.singleton "number") it,
+  some _ ← pure $ try_view string_lit stx | error "" ["number"] it,
   pure stx
 } <?> "string"
 
@@ -252,7 +252,7 @@ lift $ try $ do {
   it ← left_over,
   stx ← token,
   if stx.is_of_kind ident then pure stx
-  else error "" (dlist.singleton "identifier") it
+  else error "" ["identifier"] it
 } <?> "identifier"
 
 instance ident.parser.tokens : parser.has_tokens (ident.parser : parser) := default _
@@ -299,7 +299,7 @@ lift $ try $ do
      | _ := none)
   | _ := none,
   when (sym' ≠ some sym) $
-    error "" (dlist.singleton (repr sym)) it,
+    error "" [repr sym] it,
   pure stx
 
 instance symbol_or_ident.tokens (sym) : parser.has_tokens (symbol_or_ident sym : parser) :=
