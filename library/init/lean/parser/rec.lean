@@ -33,7 +33,7 @@ private def run_aux (base : α → m δ) (rec : α → rec_t α δ m δ) : nat �
 protected def run (x : rec_t α δ m β) (base : α → m δ) (rec : α → rec_t α δ m δ) (max_rec : ℕ) : m β :=
 x.run (run_aux base rec max_rec)
 
-protected def run_parsec {γ : Type} [monad_parsec γ m] (x : rec_t α δ m β)
+protected def run_parsec {γ ε : Type} [monad_parsec γ ε m] [parsec.expected ε] (x : rec_t α δ m β)
   (rec : α → rec_t α δ m δ) : m β :=
 do it ← monad_parsec.left_over,
    rec_t.run x (λ _, monad_parsec.error "rec_t.run_parsec: no progress") rec (it.remaining+1)
@@ -43,7 +43,7 @@ instance : monad (rec_t α δ m) := infer_instance
 instance [alternative m] : alternative (rec_t α δ m) := infer_instance
 instance : has_monad_lift m (rec_t α δ m) := infer_instance
 instance (ε) [monad_except ε m] : monad_except ε (rec_t α δ m) := infer_instance
-instance (μ) [monad_parsec μ m] : monad_parsec μ (rec_t α δ m) :=
+instance (μ ε) [monad_parsec μ ε m] : monad_parsec μ ε (rec_t α δ m) :=
 infer_instance
 -- NOTE: does not allow to vary `m` because of its occurrence in the reader state
 instance [monad m] : monad_functor m m (rec_t α δ m) (rec_t α δ m) :=

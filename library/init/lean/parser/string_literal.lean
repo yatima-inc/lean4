@@ -9,7 +9,7 @@ import init.lean.parser.parsec
 namespace lean
 namespace parser
 open monad_parsec
-variables {m : Type → Type} {μ : Type} [monad m] [monad_parsec μ m] [alternative m]
+variables {m : Type → Type} {μ ε : Type} [monad m] [monad_parsec μ ε m] [parsec.expected ε] [alternative m]
 
 def parse_hex_digit : m nat :=
 (    (do d ← digit, pure $ d.val - '0'.val)

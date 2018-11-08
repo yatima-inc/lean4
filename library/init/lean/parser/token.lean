@@ -60,7 +60,7 @@ hidden $ do
   whitespace_aux (start.remaining+1)
 
 section
-variables [monad m] [monad_parsec syntax m]
+variables {ε : Type} [monad m] [monad_parsec syntax ε m] [parsec.expected ε]
 
 @[inline] def as_substring {α : Type} (p : m α) : m substring :=
 do start ← left_over,
@@ -152,7 +152,7 @@ node! string_lit [val: raw parse_string_literal]
 
 private def mk_consume_token (tk : token_config) (it : string.iterator) : basic_parser :=
 let it' := it.nextn tk.prefix.length in
-monad_parsec.lift $ λ _, parsec.result.ok (mk_raw_res it it') it' none
+monad_parsec.lift $ λ _, parsec.result.mk_consumed (mk_raw_res it it') it'
 
 def number_or_string_lit : basic_parser :=
 number' <|> string_lit'
@@ -175,7 +175,7 @@ do it ← left_over,
      some tkc ← pure cache.token_cache | failure,
      guard (it.offset = tkc.start_it.offset),
      -- hackishly update parsec position
-     monad_parsec.lift (λ it, parsec.result.ok () tkc.stop_it none),
+     monad_parsec.lift (λ it, parsec.result.mk_consumed () tkc.stop_it),
      put_cache {cache with hit := cache.hit + 1},
      pure tkc.tk
    ) (λ _, do

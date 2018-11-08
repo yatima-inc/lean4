@@ -38,30 +38,29 @@ def is_id_end_escape (c : char) : bool :=
 c = id_end_escape
 
 namespace parser
-variables {m : Type → Type} {μ : Type} [monad m] [monad_parsec μ m] [alternative m]
 open monad_parsec
 
-def id_part_default : m string :=
+def id_part_default : parsec' string :=
 do c ← satisfy is_id_first,
    take_while_cont is_id_rest (to_string c)
 
-def id_part_escaped : m string :=
+def id_part_escaped : parsec' string :=
 ch id_begin_escape *> take_until1 is_id_end_escape <* ch id_end_escape
 
-def id_part : m string :=
+def id_part : parsec' string :=
 cond is_id_begin_escape
   id_part_escaped
   id_part_default
 
-def identifier : m name :=
+def identifier : parsec' name :=
 (try $ do s  ← id_part,
        foldl name.mk_string (mk_simple_name s) (ch '.' *> id_part)) <?> "identifier"
 
-def c_identifier : m string :=
+def c_identifier : parsec' string :=
 (try $ do c ← satisfy (λ c, c.is_alpha || c = '_'),
        take_while_cont (λ c, c.is_alphanum || c = '_') (to_string c)) <?> "C identifier"
 
-def cpp_identifier : m string :=
+def cpp_identifier : parsec' string :=
 (try $ do n ← c_identifier,
        ns ← many ((++) <$> str "::" <*> c_identifier),
        pure $ string.join (n::ns)) <?> "C++ identifier"

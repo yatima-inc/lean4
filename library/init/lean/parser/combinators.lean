@@ -15,9 +15,9 @@ namespace parser
 namespace combinators
 open has_tokens has_view monad_parsec
 
-variables {α : Type} {m : Type → Type}
+variables {α ε : Type} {m : Type → Type}
 local notation `parser` := m syntax
-variables [monad m] [monad_except (parsec.message syntax) m] [monad_parsec syntax m] [alternative m]
+variables [monad m] [monad_except (parsec.message syntax) m] [monad_parsec syntax ε m] [parsec.expected ε] [alternative m]
 
 def node (k : syntax_node_kind) (rs : list parser) : parser :=
 do args ← rs.mfoldl (λ (args : list syntax) r, do
@@ -194,9 +194,9 @@ instance label.tokens (r : parser) (l) [parser.has_tokens r] : parser.has_tokens
 instance label.view (r : parser) (l) [i : parser.has_view α r] : parser.has_view α (label r l) :=
 {..i}
 
-instance dbg.tokens (r : parser) (l) [parser.has_tokens r] : parser.has_tokens (dbg l r) :=
+instance dbg.tokens [monad_parsec syntax parsec.ods m] (r : parser) (l) [parser.has_tokens r] : parser.has_tokens (dbg l r) :=
 ⟨tokens r⟩
-instance dbg.view (r  : parser) (l) [i : parser.has_view α r] : parser.has_view α (dbg l r) :=
+instance dbg.view [monad_parsec syntax parsec.ods m] (r  : parser) (l) [i : parser.has_view α r] : parser.has_view α (dbg l r) :=
 {..i}
 
 instance recurse.tokens (α δ m a) [monad_rec α δ m] : parser.has_tokens (recurse a : m δ) :=

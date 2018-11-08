@@ -64,7 +64,7 @@ structure parser_config :=
 
 @[derive monad alternative monad_parsec monad_except]
 def parser_core_t (m : Type → Type) [monad m] :=
-parsec_t syntax $ state_t parser_cache $ m
+parsec_t syntax bool $ state_t parser_cache $ m
 
 @[derive monad alternative monad_reader monad_parsec monad_except]
 def parser_t (ρ : Type) (m : Type → Type) [monad m] := reader_t ρ $ parser_core_t m
