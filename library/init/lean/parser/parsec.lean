@@ -19,7 +19,7 @@ inductive expected
 | singleton (s : string)
 | merge (e₁ e₂ : expected)
 
-def expected.append : expected → expected → expected
+@[inline_if_reduce] def expected.append : expected → expected → expected
 | expected.empty e := e
 | e expected.empty := e
 | e₁ e₂            := expected.merge e₁ e₂
