@@ -201,7 +201,7 @@ observing (try (lookahead token))
 
 variable [monad_basic_parser m]
 
-def symbol_core (sym : string) (lbp : nat) (ex : list string) : parser :=
+def symbol_core (sym : string) (lbp : nat) (ex : expected) : parser :=
 lift $ try $ do {
   it ← left_over,
   stx@(syntax.atom ⟨_, sym'⟩) ← token | error "" ex it,
@@ -212,7 +212,7 @@ lift $ try $ do {
 
 @[inline] def symbol (sym : string) (lbp := 0) : parser :=
 let sym := sym.trim in
-symbol_core sym lbp [sym]
+symbol_core sym lbp (expected.singleton sym)
 
 instance symbol.tokens (sym lbp) : parser.has_tokens (symbol sym lbp : parser) :=
 ⟨[⟨sym.trim, lbp, none⟩]⟩
@@ -228,7 +228,7 @@ def number.parser : parser :=
 lift $ try $ do {
   it ← left_over,
   stx ← token,
-  some _ ← pure $ try_view number stx | error "" ["number"] it,
+  some _ ← pure $ try_view number stx | error "" (expected.singleton "number") it,
   pure stx
 } <?> "number"
 
@@ -247,7 +247,7 @@ def string_lit.parser : parser :=
 lift $ try $ do {
   it ← left_over,
   stx ← token,
-  some _ ← pure $ try_view string_lit stx | error "" ["number"] it,
+  some _ ← pure $ try_view string_lit stx | error "" (expected.singleton "number") it,
   pure stx
 } <?> "string"
 
@@ -260,7 +260,7 @@ lift $ try $ do {
   it ← left_over,
   stx ← token,
   if stx.is_of_kind ident then pure stx
-  else error "" ["identifier"] it
+  else error "" (expected.singleton "identifier") it
 } <?> "identifier"
 
 instance ident.parser.tokens : parser.has_tokens (ident.parser : parser) := default _
@@ -307,7 +307,7 @@ lift $ try $ do
      | _ := none)
   | _ := none,
   when (sym' ≠ some sym) $
-    error "" [repr sym] it,
+    error "" (expected.singleton (repr sym)) it,
   pure stx
 
 instance symbol_or_ident.tokens (sym) : parser.has_tokens (symbol_or_ident sym : parser) :=
