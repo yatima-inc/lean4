@@ -44,7 +44,7 @@ instance module_parser_m.lift_parser_t (ρ : Type) [has_lift_t module_parser_con
   has_monad_lift (parser_t ρ id) module_parser_m :=
 { monad_lift := λ α x st it nb_st, do
     cfg ← read,
-    pure (((((λ a, (a, st)) <$> x).run ↑cfg) it).run nb_st) }
+    pure (((((λ a, (a, st.2)) <$> x).run ↑cfg) it).run nb_st.2) }
 
 section
 local attribute [reducible] basic_parser_m
