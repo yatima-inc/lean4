@@ -66,7 +66,7 @@ class expected (ε : Type) :=
 (orelse_mk_res {μ α : Type} (msg₁ : message μ) (r : result μ ε α) : result μ ε α)
 (labels_mk_res {μ α : Type} (r : result μ ε α) (lbls : dlist string) : result μ ε α)
 
-@[inline_if_reduce] def bool_bind_mk_res {μ β : Type} (ex₁ : bool) (r : result μ bool β) : result μ bool β :=
+@[inline] def bool_bind_mk_res {μ β : Type} (ex₁ : bool) (r : result μ bool β) : result μ bool β :=
 match r with
 | ok b it cns   := ok b it (ex₁ || cns)
 | error msg cns := error msg (ex₁ || cns)
