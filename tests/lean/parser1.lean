@@ -42,7 +42,7 @@ do t ← parser.mk_token_trie $
 def parse_module (s : string) : except string (list module_parser_output) :=
 do cfg ← mk_config,
    (outputs, sum.inl (), ⟨[]⟩) ← pure $ coroutine.finish (λ_, cfg)
-     (parser.run cfg s (λ st _, module.parser.run st)) cfg
+     (parser.run cfg s (λ st _, module.parser.run st.2)) cfg
      | except.error "final parser output should be empty!",
    pure outputs
 
