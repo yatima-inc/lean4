@@ -79,6 +79,14 @@ node! «import» ["import", imports: import_path.parser+]
 def header.parser : basic_parser :=
 node! «header» [«prelude»: prelude.parser?, imports: import.parser*]
 
+private def log_if_not_recovering (recovering : bool) : module_parser_m unit :=
+if (¬ recovering) then do {
+    it ← left_over,
+    log_message {expected := dlist.singleton "command", it := it, custom := some ()}
+} else do { pure () }
+
+local attribute [inline_if_reduce] coroutine.bind
+
 /-- Read commands, recovering from errors inside commands (attach partial syntax tree)
     as well as unknown commands (skip input). -/
 private def commands_aux : bool → nat → module_parser_m unit
@@ -91,10 +99,7 @@ private def commands_aux : bool → nat → module_parser_m unit
     pure (ff, some c)
   } <|> do {
       -- unknown command: try to skip token, or else single character
-      when (¬ recovering) $ do {
-        it ← left_over,
-        log_message {expected := dlist.singleton "command", it := it, custom := some ()}
-      },
+      log_if_not_recovering recovering,
       try (monad_lift token *> pure ()) <|> (any *> pure ()),
       pure (tt, none)
     }) $ λ msg, do {
