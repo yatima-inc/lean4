@@ -135,11 +135,11 @@ def ident_suffix.parser : rec_t unit syntax basic_parser_m syntax :=
 try (lookahead (ch '.' *> (ch id_begin_escape <|> satisfy is_id_first)))
 *> node! ident_suffix [«.»: raw_str ".", ident: recurse ()]
 
-def ident'' : rec_t unit syntax basic_parser_m syntax :=
-node! ident [part: monad_lift ident_part.parser, suffix: optional ident_suffix.parser]
+def ident''.parser : rec_t unit syntax basic_parser_m syntax :=
+node! ident'' [part: monad_lift ident_part.parser, suffix: optional ident_suffix.parser]
 
 private def ident' : basic_parser_m syntax :=
-rec_t.run_parsec ident'' $ λ _, ident''
+rec_t.run_parsec ident''.parser $ λ _, ident''.parser
 
 --TODO(Sebastian): other bases
 def number' : basic_parser :=
@@ -255,6 +255,9 @@ instance string_lit.parser.tokens : parser.has_tokens (string_lit.parser : parse
 instance string_lit.parser.view : parser.has_view string_lit.view (string_lit.parser : parser) :=
 {..string_lit.has_view}
 
+-- redefine with extended view: ident is the only syntax node where we want to access the macro scopes
+@[pattern] def ident := ident''
+
 def ident.parser : parser :=
 lift $ try $ do {
   it ← left_over,
@@ -262,6 +265,14 @@ lift $ try $ do {
   if stx.is_of_kind ident then pure stx
   else error "" (dlist.singleton "identifier") it
 } <?> "identifier"
+
+structure ident.view extends ident''.view :=
+(scopes : list macro_scope := [])
+
+-- extend and shadow previous instance
+instance ident.has_view : parser.has_view ident.view ident :=
+{ view := λ stx, {view ident'' stx with scopes := (syntax_node.scopes <$> stx.as_node).get_or_else []},
+  review := λ v, (review ident'' v.to_view).flip_scopes v.scopes }
 
 instance ident.parser.tokens : parser.has_tokens (ident.parser : parser) := default _
 instance ident.parser.view : parser.has_view ident.view (ident.parser : parser) :=
