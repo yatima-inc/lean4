@@ -107,7 +107,7 @@ private def command_aux : bool → nat → (state_t parser_state $ parser_t modu
   | none   := command_aux recovering n
 
 def commands.parser : unit → module_parser_m unit
-| () st it cache :=
+| _ st it cache :=
 (do { (c, st) ← monad_lift $ command_aux ff it.remaining.succ st, put st, match c with
 | some c := yield_command c *> commands.parser ()
 | none   := pure ()
