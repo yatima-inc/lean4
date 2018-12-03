@@ -106,12 +106,14 @@ private def command_aux : bool → nat → (state_t parser_state $ parser_t modu
   | some c := pure $ some c
   | none   := command_aux recovering n
 
+section
 def commands.parser : unit → module_parser_m unit
 | _ st it cache :=
-(do { (c, st) ← monad_lift $ command_aux ff it.remaining.succ st, put st, match c with
+⟨λ a, coroutine.resume ((do { (c, st) ← monad_lift $ command_aux ff it.remaining.succ st, put st, match c with
 | some c := yield_command c *> commands.parser ()
 | none   := pure ()
-} : module_parser_m unit) st it cache
+} : module_parser_m unit) st it cache) a⟩
+end
 
 instance commands.tokens : parser.has_tokens commands.parser :=
 ⟨tokens command.parser⟩
