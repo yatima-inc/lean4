@@ -79,15 +79,15 @@ node! «import» ["import", imports: import_path.parser+]
 def header.parser : basic_parser :=
 node! «header» [«prelude»: prelude.parser?, imports: import.parser*]
 
-/-- Read commands, recovering from errors inside commands (attach partial syntax tree)
+/-- Read a command, recovering from errors inside commands (attach partial syntax tree)
     as well as unknown commands (skip input). -/
-private def commands_aux : bool → nat → module_parser_m unit
+private def command_aux : bool → nat → (state_t parser_state $ parser_t module_parser_config id)
+  (option syntax)
 | recovering 0            := error "unreachable"
 -- on end of input, return list of parsed commands
-| recovering (nat.succ n) := monad_parsec.eoi <|> do
+| recovering (nat.succ n) := monad_parsec.eoi *> pure none <|> do
   (recovering, c) ← catch (do {
-    cfg ← read,
-    c ← monad_lift $ command.parser.run cfg.command_parsers,
+    c ← state_t.lift $ λ cfg, command.parser.run cfg.command_parsers cfg,
     pure (ff, some c)
   } <|> do {
       -- unknown command: try to skip token, or else single character
@@ -95,7 +95,7 @@ private def commands_aux : bool → nat → module_parser_m unit
         it ← left_over,
         log_message {expected := dlist.singleton "command", it := it, custom := some ()}
       },
-      try (monad_lift token *> pure ()) <|> (any *> pure ()),
+      try ((state_t.lift $ λ cfg, monad_lift $ token cfg) *> pure ()) <|> (any *> pure ()),
       pure (tt, none)
     }) $ λ msg, do {
       -- error inside command: log error, return partial syntax tree
@@ -103,11 +103,15 @@ private def commands_aux : bool → nat → module_parser_m unit
       pure (tt, some msg.custom.get)
     },
   match c with
-  | some c := yield_command c *> commands_aux recovering n
-  | none   := commands_aux recovering n
+  | some c := pure $ some c
+  | none   := command_aux recovering n
 
-def commands.parser : module_parser_m unit :=
-do { rem ← remaining, commands_aux ff rem.succ }
+def commands.parser : unit → module_parser_m unit
+| () :=
+do { rem ← remaining, cfg ← read, st ← get, (c, st) ← monad_lift $ command_aux ff rem.succ st, put st, match c with
+| some c := yield_command c *> commands.parser ()
+| none   := pure ()
+}
 
 instance commands.tokens : parser.has_tokens commands.parser :=
 ⟨tokens command.parser⟩
@@ -125,7 +129,7 @@ def module.parser : module_parser_m unit := do
     -- `token` assumes that there is no leading whitespace
     monad_lift whitespace,
     monad_lift header.parser >>= yield_command,
-    commands.parser,
+    commands.parser (),
     monad_parsec.eoi
   ) $ λ msg, do {
     -- fatal error (should only come from header.parser or eoi), yield partial syntax tree and stop
