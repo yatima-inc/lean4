@@ -28,13 +28,13 @@ class eval_helper {
 public:
     eval_helper(environment const & env, options const & opts, name const & fn);
 
-    vm_obj invoke_fn();
+    object_ref invoke_fn();
 
     expr const & get_type() const { return m_ty; }
     vm_state::profiler & get_profiler() { return m_prof; }
 
-    optional<vm_obj> try_exec_io();
-    optional<vm_obj> try_exec();
+    optional<object_ref> try_exec_io();
+    optional<object_ref> try_exec();
 };
 
 }

@@ -147,6 +147,7 @@ void initialize_builtin() {
     list<bool> cb{false, true};
     list<bool> bc{true, false};
     list<bool> bbb{true, true, true};
+    list<bool> bcb{true, false, true};
     list<bool> bccc{true, false, false, false};
 
     /* nat builtin functions */
@@ -214,7 +215,7 @@ void initialize_builtin() {
     register_builtin(name({"lean", "expr", "local"}), mk_arrow(o, o_o_o_o), "lean_expr_local");
     register_builtin(name({"lean", "environment", "empty"}), o, "lean_environment_empty");
     register_builtin(name({"lean", "environment", "contains"}), o_o_o, "lean_environment_contains");
-    register_builtin(name({"lean", "elaborator", "elaborate_command"}), o_o_o_o, "lean_elaborator_elaborate_command");
+    register_builtin(name({"lean", "elaborator", "elaborate_command"}), o_o_o_o, "lean_elaborator_elaborate_command", bcb);
 
     /* uint8 builtin functions */
     register_builtin(name({"uint8", "of_nat"}), o_u8, "lean::uint8_of_nat", b);

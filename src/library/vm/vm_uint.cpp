@@ -6,11 +6,11 @@ Author: Leonardo de Moura
 */
 #include "library/vm/vm.h"
 namespace lean {
-vm_obj dummy_unary_op(vm_obj const &, vm_obj const &) {
+vm_obj dummy_unary_op(vm_obj, vm_obj) {
     throw exception("uint support has not been implemented in the old VM");
 }
 
-vm_obj dummy_binary_op(vm_obj const &, vm_obj const &) {
+vm_obj dummy_binary_op(vm_obj, vm_obj) {
     throw exception("uint support has not been implemented in the old VM");
 }
 

@@ -8,6 +8,7 @@ Author: Gabriel Ebner
 #include "library/util.h"
 #include "library/eval_helper.h"
 #include "library/io_state.h"
+#include "runtime/io.h"
 
 namespace lean {
 
@@ -24,7 +25,7 @@ eval_helper::eval_helper(environment const & env, options const & opts, name con
     }
 }
 
-vm_obj eval_helper::invoke_fn() {
+object_ref eval_helper::invoke_fn() {
     /* We use `scope_vm_state` to set thread local g_vm_state which is used
        to collect performance numbers when profiling. */
     scope_vm_state scope(m_vms);
@@ -34,10 +35,11 @@ vm_obj eval_helper::invoke_fn() {
                                   << " arguments given but expected " << arity);
     }
     std::reverse(m_args.begin(), m_args.end());
-    return m_vms.invoke(m_fn, m_args.size(), m_args.data());
+    // TODO(Sebastian): what if the return value is borrowed?
+    return object_ref(m_vms.invoke(m_fn, m_args.size(), m_args.data()));
 }
 
-optional<vm_obj> eval_helper::try_exec_io() {
+optional<object_ref> eval_helper::try_exec_io() {
     if (is_app_of(m_ty, get_io_name(), 1)) {
         m_args.push_back(mk_vm_simple(0)); // "world state"
         auto r = invoke_fn();
@@ -48,14 +50,14 @@ optional<vm_obj> eval_helper::try_exec_io() {
         } else {
             throw exception("unexpected vm result of io expression");
         }*/
-        return some(get_io_result(r));
+        return some(object_ref(get_io_result(r.raw()), true));
     }
-    return optional<vm_obj>();
+    return optional<object_ref>();
 }
 
-optional<vm_obj> eval_helper::try_exec() {
+optional<object_ref> eval_helper::try_exec() {
     if (auto res = try_exec_io()) return res;
-    return optional<vm_obj>();
+    return optional<object_ref>();
 }
 
 }

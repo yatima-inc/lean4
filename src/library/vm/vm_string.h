@@ -9,10 +9,6 @@ Author: Leonardo de Moura
 #include "library/vm/vm.h"
 
 namespace lean {
-bool is_string(vm_obj const & o);
-std::string to_string(vm_obj const & o);
-vm_obj to_obj(std::string const & str);
-
 void initialize_vm_string();
 void finalize_vm_string();
 }

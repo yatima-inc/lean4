@@ -463,9 +463,9 @@ static environment eval_cmd(parser & p) {
                     (p.mk_message(p.cmd_pos(), WARNING) << "result type does not have an instance of type class 'has_repr', dumping internal representation").report();
                 }
                 if (is_constant(fn.get_type(), get_string_name())) {
-                    out << to_string(r);
+                    out << string_to_std(r.raw());
                 } else {
-                    display(out.get_text_stream().get_stream(), r);
+                    display(out.get_text_stream().get_stream(), r.raw());
                 }
             }
         } catch (throwable & t) {

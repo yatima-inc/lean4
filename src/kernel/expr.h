@@ -90,7 +90,6 @@ inductive expr
 */
 enum class expr_kind { BVar, FVar, MVar, Sort, Const, App, Lambda, Pi, Let, Lit, MData, Proj };
 class expr : public object_ref {
-    explicit expr(b_obj_arg o, bool b):object_ref(o, b) {}
     explicit expr(object_ref && o):object_ref(o) {}
 
     friend expr mk_lit(literal const & lit);
@@ -107,6 +106,8 @@ class expr : public object_ref {
     friend expr mk_local(name const & n, name const & pp_n, expr const & t, binder_info bi);
 public:
     expr();
+    explicit expr(obj_arg o):object_ref(o) {}
+    expr(b_obj_arg o, bool b):object_ref(o, b) {}
     expr(expr const & other):object_ref(other) {}
     expr(expr && other):object_ref(other) {}
     expr_kind kind() const { return static_cast<expr_kind>(cnstr_tag(raw())); }
