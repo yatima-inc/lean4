@@ -94,6 +94,8 @@ void vm_instr::display(std::ostream & out) const {
     case opcode::Push:          out << "push " << m_idx; break;
     case opcode::Move:          out << "move " << m_idx; break;
     case opcode::Reset:         out << "reset " << m_num; break;
+    case opcode::Inc:           out << "inc " << m_num; break;
+    case opcode::Dec:           out << "dec "; break;
     case opcode::Ret:           out << "ret"; break;
     case opcode::Drop:          out << "drop " << m_num; break;
     case opcode::Goto:          out << "goto " << m_pc[0]; break;
@@ -200,6 +202,17 @@ vm_instr mk_move_instr(unsigned idx) {
 vm_instr mk_reset_instr(unsigned n) {
     vm_instr r(opcode::Reset);
     r.m_num = n;
+    return r;
+};
+
+vm_instr mk_inc_instr(unsigned n) {
+    vm_instr r(opcode::Inc);
+    r.m_num = n;
+    return r;
+};
+
+vm_instr mk_dec_instr() {
+    vm_instr r(opcode::Dec);
     return r;
 };
 
@@ -367,7 +380,7 @@ void vm_instr::copy_args(vm_instr const & i) {
     case opcode::Push:  case opcode::Move: case opcode::Proj:
         m_idx  = i.m_idx;
         break;
-    case opcode::Drop: case opcode::Reset:
+    case opcode::Drop: case opcode::Reset: case opcode::Inc:
         m_num = i.m_num;
         break;
     case opcode::Goto:
@@ -403,7 +416,7 @@ void vm_instr::copy_args(vm_instr const & i) {
         m_local_info = new vm_local_info(*i.m_local_info);
         break;
     case opcode::Ret:
-    case opcode::Unreachable: case opcode::Apply:
+    case opcode::Unreachable: case opcode::Apply: case opcode::Dec:
         break;
     }
 }
@@ -480,7 +493,7 @@ void vm_instr::serialize(serializer & s, std::function<name(unsigned)> const & i
     case opcode::Closure:
         s << idx2name(m_fn_idx) << m_nargs;
         break;
-    case opcode::Push:  case opcode::Move: case opcode::Proj:
+    case opcode::Push:  case opcode::Move: case opcode::Proj: case opcode::Inc:
         s << m_idx;
         break;
     case opcode::Drop: case opcode::Reset:
@@ -517,7 +530,7 @@ void vm_instr::serialize(serializer & s, std::function<name(unsigned)> const & i
         s << m_local_idx << m_local_info->first << m_local_info->second;
         break;
     case opcode::Ret:
-    case opcode::Unreachable: case opcode::Apply:
+    case opcode::Unreachable: case opcode::Apply: case opcode::Dec:
         break;
     }
 }
@@ -557,6 +570,10 @@ static vm_instr read_vm_instr(deserializer & d) {
         return mk_move_instr(d.read_unsigned());
     case opcode::Reset:
         return mk_reset_instr(d.read_unsigned());
+    case opcode::Inc:
+        return mk_inc_instr(d.read_unsigned());
+    case opcode::Dec:
+        return mk_dec_instr();
     case opcode::Proj:
         return mk_proj_instr(d.read_unsigned());
     case opcode::Drop:
@@ -1938,6 +1955,32 @@ void vm_state::run() {
                     fields[i] = mk_vm_simple(0);
                 }
             }
+            m_pc++;
+            goto main_loop;
+        }
+        case opcode::Inc: {
+            /* Instruction: inc n
+
+               stack before,   after
+               ...             ...
+               s
+            */
+            unsigned n = instr.get_num();
+            vm_obj s = m_stack.back();
+            for (unsigned i = 0; i < n; i++)
+                inc(s);
+            m_pc++;
+            goto main_loop;
+        }
+        case opcode::Dec: {
+            /* Instruction: dec
+
+               stack before,   after
+               ...             ...
+               s
+            */
+            vm_obj s = m_stack.back();
+            dec(s);
             m_pc++;
             goto main_loop;
         }

@@ -95,7 +95,7 @@ enum class opcode {
     Cases2, CasesN, Proj,
     Apply, InvokeGlobal, InvokeBuiltin, InvokeCFun,
     Closure, Unreachable, Expr, LocalInfo,
-    Reset, Reuse, InvokeJP
+    Reset, Reuse, InvokeJP, Inc, Dec
 };
 
 /** \brief VM instructions */
@@ -113,7 +113,7 @@ class vm_instr {
         };
         /* Push, Move, Proj */
         unsigned m_idx;
-        /* Drop, Reset */
+        /* Drop, Reset, Inc */
         unsigned m_num;
         /* Goto and Cases2 */
         struct {
@@ -164,6 +164,8 @@ class vm_instr {
     friend vm_instr mk_expr_instr(expr const &e);
     friend vm_instr mk_local_info_instr(unsigned idx, name const & n, optional<expr> const & e);
     friend vm_instr mk_reset_instr(unsigned n);
+    friend vm_instr mk_inc_instr(unsigned n);
+    friend vm_instr mk_dec_instr();
 
     void release_memory();
     void copy_args(vm_instr const & i);
@@ -200,7 +202,7 @@ public:
     }
 
     unsigned get_num() const {
-        lean_assert(m_op == opcode::Drop || m_op == opcode::Reset);
+        lean_assert(m_op == opcode::Drop || m_op == opcode::Reset || m_op == opcode::Inc);
         return m_num;
     }
 
@@ -310,6 +312,8 @@ vm_instr mk_closure_instr(unsigned fn_idx, unsigned n);
 vm_instr mk_expr_instr(expr const &e);
 vm_instr mk_local_info_instr(unsigned idx, name const & n, optional<expr> const & e);
 vm_instr mk_reset_instr(unsigned n);
+vm_instr mk_inc_instr(unsigned n);
+vm_instr mk_dec_instr();
 
 class vm_state;
 class vm_instr;

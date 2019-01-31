@@ -2003,14 +2003,14 @@ pair<environment, comp_decls> to_llnf(environment const & env, comp_decls const 
             }
         }
     }
-    if (unboxed) {
-        for (comp_decl & r : rs) {
-            expr new_code = explicit_boxing_fn(new_env)(r.fst(), r.snd());
-            new_code = ecse(new_env, new_code);
-            new_code = elim_dead_let(new_code);
-            new_code = explicit_rc_fn(new_env)(r.fst(), new_code);
-            r = comp_decl(r.fst(), new_code);
-        }
+    for (comp_decl & r : rs) {
+        expr new_code = r.snd();
+        if (unboxed)
+            new_code = explicit_boxing_fn(new_env)(r.fst(), r.snd());
+        new_code = ecse(new_env, new_code);
+        new_code = elim_dead_let(new_code);
+        new_code = explicit_rc_fn(new_env)(r.fst(), new_code);
+        r = comp_decl(r.fst(), new_code);
     }
     comp_decls _rs(rs);
     comp_decls _bs(bs);

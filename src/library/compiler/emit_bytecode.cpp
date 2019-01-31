@@ -220,6 +220,18 @@ class emit_bytecode_fn {
         emit(mk_reset_instr(n));
     }
 
+    void compile_inc(expr const & e, unsigned bpz, vdecls const & m) {
+        expr s  = app_arg(e);
+        compile(s, bpz, m);
+        emit(mk_inc_instr(1));
+    }
+
+    void compile_dec(expr const & e, unsigned bpz, vdecls const & m) {
+        expr s  = app_arg(e);
+        compile(s, bpz, m);
+        emit(mk_dec_instr());
+    }
+
     void compile_app(expr const & e, unsigned bpz, vdecls const & m) {
         expr const & fn = get_app_fn(e);
         if (is_cases_on_app(m_env, fn)) {
@@ -232,6 +244,10 @@ class emit_bytecode_fn {
             compile_proj(e, bpz, m);
         } else if (is_llnf_reset(fn)) {
             compile_reset(e, bpz, m);
+        } else if (is_llnf_inc(fn)) {
+            compile_inc(e, bpz, m);
+        } else if (is_llnf_dec(fn)) {
+            compile_dec(e, bpz, m);
         } else if (is_llnf_apply(fn)) {
             compile_apply(e, bpz, m);
         } else if (is_llnf_closure(fn)) {
