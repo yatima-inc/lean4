@@ -1508,7 +1508,7 @@ class explicit_rc_fn {
         return m_lctx.get_local_decl(x).get_type();
     }
 
-    /* Return true iff `e` is a fvar, `e in live_obj_vars` and type of `e` is a scalar (aka unboxed). */
+    /* Return true iff `e` is a fvar, `e not in live_obj_vars` and type of `e` is not a scalar (aka unboxed). */
     bool is_dead_obj_var(expr const & e, name_set const & live_obj_vars) {
         if (!is_fvar(e)) return false;
         if (live_obj_vars.contains(fvar_name(e))) return false;
@@ -1525,7 +1525,7 @@ class explicit_rc_fn {
     }
 
     /* Return `n` the number of occurrences of `x` in `f_args` that are consumed.
-       We say `x` occurs at position `i` if `f_args[i] == x` and `f_borrowed_args[i]`. */
+       We say `x` occurs at position `i` if `f_args[i] == x` and `!f_borrowed_args[i]`. */
     static unsigned get_num_consumptions(expr const & x, buffer<expr> const & f_args, buffer<bool> const & f_borrowed_args) {
         lean_assert(f_args.size() == f_borrowed_args.size());
         unsigned r = 0;
@@ -1904,8 +1904,7 @@ class explicit_rc_fn {
             if (is_llnf_op(fn)) {
                 return false;
             } else {
-                /* Regular function application.
-                   Retrieve whether the arguments must be borrowed/consumed, and process them. */
+                /* Regular function application. */
                 buffer<bool> borrowed_args;
                 bool borrowed_res;
                 get_borrowed_info(m_env, const_name(fn), borrowed_args, borrowed_res);
