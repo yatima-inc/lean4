@@ -182,6 +182,7 @@ struct task_object : public object {
 /* Base class for wrapping external_object data.
    For example, we use it to wrap the Lean environment object. */
 struct external_object : public object {
+    explicit external_object(object_memory_kind m = c_init_mem_kind): object(object_kind::External, m) {}
     virtual void dealloc() {}
     virtual ~external_object() {}
 };
@@ -1069,6 +1070,11 @@ inline obj_res box_size_t(size_t v) {
 inline size_t unbox_size_t(b_obj_arg o) {
     return cnstr_get_scalar<size_t>(o, 0);
 }
+
+// =======================================
+// Unit
+
+inline obj_res mk_unit_star() { return box(0); }
 
 // =======================================
 // Option
