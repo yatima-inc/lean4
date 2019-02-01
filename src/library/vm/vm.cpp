@@ -41,32 +41,51 @@ LEAN_THREAD_VALUE(vm_state *, g_vm_state, nullptr);
 void display(std::ostream & out, b_obj_arg o) {
     if (is_simple(o)) {
         out << "#" << cidx(o);
-    } else if (is_constructor(o)) {
-        out << "(#" << cidx(o);
-        for (unsigned i = 0; i < csize(o); i++) {
-            out << " ";
-            display(out, cfield(o, i));
-        }
-        out << ")";
-    } else if (is_mpz(o)) {
-        out << to_mpz(o);
-    } else if (is_external(o)) {
-        out << "[external]";
-    } else if (is_closure(o)) {
-        if (auto n = find_vm_name(cfn_idx(o))) {
-            out << "(" << *n;
-        } else {
-            out << "(fn#" << cfn_idx(o);
-        }
-        for (unsigned i = 0; i < csize(o); i++) {
-            out << " ";
-            display(out, cfield(o, i));
-        }
-        out << ")";
-    } else if (is_string(o)) {
-        out << "\"" << string_to_std(o) << "\"";
     } else {
-        out << "[unknown]";
+#ifdef LEAN_FAKE_FREE
+        auto kind = o->m_kind;
+        if (o->m_mem_kind == 42) {
+            // object was fake-deleted; temporarily un-delete for printing
+            out << "DEL ";
+            o->m_kind = -kind;
+        }
+#endif
+        switch (get_kind(o)) {
+            case object_kind::Constructor:
+                out << "(#" << cidx(o);
+                for (unsigned i = 0; i < csize(o); i++) {
+                    out << " ";
+                    display(out, cfield(o, i));
+                }
+                out << ")";
+                break;
+            case object_kind::MPZ:
+                out << to_mpz(o);
+                break;
+            case object_kind::External:
+                out << "[external]";
+                break;
+            case object_kind::Closure:
+                if (auto n = find_vm_name(cfn_idx(o))) {
+                    out << "(" << *n;
+                } else {
+                    out << "(fn#" << cfn_idx(o);
+                }
+                for (unsigned i = 0; i < csize(o); i++) {
+                    out << " ";
+                    display(out, cfield(o, i));
+                }
+                out << ")";
+                break;
+            case object_kind::String:
+                out << "\"" << string_to_std(o) << "\"";
+                break;
+            default:
+                out << "[unknown]";
+        }
+#ifdef LEAN_FAKE_FREE
+        o->m_kind = kind;
+#endif
     }
 }
 
