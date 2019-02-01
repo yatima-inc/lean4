@@ -95,7 +95,7 @@ variable {ρ : Type}
 class has_tokens (r : ρ) := mk {} ::
 (tokens : list token_config)
 
-@[noinline, nospecialize] def tokens (r : ρ) [has_tokens r] :=
+@[nospecialize] def tokens (r : ρ) [has_tokens r] :=
 has_tokens.tokens r
 
 instance has_tokens.inhabited (r : ρ) : inhabited (has_tokens r) :=
