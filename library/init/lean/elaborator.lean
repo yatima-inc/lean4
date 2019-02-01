@@ -346,7 +346,8 @@ def get_namespace : elaborator_m name := do
   | _     := name.anonymous
 
 def old_elab_command (stx : syntax) (cmd : expr) : elaborator_m unit :=
-do cfg ← read,
+pure ()
+/-do cfg ← read,
    let pos := cfg.file_map.to_position $ stx.get_pos.get_or_else (default _),
    let cmd := match cmd with
    | expr.mdata m e := expr.mdata ((kvmap.set_nat m `column pos.column).set_nat `row pos.line) e
@@ -370,7 +371,7 @@ do cfg ← read,
      },
      ..st', ..st}
    | none := pure (),  -- error
-   modify $ λ st, {st with messages := st.messages ++ msgs}
+   modify $ λ st, {st with messages := st.messages ++ msgs}-/
 
 def names_to_pexpr (ns : list name) : expr :=
 expr.mk_capp `_ $ ns.map (λ n, expr.const n [])
