@@ -23,9 +23,236 @@ Author: Leonardo de Moura
 
 /* REMARK: when LEAN_LAZY_RC is defined, we use lazy reference
    counting to avoid long pauses when invoking `del`. */
-#define LEAN_LAZY_RC
+// #define LEAN_LAZY_RC
 
 namespace lean {
+class small_object_allocator {
+    static const unsigned PTR_ALIGNMENT  = (sizeof(unsigned) == sizeof(void*) ? 2 /* 32 bit */ : 3 /* 64 bit */); // NOLINT
+    static const unsigned CHUNK_SIZE     = (8192 - sizeof(void*)*2); // NOLINT
+    static const unsigned SMALL_OBJ_SIZE = 256;
+    static const unsigned NUM_SLOTS      = (SMALL_OBJ_SIZE >> PTR_ALIGNMENT);
+    static const unsigned MASK           = ((1 << PTR_ALIGNMENT) - 1);
+    struct chunk {
+        chunk * m_next;
+        char  * m_curr;
+        char    m_data[CHUNK_SIZE];
+        chunk():m_curr(m_data) {}
+    };
+    chunk *      m_chunks[NUM_SLOTS];
+    void  *      m_free_list[NUM_SLOTS];
+    size_t       m_alloc_size;
+    char const * m_id;
+public:
+    small_object_allocator(char const * id = "unknown");
+    ~small_object_allocator();
+    void reset();
+    void * allocate(size_t size);
+    void deallocate(size_t size, void * p);
+    size_t get_allocation_size() const { return m_alloc_size; }
+    size_t get_wasted_size() const;
+    size_t get_num_free_objs() const;
+    void consolidate();
+};
+
+small_object_allocator::small_object_allocator(char const * id) {
+    for (unsigned i = 0; i < NUM_SLOTS; i++) {
+        m_chunks[i] = 0;
+        m_free_list[i] = 0;
+    }
+    m_id         = id;
+    m_alloc_size = 0;
+}
+
+small_object_allocator::~small_object_allocator() {
+    for (unsigned i = 0; i < NUM_SLOTS; i++) {
+        chunk * c = m_chunks[i];
+        while (c) {
+            chunk * next = c->m_next;
+            delete c;
+            // lean_report_memory_deallocated(sizeof(chunk));
+            c = next;
+        }
+    }
+    DEBUG_CODE({
+        if (m_alloc_size > 0) {
+            std::cerr << "Memory leak detected for small object allocator '"
+                      << m_id << "'. " << m_alloc_size << " bytes leaked" << std::endl;
+        }
+    });
+}
+
+void small_object_allocator::reset() {
+    for (unsigned i = 0; i < NUM_SLOTS; i++) {
+        chunk * c = m_chunks[i];
+        while (c) {
+            chunk * next = c->m_next;
+            delete c;
+            // lean_report_memory_deallocated(sizeof(chunk));
+            c = next;
+        }
+        m_chunks[i] = 0;
+        m_free_list[i] = 0;
+    }
+    m_alloc_size = 0;
+}
+
+void small_object_allocator::deallocate(size_t size, void * p) {
+    if (size == 0) return;
+#if LEAN_DEBUG || defined(LEAN_NO_CUSTOM_ALLOCATORS)
+    // Valgrind friendly
+    delete[] static_cast<char*>(p);
+    return;
+#endif
+    lean_assert(m_alloc_size >= size);
+    lean_assert(p);
+    m_alloc_size -= size;
+    if (size >= SMALL_OBJ_SIZE - (1 << PTR_ALIGNMENT)) {
+        free(p);
+        return;
+    }
+    unsigned slot_id = static_cast<unsigned>(size >> PTR_ALIGNMENT);
+    if ((size & MASK) != 0)
+        slot_id++;
+    lean_assert(slot_id > 0);
+    lean_assert(slot_id < NUM_SLOTS);
+    *(reinterpret_cast<void**>(p)) = m_free_list[slot_id];
+    m_free_list[slot_id] = p;
+}
+
+void * small_object_allocator::allocate(size_t size) {
+    if (size == 0) return 0;
+    inc_heartbeat();
+#if LEAN_DEBUG || defined(LEAN_NO_CUSTOM_ALLOCATORS)
+    // Valgrind friendly
+    return new char[size];
+#endif
+    m_alloc_size += size;
+    if (size >= SMALL_OBJ_SIZE - (1 << PTR_ALIGNMENT))
+        return malloc(size);
+    unsigned slot_id = static_cast<unsigned>(size >> PTR_ALIGNMENT);
+    if ((size & MASK) != 0)
+        slot_id++;
+    lean_assert(slot_id < NUM_SLOTS);
+    lean_assert(slot_id > 0);
+    if (m_free_list[slot_id] != 0) {
+        void * r = m_free_list[slot_id];
+        m_free_list[slot_id] = *(reinterpret_cast<void **>(r));
+        return r;
+    }
+    chunk * c = m_chunks[slot_id];
+    size = slot_id << PTR_ALIGNMENT;
+    if (c != 0) {
+        char * new_curr = c->m_curr + size;
+        if (new_curr < c->m_data + CHUNK_SIZE) {
+            void * r = c->m_curr;
+            c->m_curr = new_curr;
+            return r;
+        }
+    }
+    chunk * new_c = new chunk();
+    new_c->m_next = c;
+    m_chunks[slot_id] = new_c;
+    void * r = new_c->m_curr;
+    new_c->m_curr += size;
+    return r;
+}
+
+size_t small_object_allocator::get_wasted_size() const {
+    size_t r = 0;
+    for (unsigned slot_id = 0; slot_id < NUM_SLOTS; slot_id++) {
+        size_t slot_obj_size = slot_id << PTR_ALIGNMENT;
+        void ** ptr = reinterpret_cast<void **>(const_cast<small_object_allocator*>(this)->m_free_list[slot_id]);
+        while (ptr != 0) {
+            r += slot_obj_size;
+            ptr = reinterpret_cast<void**>(*ptr);
+        }
+    }
+    return r;
+}
+
+size_t small_object_allocator::get_num_free_objs() const {
+    size_t r = 0;
+    for (unsigned slot_id = 0; slot_id < NUM_SLOTS; slot_id++) {
+        void ** ptr = reinterpret_cast<void **>(const_cast<small_object_allocator*>(this)->m_free_list[slot_id]);
+        while (ptr != 0) {
+            r++;
+            ptr = reinterpret_cast<void**>(*ptr);
+        }
+    }
+    return r;
+}
+
+template<typename T>
+struct ptr_lt {
+    bool operator()(T * p1, T * p2) const { return p1 < p2; }
+};
+
+void small_object_allocator::consolidate() {
+    std::vector<chunk*> chunks;
+    std::vector<char*> free_objs;
+    for (unsigned slot_id = 1; slot_id < NUM_SLOTS; slot_id++) {
+        if (m_free_list[slot_id] == 0)
+            continue;
+        chunks.clear();
+        free_objs.clear();
+        chunk * c = m_chunks[slot_id];
+        while (c != 0) {
+            chunks.push_back(c);
+            c = c->m_next;
+        }
+        char * ptr = static_cast<char*>(m_free_list[slot_id]);
+        while (ptr != 0) {
+            free_objs.push_back(ptr);
+            ptr = *(reinterpret_cast<char**>(ptr));
+        }
+        unsigned obj_size = slot_id << PTR_ALIGNMENT;
+        unsigned num_objs_per_chunk = CHUNK_SIZE / obj_size;
+        if (free_objs.size() < num_objs_per_chunk)
+            continue;
+        lean_assert(!chunks.empty());
+        std::sort(chunks.begin(), chunks.end(), ptr_lt<chunk>());
+        std::sort(free_objs.begin(), free_objs.end(), ptr_lt<char>());
+        chunk *   last_chunk = 0;
+        void * last_free_obj = 0;
+        unsigned chunk_idx = 0;
+        unsigned obj_idx   = 0;
+        unsigned num_chunks = chunks.size();
+        unsigned num_objs   = free_objs.size();
+        while (chunk_idx < num_chunks) {
+            chunk * curr_chunk = chunks[chunk_idx];
+            char *  curr_begin = curr_chunk->m_data;
+            char *  curr_end   = curr_begin + CHUNK_SIZE;
+            unsigned num_free_in_chunk = 0;
+            unsigned saved_obj_idx = obj_idx;
+            while (obj_idx < num_objs) {
+                char * free_obj = free_objs[obj_idx];
+                if (free_obj > curr_end)
+                    break;
+                obj_idx++;
+                num_free_in_chunk++;
+            }
+            if (num_free_in_chunk == num_objs_per_chunk) {
+                delete curr_chunk;
+                // lean_report_memory_deallocated(sizeof(chunk));
+            } else {
+                curr_chunk->m_next = last_chunk;
+                last_chunk = curr_chunk;
+                for (unsigned i = saved_obj_idx; i < obj_idx; i++) {
+                    // relink objects
+                    void * free_obj = free_objs[i];
+                    *(reinterpret_cast<void**>(free_obj)) = last_free_obj;
+                    last_free_obj = free_obj;
+                }
+            }
+            chunk_idx++;
+        }
+        m_chunks[slot_id]    = last_chunk;
+        m_free_list[slot_id] = last_free_obj;
+    }
+}
+
+static small_object_allocator g_allocator;
+
 size_t obj_byte_size(object * o) {
     switch (get_kind(o)) {
     case object_kind::Constructor:     return cnstr_byte_size(o);
@@ -205,13 +432,15 @@ void * alloc_heap_object(size_t sz) {
         del_core(o, g_to_free);
     }
 #endif
-    void * r = malloc(sizeof(rc_type) + sz);
+    void * r = g_allocator.allocate(sizeof(rc_type) + sz);
     if (r == nullptr) throw std::bad_alloc();
     *static_cast<rc_type *>(r) = 1;
     return static_cast<char *>(r) + sizeof(rc_type);
 }
 
 void free_heap_obj(object * o) {
+    g_allocator.deallocate(obj_byte_size(o) + sizeof(rc_type), reinterpret_cast<char *>(o) - sizeof(rc_type));
+    return;
 #ifdef LEAN_FAKE_FREE
     // Set kinds to invalid values, which should trap any further accesses in debug mode.
     // Make sure object kind is recoverable for printing deleted objects

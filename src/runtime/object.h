@@ -254,51 +254,51 @@ inline rc_type & st_rc_ref(object * o) {
 
 inline bool is_mt_heap_obj(object * o) { return o->m_mem_kind == static_cast<unsigned>(object_memory_kind::MTHeap); }
 inline bool is_st_heap_obj(object * o) { return o->m_mem_kind == static_cast<unsigned>(object_memory_kind::STHeap); }
-inline bool is_heap_obj(object * o) { return is_mt_heap_obj(o) || is_st_heap_obj(o); }
+inline bool is_heap_obj(object * o) { return is_st_heap_obj(o); }
 
 inline rc_type get_rc(object * o) {
-    lean_assert(!is_scalar(o));
-    if (is_mt_heap_obj(o)) {
-        return atomic_load_explicit(mt_rc_addr(o), memory_order_acquire);
-    } else {
+//    lean_assert(!is_scalar(o));
+//    if (is_mt_heap_obj(o)) {
+//        return atomic_load_explicit(mt_rc_addr(o), memory_order_acquire);
+//    } else {
         lean_assert(is_st_heap_obj(o));
         return st_rc_ref(o);
-    }
+//    }
 }
 
 inline bool is_shared(object * o) { return get_rc(o) > 1; }
 inline bool is_exclusive(object * o) { return is_heap_obj(o) && !is_shared(o); }
 
 inline void inc_ref(object * o) {
-    if (is_mt_heap_obj(o)) {
-        atomic_fetch_add_explicit(mt_rc_addr(o), static_cast<rc_type>(1), memory_order_relaxed);
-    } else {
+    // if (is_mt_heap_obj(o)) {
+//        atomic_fetch_add_explicit(mt_rc_addr(o), static_cast<rc_type>(1), memory_order_relaxed);
+    //  } else {
         st_rc_ref(o)++;
-    }
+        //}
 }
 
 inline void inc_ref(object * o, rc_type n) {
-    if (is_mt_heap_obj(o)) {
-        atomic_fetch_add_explicit(mt_rc_addr(o), static_cast<rc_type>(n), memory_order_relaxed);
-    } else {
+//    if (is_mt_heap_obj(o)) {
+//        atomic_fetch_add_explicit(mt_rc_addr(o), static_cast<rc_type>(n), memory_order_relaxed);
+        //   } else {
         st_rc_ref(o) += n;
-    }
+        // }
 }
 
 inline void dec_shared_ref(object * o) {
-    lean_assert(is_shared(o));
-    if (is_mt_heap_obj(o)) {
-        atomic_fetch_sub_explicit(mt_rc_addr(o), static_cast<rc_type>(1), memory_order_acq_rel);
-    } else if (is_st_heap_obj(o)) {
+//    lean_assert(is_shared(o));
+//    if (is_mt_heap_obj(o)) {
+//        atomic_fetch_sub_explicit(mt_rc_addr(o), static_cast<rc_type>(1), memory_order_acq_rel);
+    if (is_st_heap_obj(o)) {
         st_rc_ref(o)--;
     }
 }
 
 inline bool dec_ref_core(object * o) {
-    if (is_mt_heap_obj(o)) {
-        lean_assert(get_rc(o) > 0);
-        return atomic_fetch_sub_explicit(mt_rc_addr(o), static_cast<rc_type>(1), memory_order_acq_rel) == 1;
-    } else if (is_st_heap_obj(o)) {
+//    if (is_mt_heap_obj(o)) {
+//        lean_assert(get_rc(o) > 0);
+//        return atomic_fetch_sub_explicit(mt_rc_addr(o), static_cast<rc_type>(1), memory_order_acq_rel) == 1;
+    if (is_st_heap_obj(o)) {
         lean_assert(get_rc(o) > 0);
         st_rc_ref(o)--;
         return st_rc_ref(o) == 0;
