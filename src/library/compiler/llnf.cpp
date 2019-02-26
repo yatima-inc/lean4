@@ -2401,12 +2401,16 @@ pair<environment, comp_decls> to_llnf(environment const & env, comp_decls const 
     for (comp_decl const & d : ds) {
         expr new_v = to_llnf_fn(new_env, unboxed)(d.snd());
         new_v      = push_proj_fn(new_env)(new_v);
+#ifndef LEAN_NO_REUSE
         new_v      = insert_reset_reuse_fn(new_env, unboxed)(new_v);
+#endif
         new_v      = simp_cases(new_env, new_v);
         rs.push_back(comp_decl(d.fst(), new_v));
     }
     if (unboxed) {
+#ifndef LEAN_NO_BORROW_INFER
         new_env = infer_borrowed_annotations(new_env, rs);
+#endif
         for (comp_decl const & r : rs) {
             if (optional<pair<environment, comp_decl>> p = mk_boxed_version(new_env, r.fst(), get_num_nested_lambdas(r.snd()))) {
                 new_env = p->first;
