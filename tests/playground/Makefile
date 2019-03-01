@@ -60,7 +60,7 @@ bench_lean_variants:
 	echo NO_ST_HEAP
 	(cd ../../build/release; cmake -DMULTI_THREAD=ON -DLEAN_EXTRA_CXX_FLAGS="-D LEAN_NO_ST_HEAP" ../../src && ninja) >/dev/null
 	make bench_lean
-	echo NO_MTHEAP
-	(cd ../../build/release; cmake -DMULTI_THREAD=OFF -DLEAN_EXTRA_CXX_FLAGS="" ../../src && ninja) >/dev/null
-	make bench_lean
+	#echo NO_MTHEAP
+	#(cd ../../build/release; cmake -DMULTI_THREAD=OFF -DLEAN_EXTRA_CXX_FLAGS="" ../../src && ninja) >/dev/null
+	#make bench_lean
 	(cd ../../build/release; cmake -DMULTI_THREAD=ON -DLEAN_EXTRA_CXX_FLAGS="" ../../src && ninja) >/dev/null
