@@ -29,7 +29,7 @@ run_binarytrees.lean.out: binarytrees.lean.out
 	time ./binarytrees.lean.out 21
 
 bench_deriv: deriv.lean.out deriv.hs.out deriv.ml.out
-	$(BENCH) ./deriv.lean.out ./deriv.hs.out ./deriv.ml.out
+	ulimit -s unlimited && $(BENCH) ./deriv.lean.out ./deriv.hs.out ./deriv.ml.out
 
 bench_binarytrees: binarytrees.lean.out binarytrees.hs.out binarytrees.ml.out
 	$(BENCH) "make run_binarytrees.lean.out" "make run_binarytrees.hs.out" "make run_binarytrees.ml.out"
@@ -49,18 +49,18 @@ bench_lean: deriv.lean.out expr_const_folding.lean.out rbmap.lean.out binarytree
 	$(BENCH) ./deriv.lean.out ./expr_const_folding.lean.out "./rbmap.lean.out 7000000" "./binarytrees.lean.out 21" "make run_frontend" "./unionfind1.lean.out 3000000" "./unionfind2.lean.out 3000000"
 
 bench_lean_variants:
-	(cd ../../build/release; cmake -DMULTI_THREAD=ON -DLEAN_EXTRA_CXX_FLAGS="" ../../src && ninja) >/dev/null
+	(cd ../../build/release; cmake -DMULTI_THREAD=ON -DLEAN_EXTRA_CXX_FLAGS="" ../../src && make) >/dev/null
 	make bench_lean
 	echo NO_REUSE
-	(cd ../../build/release; cmake -DMULTI_THREAD=ON -DLEAN_EXTRA_CXX_FLAGS="-D LEAN_NO_REUSE" ../../src && ninja) >/dev/null
+	(cd ../../build/release; cmake -DMULTI_THREAD=ON -DLEAN_EXTRA_CXX_FLAGS="-D LEAN_NO_REUSE" ../../src && make) >/dev/null
 	make bench_lean
 	echo NO_BORROW_INFER
-	(cd ../../build/release; cmake -DMULTI_THREAD=ON -DLEAN_EXTRA_CXX_FLAGS="-D LEAN_NO_BORROW_INFER" ../../src && ninja) >/dev/null
+	(cd ../../build/release; cmake -DMULTI_THREAD=ON -DLEAN_EXTRA_CXX_FLAGS="-D LEAN_NO_BORROW_INFER" ../../src && make) >/dev/null
 	make bench_lean
 	echo NO_ST_HEAP
-	(cd ../../build/release; cmake -DMULTI_THREAD=ON -DLEAN_EXTRA_CXX_FLAGS="-D LEAN_NO_ST_HEAP" ../../src && ninja) >/dev/null
+	(cd ../../build/release; cmake -DMULTI_THREAD=ON -DLEAN_EXTRA_CXX_FLAGS="-D LEAN_NO_ST_HEAP" ../../src && make) >/dev/null
 	make bench_lean
 	#echo NO_MTHEAP
-	#(cd ../../build/release; cmake -DMULTI_THREAD=OFF -DLEAN_EXTRA_CXX_FLAGS="" ../../src && ninja) >/dev/null
+	#(cd ../../build/release; cmake -DMULTI_THREAD=OFF -DLEAN_EXTRA_CXX_FLAGS="" ../../src && make) >/dev/null
 	#make bench_lean
-	(cd ../../build/release; cmake -DMULTI_THREAD=ON -DLEAN_EXTRA_CXX_FLAGS="" ../../src && ninja) >/dev/null
+	(cd ../../build/release; cmake -DMULTI_THREAD=ON -DLEAN_EXTRA_CXX_FLAGS="" ../../src && make) >/dev/null
