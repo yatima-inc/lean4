@@ -33,7 +33,9 @@ def run_frontend (filename input : string) (print_msg : message → except_t str
   except_t string io (list module_parser_output) := do
   parser_cfg ← monad_except.lift_except $ mk_config filename input,
   let expander_cfg : expander_config := {filename := filename, input := input, transformers := builtin_transformers},
-  let parser_k := parser.run parser_cfg input (λ st _, module.parser st),
+  (_, msgs) ← pure $ parser.run parser_cfg input module.parser,
+  msgs.to_list.mfor print_msg,
+  pure []/-,
   let elab_k := elaborator.run {filename := filename, input := input, initial_parser_cfg := parser_cfg},
   io.prim.iterate_eio (parser_k, elab_k, parser_cfg, expander_cfg, ([] : list module_parser_output)) $ λ ⟨parser_k, elab_k, parser_cfg, expander_cfg, outs⟩, match run_parser parser_k.resume parser_cfg with
     | coroutine_result_core.done p := do {
@@ -71,7 +73,7 @@ def run_frontend (filename input : string) (print_msg : message → except_t str
         }
       }
       | except.error e := print_msg e *> pure (sum.inl (parser_k, elab_k, parser_cfg, expander_cfg, out :: outs))
-    }
+    }-/
 
 @[export lean_process_file]
 def process_file (f s : string) (json : bool) : io bool := do
