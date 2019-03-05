@@ -1272,6 +1272,30 @@ class csimp_fn {
         return !arity_was_reduced(comp_decl(n, info->get_value()));
     }
 
+    bool is_coroutine_bind_target(expr const & e) {
+        buffer<expr> args;
+        expr fn = get_app_args(e, args);
+        if (is_constant(fn, name{"coroutine", "bind", "_main"}) && args.size() >= 6) {
+            expr x = find(args[4]);
+            args.clear();
+            fn = get_app_args(x, args);
+            if (is_constant(fn, name{"coroutine", "mk"}) && args.size() == 4) {
+                expr f = find(args[3]);
+                if (is_lambda(f)) {
+                    while (true) {
+                        if (is_lambda(f)) f = binding_body(f);
+                        else if (is_let(f)) f = let_body(f);
+                        else break;
+                    }
+                    if (is_app_of(f, name{"coroutine_result_core", "done"})) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     optional<expr> try_inline(expr const & fn, expr const & e, bool is_let_val) {
         lean_assert(is_constant(fn));
         lean_assert(is_constant(e) || is_eqp(find(get_app_fn(e)), fn));
@@ -1283,19 +1307,21 @@ class csimp_fn {
             optional<constant_info> info = env().find(c);
             if (!info || !info->is_definition()) return none_expr();
             if (get_app_num_args(e) < get_num_nested_lambdas(info->get_value())) return none_expr();
+            bool is_user_target        = is_coroutine_bind_target(e);
             bool inline_attr           = has_inline_attribute(env(), const_name(fn));
             bool inline_if_reduce_attr = has_inline_if_reduce_attribute(env(), const_name(fn));
-            if (!inline_attr && !inline_if_reduce_attr &&
+            if (!inline_attr && !inline_if_reduce_attr && !is_user_target &&
                 (get_lcnf_size(env(), info->get_value()) > m_cfg.m_inline_threshold ||
                  is_constant(e))) { /* We only inline constants if they are marked with the `[inline]` or `[inline_if_reduce]` attrs */
                 return none_expr();
             }
-            if (!inline_if_reduce_attr && is_recursive(c)) return none_expr();
+            if (!inline_if_reduce_attr && !is_user_target && is_recursive(c)) return none_expr();
             expr new_fn = instantiate_value_lparams(*info, const_levels(fn));
             if (inline_if_reduce_attr && !inline_attr) {
                 return beta_reduce_if_not_cases(new_fn, e, is_let_val);
             } else {
-                return some_expr(beta_reduce(new_fn, e, is_let_val));
+                expr r = beta_reduce(new_fn, e, is_let_val);
+                return some_expr(r);
             }
         } else {
             if (is_constant(e)) return none_expr(); /* We don't inline constants after erasure */
