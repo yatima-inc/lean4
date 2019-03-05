@@ -32,33 +32,25 @@ structure module_parser_output :=
 (cache : parser_cache)
 
 section
-local attribute [reducible] parser_core_t
-/- NOTE: missing the `reader_t` from `parser_t` because the `coroutine` already provides
-   `monad_reader module_parser_config`. -/
-@[derive monad alternative monad_reader monad_state monad_parsec monad_except monad_coroutine]
-def module_parser_m := state_t parser_state $ parser_core_t $ coroutine module_parser_config module_parser_output
+abbreviation module_parser_m := state_t parser_state $ parser_t module_parser_config id
 abbreviation module_parser := module_parser_m syntax
 end
 
-instance module_parser_m.lift_parser_t (ρ : Type) [has_lift_t module_parser_config ρ] :
+@[priority 0] instance module_parser_m.lift_parser_t (ρ : Type) [has_lift_t module_parser_config ρ] :
   has_monad_lift (parser_t ρ id) module_parser_m :=
-{ monad_lift := λ α x st it nb_st, do
-    cfg ← read,
-    pure (((((λ a, (a, st)) <$> x).run ↑cfg) it).run nb_st) }
+{ monad_lift := λ α x st cfg, do
+    ((λ a, (a, st)) <$> x).run ↑cfg }
 
 section
 local attribute [reducible] basic_parser_m
-instance module_parser_m.basic_parser_m (ρ : Type) [has_lift_t module_parser_config ρ] :
+@[priority 0] instance module_parser_m.basic_parser_m :
   has_monad_lift basic_parser_m module_parser_m :=
   infer_instance
 end
 
 namespace module
 def yield_command (cmd : syntax) : module_parser_m unit :=
-do st ← get,
-   cache ← monad_lift get_cache,
-   yield {cmd := cmd, messages := st.messages, cache := cache},
-   put {st with messages := message_log.empty}
+pure ()
 
 @[derive parser.has_view parser.has_tokens]
 def prelude.parser : basic_parser :=
