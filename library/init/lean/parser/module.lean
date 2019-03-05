@@ -93,7 +93,7 @@ private def commands_aux : bool → nat → module_parser_m unit
       -- unknown command: try to skip token, or else single character
       when (¬ recovering) $ do {
         it ← left_over,
-        log_message {expected := dlist.singleton "command", it := it, custom := some ()}
+        log_message {expected := (), it := it, custom := some ()}
       },
       try (monad_lift token *> pure ()) <|> (any *> pure ()),
       pure (tt, none)
