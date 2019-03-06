@@ -185,7 +185,7 @@ node! string_lit [val: raw parse_string_literal]
 
 private def mk_consume_token (tk : token_config) (it : string.iterator) : basic_parser :=
 let it' := it.nextn tk.prefix.length in
-monad_parsec.lift $ λ _, parsec.result.ok (mk_raw_res it it') it' none
+monad_parsec.lift $ λ _, parsec.result.ok (mk_raw_res it it') it' ff
 
 def number_or_string_lit : basic_parser :=
 number' <|> string_lit'
@@ -208,7 +208,7 @@ do it ← left_over,
      some tkc ← pure cache.token_cache | failure,
      guard (it.offset = tkc.start_it.offset),
      -- hackishly update parsec position
-     monad_parsec.lift (λ it, parsec.result.ok () tkc.stop_it none),
+     monad_parsec.lift (λ it, parsec.result.ok () tkc.stop_it ff),
      put_cache {cache with hit := cache.hit + 1},
      pure tkc.tk
    ) (λ _, do
@@ -234,7 +234,7 @@ observing (try (lookahead token))
 
 variable [monad_basic_parser m]
 
-def symbol_core (sym : string) (lbp : nat) (ex : dlist string) : parser :=
+def symbol_core (sym : string) (lbp : nat) (ex : unit) : parser :=
 lift $ try $ do {
   it ← left_over,
   stx@(syntax.atom ⟨_, sym'⟩) ← token | error "" ex it,
@@ -245,7 +245,7 @@ lift $ try $ do {
 
 @[inline] def symbol (sym : string) (lbp := 0) : parser :=
 let sym := sym.trim in
-symbol_core sym lbp (dlist.singleton sym)
+symbol_core sym lbp ()
 
 instance symbol.tokens (sym lbp) : parser.has_tokens (symbol sym lbp : parser) :=
 ⟨[⟨sym.trim, lbp, none⟩]⟩
@@ -261,7 +261,7 @@ def number.parser : parser :=
 lift $ try $ do {
   it ← left_over,
   stx ← token,
-  some _ ← pure $ try_view number stx | error "" (dlist.singleton "number") it,
+  some _ ← pure $ try_view number stx | error "" () it,
   pure stx
 } <?> "number"
 
@@ -299,7 +299,7 @@ def string_lit.parser : parser :=
 lift $ try $ do {
   it ← left_over,
   stx ← token,
-  some _ ← pure $ try_view string_lit stx | error "" (dlist.singleton "string") it,
+  some _ ← pure $ try_view string_lit stx | error "" () it,
   pure stx
 } <?> "string"
 
@@ -316,7 +316,7 @@ def string_lit.view.value (lit : string_lit.view) : option string := do
 def ident.parser : parser :=
 lift $ try $ do {
   it ← left_over,
-  stx@(syntax.ident _) ← token | error "" (dlist.singleton "identifier") it,
+  stx@(syntax.ident _) ← token | error "" () it,
   pure stx
 } <?> "identifier"
 
@@ -351,7 +351,7 @@ lift $ try $ do
   | syntax.ident id := some id.raw_val.to_string
   | _ := none,
   when (sym' ≠ some sym) $
-    error "" (dlist.singleton (repr sym)) it,
+    error "" () it,
   pure stx
 
 instance symbol_or_ident.tokens (sym) : parser.has_tokens (symbol_or_ident sym : parser) :=

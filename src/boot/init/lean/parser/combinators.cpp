@@ -811,7 +811,7 @@ lean::dec(x_3);
 lean::dec(x_0);
 x_27 = lean::box(0);
 x_28 = l___private_init_lean_parser_combinators_1__many1__aux___main___rarg___closed__1;
-x_29 = l_mjoin___rarg___closed__1;
+x_29 = lean::box(0);
 x_30 = l_lean_parser_monad__parsec_error___at___private_init_lean_parser_combinators_1__many1__aux___main___spec__1___rarg(x_2, lean::box(0), x_28, x_29, x_27, x_27);
 return x_30;
 }
@@ -1464,7 +1464,7 @@ lean::dec(x_3);
 lean::dec(x_0);
 x_65 = lean::box(0);
 x_66 = l___private_init_lean_parser_combinators_1__many1__aux___main___rarg___closed__1;
-x_67 = l_mjoin___rarg___closed__1;
+x_67 = lean::box(0);
 x_68 = l_lean_parser_monad__parsec_error___at___private_init_lean_parser_combinators_2__sep__by__aux___main___spec__1___rarg(x_2, lean::box(0), x_66, x_67, x_65, x_65);
 return x_68;
 }
@@ -1797,7 +1797,7 @@ lean::dec(x_3);
 lean::dec(x_0);
 x_65 = lean::box(0);
 x_66 = l___private_init_lean_parser_combinators_1__many1__aux___main___rarg___closed__1;
-x_67 = l_mjoin___rarg___closed__1;
+x_67 = lean::box(0);
 x_68 = l_lean_parser_monad__parsec_error___at_lean_parser_combinators_sep__by___spec__2___rarg(x_2, lean::box(0), x_66, x_67, x_65, x_65);
 return x_68;
 }
@@ -2176,7 +2176,7 @@ lean::dec(x_3);
 lean::dec(x_0);
 x_65 = lean::box(0);
 x_66 = l___private_init_lean_parser_combinators_1__many1__aux___main___rarg___closed__1;
-x_67 = l_mjoin___rarg___closed__1;
+x_67 = lean::box(0);
 x_68 = l_lean_parser_monad__parsec_error___at_lean_parser_combinators_sep__by1___spec__2___rarg(x_2, lean::box(0), x_66, x_67, x_65, x_65);
 return x_68;
 }
@@ -3446,7 +3446,7 @@ obj* x_6; obj* x_7; obj* x_8; obj* x_9;
 lean::dec(x_3);
 x_6 = lean::box(0);
 x_7 = l_lean_parser_combinators_any__of___rarg___closed__1;
-x_8 = l_mjoin___rarg___closed__1;
+x_8 = lean::box(0);
 x_9 = l_lean_parser_monad__parsec_error___at_lean_parser_combinators_any__of___spec__1___rarg(x_2, lean::box(0), x_7, x_8, x_6, x_6);
 return x_9;
 }
@@ -3825,7 +3825,7 @@ lean::dec(x_0);
 lean::dec(x_2);
 x_8 = lean::box(0);
 x_9 = l_lean_parser_combinators_choice__aux___main___rarg___closed__1;
-x_10 = l_mjoin___rarg___closed__1;
+x_10 = lean::box(0);
 x_11 = l_lean_parser_monad__parsec_error___at_lean_parser_combinators_choice__aux___main___spec__1___rarg(x_1, lean::box(0), x_9, x_10, x_8, x_8);
 return x_11;
 }
@@ -4089,7 +4089,7 @@ obj* x_5; obj* x_6; obj* x_7; obj* x_8;
 lean::dec(x_2);
 x_5 = lean::box(0);
 x_6 = l___private_init_lean_parser_combinators_1__many1__aux___main___rarg___closed__1;
-x_7 = l_mjoin___rarg___closed__1;
+x_7 = lean::box(0);
 x_8 = l_lean_parser_monad__parsec_error___at_lean_parser_combinators_longest__choice___spec__2___rarg(x_1, lean::box(0), x_6, x_7, x_5, x_5);
 return x_8;
 }
