@@ -103,7 +103,7 @@ size_t obj_header_size(object * o) {
 static_assert(sizeof(atomic<rc_type>) == sizeof(object*),  "unexpected atomic<rc_type> size, the object GC assumes these two types have the same size"); // NOLINT
 
 #ifdef LEAN_LAZY_RC
-LEAN_THREAD_PTR(object, g_to_free);
+LEAN_THREAD_GLOBAL_PTR(object, g_to_free);
 #endif
 
 inline object * get_next(object * o) {
@@ -316,22 +316,12 @@ void del(object * o) {
 #endif
 }
 
-void * alloc_heap_object(size_t sz) {
 #ifdef LEAN_LAZY_RC
-    if (g_to_free) {
-        object * o = pop_back(g_to_free);
-        del_core(o, g_to_free);
-    }
-#endif
-#ifdef LEAN_SMALL_ALLOCATOR
-    void * r = alloc(sizeof(rc_type) + sz);
-#else
-    void * r = malloc(sizeof(rc_type) + sz);
-    if (r == nullptr) throw std::bad_alloc();
-#endif
-    *static_cast<rc_type *>(r) = 1;
-    return static_cast<char *>(r) + sizeof(rc_type);
+void lazy_rc_step() {
+    object * o = pop_back(g_to_free);
+    del_core(o, g_to_free);
 }
+#endif
 
 // =======================================
 // Scalar arrays

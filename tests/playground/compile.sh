@@ -21,7 +21,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-$BIN_DIR/leanc -O3 -o "$ff.out" $ff.cpp
+$BIN_DIR/leanc -O3 -D LEAN_SMALL_ALLOCATOR -o "$ff.out" $ff.cpp
 if [ $? -ne 0 ]; then
     echo "Failed to compile C++ file $ff.cpp"
     exit 1

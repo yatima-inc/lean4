@@ -18,6 +18,14 @@ else()
   set(LEANC_OPTS "-g")
 endif()
 
+if ("${LAZY_RC}" MATCHES "ON")
+  set(LEANC_OPTS "${LEANC_OPTS} -D LEAN_LAZY_RC")
+endif()
+
+if ("${SMALL_ALLOCATOR}" MATCHES "ON")
+  set(LEANC_OPTS "${LEANC_OPTS} -D LEAN_SMALL_ALLOCATOR")
+endif()
+
 add_custom_target(stdlib
   # '-G Ninja' complains otherwise
   BYPRODUCTS "${CMAKE_BINARY_DIR}/stage1/libleanstdlib.a"

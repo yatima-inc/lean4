@@ -16,6 +16,7 @@ Author: Leonardo de Moura
 #include "runtime/mpz.h"
 #include "runtime/int64.h"
 #include "runtime/thread.h"
+#include "runtime/alloc.h"
 
 #ifdef _MSC_VER
 #define LEAN_ALLOCA(s) ::_alloca(s)
@@ -81,6 +82,10 @@ struct object {
     object(object_kind k, object_memory_kind m = c_init_mem_kind):
         m_kind(static_cast<unsigned>(k)), m_mem_kind(static_cast<unsigned>(m)) {}
 };
+
+#ifdef LEAN_LAZY_RC
+LEAN_THREAD_EXTERN_PTR(object, g_to_free);
+#endif
 
 /* We can represent inductive datatypes that have:
    1) At most 2^16 constructors
@@ -270,7 +275,38 @@ void del(object * o);
 
 static_assert(sizeof(atomic<rc_type>) == sizeof(rc_type),  "atomic<rc_type> and rc_type must have the same size"); // NOLINT
 
-void * alloc_heap_object(size_t sz);
+#ifdef LEAN_LAZY_RC
+void lazy_rc_step();
+#endif
+
+inline void * alloc_heap_object(size_t sz) {
+#ifdef LEAN_LAZY_RC
+    if (g_to_free) lazy_rc_step();
+#endif
+#ifdef LEAN_SMALL_ALLOCATOR
+    void * r = alloc(sizeof(rc_type) + sz);
+#else
+    void * r = malloc(sizeof(rc_type) + sz);
+    if (r == nullptr) throw std::bad_alloc();
+#endif
+    *static_cast<rc_type *>(r) = 1;
+    return static_cast<char *>(r) + sizeof(rc_type);
+}
+
+inline void * alloc_small_heap_object(size_t sz) {
+#ifdef LEAN_LAZY_RC
+    if (g_to_free) lazy_rc_step();
+#endif
+#ifdef LEAN_SMALL_ALLOCATOR
+    void * r = small_alloc(sizeof(rc_type) + sz);
+#else
+    void * r = malloc(sizeof(rc_type) + sz);
+    if (r == nullptr) throw std::bad_alloc();
+#endif
+    *static_cast<rc_type *>(r) = 1;
+    return static_cast<char *>(r) + sizeof(rc_type);
+}
+
 void free_heap_obj(object * o);
 void free_mpz_obj(object * o);
 void free_closure_obj(object * o);
@@ -577,7 +613,7 @@ bool int_big_lt(object * a1, object * a2);
 inline obj_res alloc_cnstr(unsigned tag, unsigned num_objs, unsigned scalar_sz) {
     LEAN_RUNTIME_STAT_CODE(g_num_ctor++);
     lean_assert(tag < 65536 && num_objs < 65536 && scalar_sz < 65536);
-    return new (alloc_heap_object(cnstr_byte_size(num_objs, scalar_sz))) constructor_object(tag, num_objs, scalar_sz); // NOLINT
+    return new (alloc_small_heap_object(cnstr_byte_size(num_objs, scalar_sz))) constructor_object(tag, num_objs, scalar_sz); // NOLINT
 }
 inline unsigned cnstr_tag(b_obj_arg o) { return to_cnstr(o)->m_tag; }
 inline void cnstr_set_tag(b_obj_arg o, unsigned tag) { to_cnstr(o)->m_tag = tag; }
