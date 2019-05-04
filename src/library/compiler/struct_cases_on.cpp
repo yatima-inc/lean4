@@ -154,7 +154,7 @@ class struct_cases_on_fn {
         while (is_let(e)) {
             lean_assert(!has_loose_bvars(let_type(e)));
             expr type     = let_type(e);
-            expr val      = instantiate_rev(let_value(e), fvars.size(), fvars.data());
+            expr val      = visit(instantiate_rev(let_value(e), fvars.size(), fvars.data()));
             name n        = let_name(e);
             e             = let_body(e);
             expr new_fvar = m_lctx.mk_local_decl(ngen(), n, type, val);

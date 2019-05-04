@@ -63,12 +63,18 @@ node! «header» [«prelude»: prelude.Parser?, imports: import.Parser*]
 
 @[pattern] def eoi : SyntaxNodeKind := ⟨`Lean.Parser.Module.eoi⟩
 
+set_option pp.implicit true
+set_option trace.compiler.struct_cases_on true
+set_option trace.compiler.erase_irrelevant true
+
 def eoi.Parser : moduleParser := do
   MonadParsec.eoi,
   it ← leftOver,
   -- add `eoi` Node for left-over input
   let stop := it.toEnd,
   pure $ Syntax.mkNode eoi [Syntax.atom ⟨some ⟨⟨stop, stop⟩, stop.offset, ⟨stop, stop⟩⟩, ""⟩]
+
+#exit
 
 /-- Read command, recovering from errors inside commands (attach partial Syntax tree)
     as well as unknown commands (skip input). -/
