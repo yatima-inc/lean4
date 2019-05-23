@@ -353,10 +353,10 @@ int main(int argc, char ** argv) {
             case 'h':
                 display_help(std::cout);
                 return 0;
-            case 'c':
+            case 'C':
                 cpp_output = optarg;
                 break;
-            case 'C':
+            case 'c':
                 new_cpp_output = optarg;
                 break;
             case 's':
@@ -575,7 +575,8 @@ int main(int argc, char ** argv) {
                 std::cerr << "failed to create '" << *cpp_output << "'\n";
                 return 1;
             }
-            emit_cpp(out, env, main_module_name, to_list(imports.begin(), imports.end()));
+            auto mod = module_name_of_file(path.get_path(), mod_fn);
+            emit_cpp(out, env, mod, to_list(imports.begin(), imports.end()));
         }
 
         if (new_cpp_output && ok) {
