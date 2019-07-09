@@ -19,6 +19,8 @@ Author: Leonardo de Moura
 #include "runtime/thread.h"
 #include "runtime/alloc.h"
 
+#undef LEAN_SMALL_ALLOCATOR
+
 #ifdef _MSC_VER
 #define LEAN_ALLOCA(s) ::_alloca(s)
 #else

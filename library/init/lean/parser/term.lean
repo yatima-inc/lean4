@@ -39,8 +39,9 @@ pushLeading >> symbol sym lbp >> termParser lbp
 
 /- Builting parsers -/
 
-@[builtinTermParser] def id := parser! ident >> optional (".{" >> sepBy1 levelParser ", " >> "}")
-@[builtinTermParser] def num : Parser := numLit
+@[builtinTermParser] def id := parser! ident -- >> optional (".{" >> sepBy1 levelParser ", " >> "}")
+-- @[builtinTermParser] def num : Parser := numLit
+/-
 @[builtinTermParser] def str : Parser := strLit
 @[builtinTermParser] def type := parser! symbol "Type" appPrec
 @[builtinTermParser] def sort := parser! symbol "Sort" appPrec
@@ -83,8 +84,12 @@ def equation := parser! " | " >> sepBy1 termParser ", " >> " => " >> termParser
 @[builtinTermParser] def «match» := parser! "match " >> sepBy1 termParser ", " >> optType >> " with " >> many1 equation
 @[builtinTermParser] def «nomatch» := parser! "nomatch " >> termParser
 
+-/
+-- set_option trace.compiler.ir.push_proj true
+-- set_option trace.compiler.ir.reset_reuse true
 def namedArgument  := tparser! try ("(" >> ident >> " := ") >> termParser >> ")"
 @[builtinTermParser] def app   := tparser! pushLeading >> (namedArgument <|> termParser appPrec)
+/-
 @[builtinTermParser] def proj  := tparser! pushLeading >> symbolNoWs "." (appPrec+1) >> (fieldIdx <|> ident)
 @[builtinTermParser] def arrow := tparser! unicodeInfixR " → " " -> " 25
 @[builtinTermParser] def array := tparser! pushLeading >> symbolNoWs "[" (appPrec+1) >> termParser >>"]"
@@ -108,7 +113,7 @@ def namedArgument  := tparser! try ("(" >> ident >> " := ") >> termParser >> ")"
 @[builtinTermParser] def and   := tparser! unicodeInfixR " ∧ " " /\\ " 35
 @[builtinTermParser] def or    := tparser! unicodeInfixR " ∨ " " \\/ " 30
 @[builtinTermParser] def iff   := tparser! unicodeInfixL " ↔ " " <-> " 20
-
+-/
 end Term
 
 end Parser
