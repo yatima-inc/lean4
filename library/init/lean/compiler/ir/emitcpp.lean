@@ -130,7 +130,7 @@ do
 let ps := decl.params;
 when (ps.isEmpty && addExternForConsts) (emit "extern ");
 emit (toCppType decl.resultType ++ " " ++ cppBaseName);
-unless (ps.isEmpty) $ do {
+if !ps.isEmpty then do {
   emit "(";
   if ps.size > closureMaxArgs && isBoxedName decl.name then
     emit "obj**"
@@ -140,6 +140,8 @@ unless (ps.isEmpty) $ do {
       emit (toCppType (ps.get i).ty)
     };
   emit ")"
+} else when (decl.resultType.isObj && !addExternForConsts) $ do {
+  emit "= nullptr"
 };
 emitLn ";"
 
@@ -431,14 +433,26 @@ ys.toList.map argToCppString
 
 def emitFullApp (z : VarId) (f : FunId) (ys : Array Arg) : M Unit :=
 do
-emitLhs z;
 decl ← getDecl f;
 match decl with
-| Decl.extern _ _ _ extData =>
+| Decl.extern _ _ _ extData => do
+  emitLhs z;
   match mkExternCall extData `cpp (toStringArgs ys) with
   | some c => emit c *> emitLn ";"
   | none   => throw "failed to emit extern application"
-| _ => do emitCppName f; when (ys.size > 0) (do emit "("; emitArgs ys; emit ")"); emitLn ";"
+| _ => do
+  if ys.size > 0 then do {
+    emitLhs z;
+    emitCppName f;
+    emit "("; emitArgs ys; emit ")"
+  } else do {
+    when decl.resultType.isObj $ do {
+      emit "if ("; emitCppName f; emit " == nullptr) { std::cout << \"ERROR\"; lean_unreachable(); }\n"
+    };
+    emitLhs z;
+    emitCppName f
+  };
+  emitLn ";"
 
 def emitPartialApp (z : VarId) (f : FunId) (ys : Array Arg) : M Unit :=
 do
