@@ -1544,9 +1544,12 @@ end Parser
 
 namespace Syntax
 
+def isNone {α} (stx : Syntax α) : Bool :=
+stx.ifNode (fun n => n.getKind == nullKind && n.getNumArgs == 0) (fun n => false)
+
 def getOptional {α} (s : Syntax α) : Option (Syntax α) :=
 s.ifNode
-  (fun n => if n.getNumArgs == 1 then some (n.getArg 0) else none)
+  (fun n => if n.getKind == nullKind && n.getNumArgs == 1 then some (n.getArg 0) else none)
   (fun _ => none)
 
 def getOptionalIdent {α ε m} [MonadExcept ε m] [HasLiftT String ε] [Monad m] (stx : Syntax α) : m (Option Name) :=

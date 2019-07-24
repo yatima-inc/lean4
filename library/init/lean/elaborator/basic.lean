@@ -306,8 +306,29 @@ partial def processCommandsAux : Unit → Frontend Unit
 def processCommands : Frontend Unit :=
 processCommandsAux ()
 
+def absolutizeModuleName (m : Name) (k : Option Nat) : IO Name :=
+do unless (k == none) $ throw ("relative imports are not supported yet"); -- TODO
+   -- TODO: check whether the .olean file exists and use `m.default` when it doesn't.
+   pure m
+
 def processHeader (header : Syntax) (messages : MessageLog) : IO (Environment × MessageLog) :=
 do IO.println header;
+   let header     := header.asNode;
+   let imports    := if (header.getArg 0).isNone then [`init.default] else [];
+   let modImports := (header.getArg 1).getArgs;
+   imports ← modImports.mfoldl (fun imports stx =>
+     -- `stx` is of the form `(Module.import "import" (null ...))
+     let importPaths := (stx.getArg 1).getArgs; -- .asNode.getArgs;
+     importPaths.mfoldl (fun imports stx =>
+       -- `stx` is of the form `(Module.importPath (null "*"*) <id>)
+       let rel := stx.getArg 0;
+       let k   := if rel.isNone then none else some (rel.getNumArgs);
+       let id  := stx.getArg 1;
+       -- STOPPED HERE
+       pure imports)
+       imports)
+     imports;
+   --  header.ifNode (fun header => _) (fun _ => throw (IO.userError "ill-form
    -- TODO
    env ← mkEmptyEnvironment;
    pure (env, messages)
@@ -322,7 +343,6 @@ do env ← mkEmptyEnvironment;
      match (processCommands ctx).run { elabState := elabState, parserState := parserState } with
        | EState.Result.ok _ s    => pure (s.elabState.env, s.elabState.messages)
        | EState.Result.error _ s => pure (s.elabState.env, s.elabState.messages)
-
 
 namespace Elab
 
