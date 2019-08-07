@@ -47,16 +47,17 @@ public:
 };
 
 /* Plain local context object used by the kernel type checker. */
-class local_ctx {
+class local_ctx : pulic object_ref {
 protected:
-    unsigned                  m_next_idx;
-    name_map<local_decl>      m_name2local_decl; // mapping from unique identifier to local_decl
-
     template<bool is_lambda> expr mk_binding(unsigned num, expr const * fvars, expr const & b) const;
 public:
-    local_ctx():m_next_idx(0) {}
+    local_ctx();
+    local_ctx(local_ctx const & other):object_ref(other) {}
+    local_ctx(local_ctx && other):object_ref(other) {}
+    local_ctx & operator=(local_ctx const & other) { object_ref::operator=(other); return *this; }
+    local_ctx & operator=(local_ctx && other) { object_ref::operator=(other); return *this; }
 
-    bool empty() const { return m_name2local_decl.empty(); }
+    bool empty() const;
 
     /* Low level `mk_local_decl` */
     local_decl mk_local_decl(name const & n, name const & un, expr const & type, binder_info bi);
@@ -71,11 +72,9 @@ public:
         return mk_local_decl(g.next(), un, type, value).mk_ref();
     }
 
-    /** \brief Return the local declarations for the given reference.
-
-        \pre is_fvar(e) */
-    optional<local_decl> find_local_decl(expr const & e) const;
+    /** \brief Return the local declarations for the given reference. */
     optional<local_decl> find_local_decl(name const & n) const;
+    optional<local_decl> find_local_decl(expr const & e) const { return find_local_decl(fvar_name(e)); }
 
     local_decl const & get_local_decl(name const & n) const;
     local_decl const & get_local_decl(expr const & e) const { return get_local_decl(fvar_name(e)); }
