@@ -63,7 +63,7 @@ public:
 
     optional<metavar_decl> find_metavar_decl(expr const & mvar) const;
 
-    metavar_decl const & get_metavar_decl(expr const & mvar) const;
+    metavar_decl get_metavar_decl(expr const & mvar) const;
 
     /** \brief Return the local_decl for `n` in the local context for the metavariable `mvar`
         \pre is_metavar(mvar) */

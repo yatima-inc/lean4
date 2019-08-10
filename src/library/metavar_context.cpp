@@ -98,6 +98,7 @@ expr metavar_context::mk_metavar_decl(name const & user_name, local_context cons
     // TODO(Leo): should use name_generator
     name n = mk_meta_decl_name();
     m_obj = metavar_ctx_mk_decl_core(m_obj, n.to_obj_arg(), user_name.to_obj_arg(), lctx.to_obj_arg(), type.to_obj_arg());
+    lean_assert(find_metavar_decl(mk_meta_ref(n)));
     return mk_meta_ref(n);
 }
 
@@ -106,7 +107,7 @@ optional<metavar_decl> metavar_context::find_metavar_decl(expr const & e) const 
     return to_optional<metavar_decl>(metavar_ctx_find_decl_core(to_obj_arg(), mvar_name(e).to_obj_arg()));
 }
 
-metavar_decl const & metavar_context::get_metavar_decl(expr const & e) const {
+metavar_decl metavar_context::get_metavar_decl(expr const & e) const {
     if (auto r = find_metavar_decl(e))
         return *r;
     else
@@ -129,15 +130,18 @@ expr metavar_context::get_local(expr const & mvar, name const & n) const {
 
 void metavar_context::assign(level const & u, level const & l) {
     m_obj = metavar_ctx_assign_level_core(m_obj, mvar_id(u).to_obj_arg(), l.to_obj_arg());
+    lean_assert(is_assigned(u));
 }
 
 void metavar_context::assign(expr const & e, expr const & v) {
     lean_assert(!is_delayed_assigned(e));
     m_obj = metavar_ctx_assign_expr_core(m_obj, mvar_name(e).to_obj_arg(), v.to_obj_arg());
+    lean_assert(is_assigned(e));
 }
 
 void metavar_context::assign(expr const & e, local_context const & lctx, exprs const & locals, expr const & v) {
     m_obj = metavar_ctx_assign_delayed_core(m_obj, mvar_name(e).to_obj_arg(), lctx.to_obj_arg(), locals.to_obj_arg(), v.to_obj_arg());
+    lean_assert(is_delayed_assigned(e));
 }
 
 optional<level> metavar_context::get_assignment(level const & l) const {
@@ -187,6 +191,7 @@ struct metavar_context::interface_impl {
             return none_expr();
         } else {
             m_ctx.m_obj = metavar_ctx_erase_delayed_core(m_ctx.m_obj, mvar_name(e).to_obj_arg());
+            lean_assert(!m_ctx.is_delayed_assigned(e));
             buffer<expr> locals;
             to_buffer(d->get_locals(), locals);
             new_v = abstract(new_v, locals.size(), locals.data());
