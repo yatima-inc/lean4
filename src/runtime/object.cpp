@@ -28,15 +28,10 @@ namespace lean {
 // =======================================
 // External objects
 
-struct external_object_class {
-    external_object_finalize_proc m_finalize;
-    external_object_foreach_proc  m_foreach;
-};
-
 static std::vector<external_object_class*> * g_ext_classes;
 static mutex                               * g_ext_classes_mutex;
 
-external_object_class * register_external_object_class(external_object_finalize_proc p1, external_object_foreach_proc p2) {
+extern "C" external_object_class * lean_register_external_class(external_object_finalize_proc p1, external_object_foreach_proc p2) {
     unique_lock<mutex> lock(*g_ext_classes_mutex);
     external_object_class * cls = new external_object_class{p1, p2};
     g_ext_classes->push_back(cls);
