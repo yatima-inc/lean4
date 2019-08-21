@@ -128,7 +128,7 @@ inline object_ref mk_cnstr(unsigned tag, object_ref const & o1, object_ref const
 inline object_ref const & cnstr_get_ref(object * o, unsigned i) {
     static_assert(sizeof(object_ref) == sizeof(object *), "unexpected object_ref size"); // NOLINT
     lean_assert(is_cnstr(o));
-    return reinterpret_cast<object_ref const *>(reinterpret_cast<char*>(o) + sizeof(constructor_object))[i];
+    return reinterpret_cast<object_ref const *>(lean_to_ctor(o)->m_objs)[i];
 }
 
 inline object_ref const & cnstr_get_ref(object_ref const & ref, unsigned i) {
