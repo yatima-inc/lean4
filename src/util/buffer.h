@@ -23,11 +23,9 @@ protected:
     T *      m_buffer;
     unsigned m_pos;
     unsigned m_capacity;
-    char     m_initial_buffer[INITIAL_SIZE * sizeof(T)];
 
     void free_memory() {
-        if (m_buffer != reinterpret_cast<T*>(m_initial_buffer))
-            delete[] reinterpret_cast<char*>(m_buffer);
+        delete[] reinterpret_cast<char*>(m_buffer);
     }
 
     void expand() {
@@ -55,13 +53,13 @@ public:
     typedef T const * const_iterator;
 
     buffer():
-        m_buffer(reinterpret_cast<T *>(m_initial_buffer)),
+        m_buffer(reinterpret_cast<T*>(new char[sizeof(T) * INITIAL_SIZE])),
         m_pos(0),
         m_capacity(INITIAL_SIZE) {
     }
 
     buffer(buffer const & source):
-        m_buffer(reinterpret_cast<T *>(m_initial_buffer)),
+        m_buffer(reinterpret_cast<T*>(new char[sizeof(T) * INITIAL_SIZE])),
         m_pos(0),
         m_capacity(INITIAL_SIZE) {
         std::for_each(source.begin(), source.end(), [=](T const & e) { push_back(e); });
