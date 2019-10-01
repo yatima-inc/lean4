@@ -10,6 +10,7 @@ Author: Leonardo de Moura
 #include "runtime/debug.h"
 #include "runtime/optional.h"
 #include "runtime/alloc.h"
+#include "runtime/lean.h"
 
 namespace lean {
 /**
@@ -49,20 +50,30 @@ protected:
     }
 
 public:
+#define ALLOC_INIT_BUFFER() {                                           \
+    size_t sz = lean_align(sizeof(T) * INITIAL_SIZE, LEAN_OBJECT_SIZE_DELTA); \
+    if (sz > LEAN_MAX_SMALL_OBJECT_SIZE) {                              \
+        m_buffer = static_cast<T*>(malloc(sz));                         \
+    } else {                                                            \
+        unsigned slot_idx = lean_get_slot_idx(sz);                      \
+        m_buffer = static_cast<T*>(lean_alloc_small(sz, slot_idx));     \
+    }                                                                   \
+}
+
     typedef T value_type;
     typedef T * iterator;
     typedef T const * const_iterator;
 
     buffer():
-        m_buffer(static_cast<T*>(alloc(sizeof(T) * INITIAL_SIZE))),
         m_pos(0),
         m_capacity(INITIAL_SIZE) {
+        ALLOC_INIT_BUFFER();
     }
 
     buffer(buffer const & source):
-        m_buffer(static_cast<T*>(alloc(sizeof(T) * INITIAL_SIZE))),
         m_pos(0),
         m_capacity(INITIAL_SIZE) {
+        ALLOC_INIT_BUFFER();
         std::for_each(source.begin(), source.end(), [=](T const & e) { push_back(e); });
     }
 
