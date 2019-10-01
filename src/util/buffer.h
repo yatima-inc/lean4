@@ -9,6 +9,7 @@ Author: Leonardo de Moura
 #include <cstring>
 #include "runtime/debug.h"
 #include "runtime/optional.h"
+#include "runtime/alloc.h"
 
 namespace lean {
 /**
@@ -25,12 +26,12 @@ protected:
     unsigned m_capacity;
 
     void free_memory() {
-        delete[] reinterpret_cast<char*>(m_buffer);
+        dealloc(m_buffer, sizeof(T)*m_capacity);
     }
 
     void expand() {
         unsigned new_capacity  = m_capacity << 1;
-        char * new_buffer_char = new char[sizeof(T) * new_capacity];
+        char * new_buffer_char = static_cast<char*>(alloc(sizeof(T) * new_capacity));
         T * new_buffer         = reinterpret_cast<T*>(new_buffer_char);
         std::uninitialized_copy(m_buffer, m_buffer + m_pos, new_buffer);
         destroy();
@@ -53,13 +54,13 @@ public:
     typedef T const * const_iterator;
 
     buffer():
-        m_buffer(reinterpret_cast<T*>(new char[sizeof(T) * INITIAL_SIZE])),
+        m_buffer(static_cast<T*>(alloc(sizeof(T) * INITIAL_SIZE))),
         m_pos(0),
         m_capacity(INITIAL_SIZE) {
     }
 
     buffer(buffer const & source):
-        m_buffer(reinterpret_cast<T*>(new char[sizeof(T) * INITIAL_SIZE])),
+        m_buffer(static_cast<T*>(alloc(sizeof(T) * INITIAL_SIZE))),
         m_pos(0),
         m_capacity(INITIAL_SIZE) {
         std::for_each(source.begin(), source.end(), [=](T const & e) { push_back(e); });
