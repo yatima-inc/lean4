@@ -58,8 +58,9 @@ private def collectAlts (f : FnBody → Collector) (alts : Array Alt) : Collecto
 collectArray alts $ fun alt => f alt.body
 
 partial def collectFnBody : FnBody → Collector
-| FnBody.vdecl x _ v b    => collectExpr v >> collectFnBody b
-| FnBody.jdecl j ys v b   => collectFnBody v >> collectParams ys >> collectFnBody b
+| FnBody.vdecl _ _ v b    => collectExpr v >> collectFnBody b
+| FnBody.jdecl _ ys v b   => collectFnBody v >> collectParams ys >> collectFnBody b
+| FnBody.mdecl _ _ ys b   => collectArgs ys >> collectFnBody b
 | FnBody.set x _ y b      => collectVar x >> collectArg y >> collectFnBody b
 | FnBody.uset x _ y b     => collectVar x >> collectVar y >> collectFnBody b
 | FnBody.sset x _ _ y _ b => collectVar x >> collectVar y >> collectFnBody b
@@ -152,9 +153,16 @@ private def collectExpr : Expr → Collector
 private def collectAlts (f : FnBody → Collector) (alts : Array Alt) : Collector :=
 collectArray alts $ fun alt => f alt.body
 
+def insertMDeclLhs (s : IndexSet) (xs : Array (VarId × IRType)) : IndexSet :=
+xs.foldl (fun s x => s.insert x.1.idx) s
+
+@[inline] private def withMDeclLhs (xs : Array (VarId × IRType)) : Collector → Collector :=
+fun k bv fv => k (insertMDeclLhs bv xs) fv
+
 partial def collectFnBody : FnBody → Collector
 | FnBody.vdecl x _ v b    => collectExpr v >> withVar x (collectFnBody b)
 | FnBody.jdecl j ys v b   => withParams ys (collectFnBody v) >> withJP j (collectFnBody b)
+| FnBody.mdecl xs _ ys b  => collectArgs ys >> withMDeclLhs xs (collectFnBody b)
 | FnBody.set x _ y b      => collectVar x >> collectArg y >> collectFnBody b
 | FnBody.uset x _ y b     => collectVar x >> collectVar y >> collectFnBody b
 | FnBody.sset x _ _ y _ b => collectVar x >> collectVar y >> collectFnBody b
@@ -211,8 +219,9 @@ def visitExpr (w : Index) : Expr → Bool
 | Expr.isTaggedPtr x  => visitVar w x
 
 partial def visitFnBody (w : Index) : FnBody → Bool
-| FnBody.vdecl x _ v b    => visitExpr w v || visitFnBody b
-| FnBody.jdecl j ys v b   => visitFnBody v || visitFnBody b
+| FnBody.vdecl _ _ v b    => visitExpr w v || visitFnBody b
+| FnBody.jdecl _ _ v b    => visitFnBody v || visitFnBody b
+| FnBody.mdecl _ _ ys b   => visitArgs w ys || visitFnBody b
 | FnBody.set x _ y b      => visitVar w x || visitArg w y || visitFnBody b
 | FnBody.uset x _ y b     => visitVar w x || visitVar w y || visitFnBody b
 | FnBody.sset x _ _ y _ b => visitVar w x || visitVar w y || visitFnBody b

@@ -47,8 +47,9 @@ abbrev M := State LocalContext
 @[inline] def visitExpr (w : Index) (e : Expr) : M Bool := pure (HasIndex.visitExpr w e)
 
 partial def visitFnBody (w : Index) : FnBody → M Bool
-| FnBody.vdecl x _ v b    => visitExpr w v <||> visitFnBody b
-| FnBody.jdecl j ys v b   => visitFnBody v <||> visitFnBody b
+| FnBody.vdecl _ _ v b    => visitExpr w v <||> visitFnBody b
+| FnBody.jdecl _ ys v b   => visitFnBody v <||> visitFnBody b
+| FnBody.mdecl _ _ ys b   => visitArgs w ys <||> visitFnBody b
 | FnBody.set x _ y b      => visitVar w x <||> visitArg w y <||> visitFnBody b
 | FnBody.uset x _ y b     => visitVar w x <||> visitVar w y <||> visitFnBody b
 | FnBody.sset x _ _ y _ b => visitVar w x <||> visitVar w y <||> visitFnBody b
@@ -131,12 +132,16 @@ def collectExpr : Expr → Collector
 | Expr.isShared x     => collectVar x
 | Expr.isTaggedPtr x  => collectVar x
 
+private def bindMDeclLhs (xs : Array (VarId × IRType)) : Collector :=
+fun s => xs.foldl (fun s x => s.erase x.1) s
+
 partial def collectFnBody : FnBody → JPLiveVarMap → Collector
 | FnBody.vdecl x _ v b,    m => collectExpr v ∘ bindVar x ∘ collectFnBody b m
 | FnBody.jdecl j ys v b,   m =>
   let jLiveVars := (bindParams ys ∘ collectFnBody v m) {};
   let m         := m.insert j jLiveVars;
   collectFnBody b m
+| FnBody.mdecl xs _ ys b,  m => collectArgs ys ∘ bindMDeclLhs xs ∘ collectFnBody b m
 | FnBody.set x _ y b,      m => collectVar x ∘ collectArg y ∘ collectFnBody b m
 | FnBody.setTag x _ b,     m => collectVar x ∘ collectFnBody b m
 | FnBody.uset x _ y b,     m => collectVar x ∘ collectVar y ∘ collectFnBody b m

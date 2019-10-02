@@ -22,9 +22,13 @@ modifyGet $ fun s =>
 def checkParams (ps : Array Param) : M Bool :=
 ps.allM $ fun p => checkId p.x.idx
 
+def checkMDeclLhs (xs : Array (VarId × IRType)) : M Bool :=
+xs.allM $ fun x => checkId x.1.idx
+
 partial def checkFnBody : FnBody → M Bool
 | FnBody.vdecl x _ _ b    => checkId x.idx <&&> checkFnBody b
 | FnBody.jdecl j ys _ b   => checkId j.idx <&&> checkParams ys <&&> checkFnBody b
+| FnBody.mdecl xs _ _ b   => checkMDeclLhs xs <&&> checkFnBody b
 | FnBody.case _ _ _ alts  => alts.allM $ fun alt => checkFnBody alt.body
 | b                       => if b.isTerminal then pure true else checkFnBody b.body
 
@@ -94,6 +98,12 @@ fun m => do
   let ps := ps.map $ fun p => { x := normVar p.x m, .. p };
   k ps m
 
+@[inline] def withMDeclLhs {α : Type} (xs : Array (VarId × IRType)) (k : Array (VarId × IRType) → N α) : N α :=
+fun m => do
+  m ← xs.mfoldl (fun (m : IndexRenaming) x => do n ← getModify (fun n => n + 1); pure $ m.insert x.1.idx n) m;
+  let xs := xs.map $ fun x => (normVar x.1 m, x.2);
+  k xs m
+
 instance MtoN {α} : HasCoe (M α) (N α) :=
 ⟨fun x m => pure $ x m⟩
 
@@ -102,6 +112,7 @@ partial def normFnBody : FnBody → N FnBody
 | FnBody.jdecl j ys v b   => do
   (ys, v) ← withParams ys $ fun ys => do { v ← normFnBody v; pure (ys, v) };
   withJP j $ fun j => FnBody.jdecl j ys v <$> normFnBody b
+| FnBody.mdecl xs c ys b  => do ys ← normArgs ys; withMDeclLhs xs $ fun xs => FnBody.mdecl xs c ys <$> normFnBody b
 | FnBody.set x i y b      => do x ← normVar x; y ← normArg y; FnBody.set x i y <$> normFnBody b
 | FnBody.uset x i y b     => do x ← normVar x; y ← normVar y; FnBody.uset x i y <$> normFnBody b
 | FnBody.sset x i o y t b => do x ← normVar x; y ← normVar y; FnBody.sset x i o y t <$> normFnBody b
@@ -155,9 +166,13 @@ as.map (mapArg f)
 | Expr.isTaggedPtr x  => Expr.isTaggedPtr (f x)
 | e@(Expr.lit v)      =>  e
 
+@[specialize] def mapMDeclLhs (f : VarId → VarId) (xs : Array (VarId × IRType)) : Array (VarId × IRType) :=
+xs.map $ fun x => (f x.1, x.2)
+
 @[specialize] partial def mapFnBody (f : VarId → VarId) : FnBody → FnBody
 | FnBody.vdecl x t v b         => FnBody.vdecl x t (mapExpr f v) (mapFnBody b)
 | FnBody.jdecl j ys v b        => FnBody.jdecl j ys (mapFnBody v) (mapFnBody b)
+| FnBody.mdecl xs c ys b       => FnBody.mdecl (mapMDeclLhs f xs) c (mapArgs f ys) (mapFnBody b)
 | FnBody.set x i y b           => FnBody.set (f x) i (mapArg f y) (mapFnBody b)
 | FnBody.setTag x i b          => FnBody.setTag (f x) i (mapFnBody b)
 | FnBody.uset x i y b          => FnBody.uset (f x) i (f y) (mapFnBody b)

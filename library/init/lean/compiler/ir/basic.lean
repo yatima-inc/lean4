@@ -243,6 +243,8 @@ inductive FnBody
 /- Jump to join point `j` -/
 | jmp (j : JoinPointId) (ys : Array Arg)
 | unreachable
+/- Function call returning multiple arguments -/
+| mdecl (xs : Array (VarId × IRType)) (c : FunId) (ys : Array Arg) (b : FnBody)
 
 instance : Inhabited FnBody := ⟨FnBody.unreachable⟩
 
@@ -276,6 +278,7 @@ def FnBody.isTerminal : FnBody → Bool
 def FnBody.body : FnBody → FnBody
 | FnBody.vdecl _ _ _ b    => b
 | FnBody.jdecl _ _ _ b    => b
+| FnBody.mdecl _ _ _ b    => b
 | FnBody.set _ _ _ b      => b
 | FnBody.uset _ _ _ b     => b
 | FnBody.sset _ _ _ _ _ b => b
@@ -289,6 +292,7 @@ def FnBody.body : FnBody → FnBody
 def FnBody.setBody : FnBody → FnBody → FnBody
 | FnBody.vdecl x t v _,    b => FnBody.vdecl x t v b
 | FnBody.jdecl j xs v _,   b => FnBody.jdecl j xs v b
+| FnBody.mdecl xs c ys _,  b => FnBody.mdecl xs c ys b
 | FnBody.set x i y _,      b => FnBody.set x i y b
 | FnBody.uset x i y _,     b => FnBody.uset x i y b
 | FnBody.sset x i o y t _, b => FnBody.sset x i o y t b
@@ -366,13 +370,13 @@ bs.mmap $ fun b => match b with
 @[export lean_ir_mk_alt] def mkAlt (n : Name) (cidx : Nat) (size : Nat) (usize : Nat) (ssize : Nat) (b : FnBody) : Alt := Alt.ctor ⟨n, cidx, size, usize, ssize⟩ b
 
 inductive Decl
-| fdecl  (f : FunId) (xs : Array Param) (ty : IRType) (b : FnBody)
+| fdecl  (f : FunId) (xs : Array Param) (ty : Array IRType) (b : FnBody)
 | extern (f : FunId) (xs : Array Param) (ty : IRType) (ext : ExternAttrData)
 
 namespace Decl
 
 instance : Inhabited Decl :=
-⟨fdecl (default _) (default _) IRType.irrelevant (default _)⟩
+⟨fdecl (default _) (default _) (Array.singleton IRType.irrelevant) (default _)⟩
 
 def name : Decl → FunId
 | Decl.fdecl f _ _ _  => f
@@ -382,13 +386,13 @@ def params : Decl → Array Param
 | Decl.fdecl _ xs _ _  => xs
 | Decl.extern _ xs _ _ => xs
 
-def resultType : Decl → IRType
+def resultType : Decl → Array IRType
 | Decl.fdecl _ _ t _  => t
-| Decl.extern _ _ t _ => t
+| Decl.extern _ _ t _ => Array.singleton t
 
 end Decl
 
-@[export lean_ir_mk_decl] def mkDecl (f : FunId) (xs : Array Param) (ty : IRType) (b : FnBody) : Decl := Decl.fdecl f xs ty b
+@[export lean_ir_mk_decl] def mkDecl (f : FunId) (xs : Array Param) (ty : IRType) (b : FnBody) : Decl := Decl.fdecl f xs (Array.singleton ty) b
 
 @[export lean_ir_mk_extern_decl] def mkExternDecl (f : FunId) (xs : Array Param) (ty : IRType) (e : ExternAttrData) : Decl :=
 Decl.extern f xs ty e
@@ -403,6 +407,7 @@ RBTree.empty.insert idx
 inductive LocalContextEntry
 | param     : IRType → LocalContextEntry
 | localVar  : IRType → Expr → LocalContextEntry
+| mdecl     : IRType → LocalContextEntry -- We don't store the rhs of variables declared at Fnbody.mdecl
 | joinPoint : Array Param → FnBody → LocalContextEntry
 
 abbrev LocalContext := RBMap Index LocalContextEntry Index.lt
@@ -412,6 +417,9 @@ ctx.insert x.idx (LocalContextEntry.localVar t v)
 
 def LocalContext.addJP (ctx : LocalContext) (j : JoinPointId) (xs : Array Param) (b : FnBody) : LocalContext :=
 ctx.insert j.idx (LocalContextEntry.joinPoint xs b)
+
+def LocalContext.addMDecl (ctx : LocalContext) (x : VarId) (t : IRType) : LocalContext :=
+ctx.insert x.idx (LocalContextEntry.mdecl t)
 
 def LocalContext.addParam (ctx : LocalContext) (p : Param) : LocalContext :=
 ctx.insert p.x.idx (LocalContextEntry.param p.ty)
@@ -444,6 +452,11 @@ match ctx.find idx with
 | some (LocalContextEntry.localVar _ _) => true
 | other => false
 
+def LocalContext.isMDeclVar (ctx : LocalContext) (idx : Index) : Bool :=
+match ctx.find idx with
+| some (LocalContextEntry.mdecl _) => true
+| other => false
+
 def LocalContext.contains (ctx : LocalContext) (idx : Index) : Bool :=
 ctx.contains idx
 
@@ -454,6 +467,7 @@ def LocalContext.getType (ctx : LocalContext) (x : VarId) : Option IRType :=
 match ctx.find x.idx with
 | some (LocalContextEntry.param t) => some t
 | some (LocalContextEntry.localVar t _) => some t
+| some (LocalContextEntry.mdecl t) => some t
 | other => none
 
 def LocalContext.getValue (ctx : LocalContext) (x : VarId) : Option Expr :=
@@ -517,10 +531,18 @@ def addParamsRename (ρ : IndexRenaming) (ps₁ ps₂ : Array Param) : Option In
 if ps₁.size != ps₂.size then none
 else Array.foldl₂ (fun ρ p₁ p₂ => do ρ ← ρ; addParamRename ρ p₁ p₂) (some ρ) ps₁ ps₂
 
+def addMDeclLHSRename (ρ : IndexRenaming) (xs₁ xs₂ : Array (VarId × IRType)) : Option IndexRenaming :=
+if xs₁.size != xs₂.size then none
+else Array.foldl₂ (fun ρ (x₁ x₂ : VarId × IRType) => do ρ ← ρ; if x₁.2 == x₂.2 then addVarRename ρ x₁.1.idx x₂.1.idx else none) (some ρ) xs₁ xs₂
+
 partial def FnBody.alphaEqv : IndexRenaming → FnBody → FnBody → Bool
 | ρ, FnBody.vdecl x₁ t₁ v₁ b₁,      FnBody.vdecl x₂ t₂ v₂ b₂      => t₁ == t₂ && aeqv ρ v₁ v₂ && FnBody.alphaEqv (addVarRename ρ x₁.idx x₂.idx) b₁ b₂
-| ρ, FnBody.jdecl j₁ ys₁ v₁ b₁,  FnBody.jdecl j₂ ys₂ v₂ b₂        => match addParamsRename ρ ys₁ ys₂ with
+| ρ, FnBody.jdecl j₁ ys₁ v₁ b₁,     FnBody.jdecl j₂ ys₂ v₂ b₂     => match addParamsRename ρ ys₁ ys₂ with
   | some ρ' => FnBody.alphaEqv ρ' v₁ v₂ && FnBody.alphaEqv (addVarRename ρ j₁.idx j₂.idx) b₁ b₂
+  | none    => false
+| ρ, FnBody.mdecl xs₁ c₁ ys₁ b₁,   FnBody.mdecl xs₂ c₂ ys₂ b₂     => c₁ == c₂ && aeqv ρ ys₁ ys₂ &&
+  match addMDeclLHSRename ρ xs₁ xs₂ with
+  | some ρ' => FnBody.alphaEqv ρ' b₁ b₂
   | none    => false
 | ρ, FnBody.set x₁ i₁ y₁ b₁,        FnBody.set x₂ i₂ y₂ b₂        => aeqv ρ x₁ x₂ && i₁ == i₂ && aeqv ρ y₁ y₂ && FnBody.alphaEqv ρ b₁ b₂
 | ρ, FnBody.uset x₁ i₁ y₁ b₁,       FnBody.uset x₂ i₂ y₂ b₂       => aeqv ρ x₁ x₂ && i₁ == i₂ && aeqv ρ y₁ y₂ && FnBody.alphaEqv ρ b₁ b₂
@@ -542,7 +564,7 @@ partial def FnBody.alphaEqv : IndexRenaming → FnBody → FnBody → Bool
 | _, _,                             _                             => false
 
 def FnBody.beq (b₁ b₂ : FnBody) : Bool :=
-FnBody.alphaEqv ∅  b₁ b₂
+FnBody.alphaEqv ∅ b₁ b₂
 
 instance FnBody.HasBeq : HasBeq FnBody := ⟨FnBody.beq⟩
 

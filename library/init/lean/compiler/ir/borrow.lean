@@ -250,14 +250,22 @@ match v, b with
 def updateParamSet (ctx : BorrowInfCtx) (ps : Array Param) : BorrowInfCtx :=
 { paramSet := ps.foldl (fun s p => s.insert p.x.idx) ctx.paramSet, .. ctx }
 
+def ownMDeclLhs (xs : Array (VarId × IRType)) : M Unit :=
+xs.mfor (fun x => ownVar x.1)
+
 partial def collectFnBody : FnBody → M Unit
-| FnBody.jdecl j ys v b => do
+| FnBody.jdecl j ys v b  => do
   adaptReader (fun ctx => updateParamSet ctx ys) (collectFnBody v);
   ctx ← read;
   updateParamMap (Key.jp ctx.currFn j);
   collectFnBody b
-| FnBody.vdecl x _ v b => collectFnBody b *> collectExpr x v *> preserveTailCall x v b
-| FnBody.jmp j ys      => do
+| FnBody.vdecl x _ v b   => collectFnBody b *> collectExpr x v *> preserveTailCall x v b
+| FnBody.mdecl xs g ys b => do
+  collectFnBody b;
+  ownMDeclLhs xs;
+  ps ← getParamInfo (Key.decl g);
+  ownArgsUsingParams ys ps
+| FnBody.jmp j ys        => do
   ctx ← read;
   ps ← getParamInfo (Key.jp ctx.currFn j);
   ownArgsUsingParams ys ps; -- for making sure the join point can reuse
