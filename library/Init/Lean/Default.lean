@@ -12,10 +12,10 @@ import Init.Lean.Projfns
 import Init.Lean.Runtime
 import Init.Lean.Attributes
 import Init.Lean.Parser
-import Init.Lean.Reducibilityattrs
+import Init.Lean.ReducibilityAttrs
 import Init.Lean.Elaborator
-import Init.Lean.Eqncompiler
+import Init.Lean.EqnCompiler
 import Init.Lean.Class
-import Init.Lean.Localcontext
-import Init.Lean.Metavarcontext
-import Init.Lean.Typeclass
+import Init.Lean.LocalContext
+import Init.Lean.MetavarContext
+import Init.Lean.TypeClass

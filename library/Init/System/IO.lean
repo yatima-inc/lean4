@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Luke Nelson, Jared Roesch, Leonardo de Moura, Sebastian Ullrich
 -/
 prelude
-import Init.Control.Estate
+import Init.Control.EState
 import Init.Data.String.Basic
 import Init.System.Filepath
 
