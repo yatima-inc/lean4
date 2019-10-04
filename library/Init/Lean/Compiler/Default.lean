@@ -6,7 +6,7 @@ Authors: Leonardo de Moura
 prelude
 import Init.Lean.Compiler.InlineAttrs
 import Init.Lean.Compiler.Specialize
-import Init.Lean.Compiler.Constfolding
+import Init.Lean.Compiler.ConstFolding
 import Init.Lean.Compiler.ClosedTermCache
 import Init.Lean.Compiler.ExternAttr
 import Init.Lean.Compiler.ImplementedByAttr

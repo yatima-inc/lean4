@@ -5,7 +5,7 @@ Authors: Leonardo de Moura
 -/
 prelude
 import Init.System.IO
-import Init.System.Filepath
+import Init.System.FilePath
 import Init.Data.Array
 import Init.Control.Combinators
 import Init.Lean.Name

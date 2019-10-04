@@ -8,7 +8,7 @@ import Init.Lean.Path
 import Init.Lean.Compiler
 import Init.Lean.Environment
 import Init.Lean.Modifiers
-import Init.Lean.Projfns
+import Init.Lean.ProjFns
 import Init.Lean.Runtime
 import Init.Lean.Attributes
 import Init.Lean.Parser
