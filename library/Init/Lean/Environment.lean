@@ -103,17 +103,21 @@ inductive KernelException
 | invalidProj      (env : Environment) (lctx : LocalContext) (proj : Expr)
 | other            (msg : String)
 
+namespace KernelException
+instance : Inhabited KernelException := ⟨KernelException.other "error"⟩
+end KernelException
+
 namespace Environment
 
 /- Type check given declaration and add it to the environment -/
 @[extern "lean_add_decl"]
-constant addDecl (env : Environment) (decl : @& Declaration) : Except KernelException Environment := default _
+constant addDecl (env : Environment) (decl : @& Declaration) : ExceptM KernelException Environment := default _
 
 /- Compile the given declaration, it assumes the declaration has already been added to the environment using `addDecl`. -/
 @[extern "lean_compile_decl"]
-constant compileDecl (env : Environment) (opt : @& Options) (decl : @& Declaration) : Except KernelException Environment := default _
+constant compileDecl (env : Environment) (opt : @& Options) (decl : @& Declaration) : ExceptM KernelException Environment := default _
 
-def addAndCompile (env : Environment) (opt : Options) (decl : Declaration) : Except KernelException Environment :=
+def addAndCompile (env : Environment) (opt : Options) (decl : Declaration) : ExceptM KernelException Environment :=
 do env ← addDecl env decl;
    compileDecl env opt decl
 

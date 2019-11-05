@@ -18,10 +18,10 @@ inductive Except (ε : Type u) (α : Type v)
 
 attribute [unbox] Except
 
+namespace Except
 instance {ε α : Type} [Inhabited ε] : Inhabited (Except ε α) :=
 ⟨Except.error (default ε)⟩
 
-section
 variables {ε : Type u} {α : Type v}
 
 protected def Except.toString [HasToString ε] [HasToString α] : Except ε α → String
@@ -37,26 +37,6 @@ instance [HasToString ε] [HasToString α] : HasToString (Except ε α) :=
 
 instance [HasRepr ε] [HasRepr α] : HasRepr (Except ε α) :=
 ⟨Except.repr⟩
-end
-
-namespace Except
-variables {ε : Type u}
-
-@[inline] protected def return {α : Type v} (a : α) : Except ε α :=
-Except.ok a
-
-@[inline] protected def map {α β : Type v} (f : α → β) : Except ε α → Except ε β
-| Except.error err => Except.error err
-| Except.ok v => Except.ok $ f v
-
-@[inline] protected def mapError {ε' : Type u} {α : Type v} (f : ε → ε') : Except ε α → Except ε' α
-| Except.error err => Except.error $ f err
-| Except.ok v => Except.ok v
-
-@[inline] protected def bind {α β : Type v} (ma : Except ε α) (f : α → Except ε β) : Except ε β :=
-match ma with
-| (Except.error err) => Except.error err
-| (Except.ok v)      => f v
 
 @[inline] protected def toBool {α : Type v} : Except ε α → Bool
 | Except.ok _    => true
@@ -66,14 +46,37 @@ match ma with
 | Except.ok a    => some a
 | Except.error _ => none
 
-@[inline] protected def catch {α : Type u} (ma : Except ε α) (handle : ε → Except ε α) : Except ε α :=
-match ma with
-| Except.ok a    => Except.ok a
-| Except.error e => handle e
-
-instance : Monad (Except ε) :=
-{ pure := @Except.return _, bind := @Except.bind _, map := @Except.map _ }
+@[inline] protected def mapError {ε' : Type u} {α : Type v} (f : ε → ε') : Except ε α → Except ε' α
+| Except.error err => Except.error $ f err
+| Except.ok v      => Except.ok v
 end Except
+
+structure ExceptM (ε : Type u) (α : Type v) :=
+(ex : Except ε α)
+
+namespace ExceptM
+variables {ε : Type u}
+
+@[inline] protected def pure {α : Type v} (a : α) : ExceptM ε α :=
+⟨Except.ok a⟩
+
+@[inline] protected def map {α β : Type v} (f : α → β) : ExceptM ε α → ExceptM ε β
+| ⟨Except.error err⟩ => ⟨Except.error err⟩
+| ⟨Except.ok v⟩      => ⟨Except.ok $ f v⟩
+
+@[inline] protected def bind {α β : Type v} (ma : ExceptM ε α) (f : α → ExceptM ε β) : ExceptM ε β :=
+match ma with
+| ⟨Except.error err⟩ => ⟨Except.error err⟩
+| ⟨Except.ok v⟩      => f v
+
+@[inline] protected def catch {α : Type u} (ma : ExceptM ε α) (handle : ε → ExceptM ε α) : ExceptM ε α :=
+match ma with
+| ⟨Except.ok a⟩    => ⟨Except.ok a⟩
+| ⟨Except.error e⟩ => handle e
+
+instance : Monad (ExceptM ε) :=
+{ pure := @ExceptM.pure _, bind := @ExceptM.bind _, map := @ExceptM.map _ }
+end ExceptM
 
 def ExceptT (ε : Type u) (m : Type u → Type v) (α : Type u) : Type v :=
 m (Except ε α)
@@ -153,8 +156,8 @@ instance (m : Type u → Type v) (ε : Type u) [Monad m] : MonadExcept ε (Excep
 { throw := fun α e => ExceptT.mk $ pure (Except.error e),
   catch := @ExceptT.catch ε _ _ }
 
-instance (ε) : MonadExcept ε (Except ε) :=
-{ throw := fun α => Except.error, catch := @Except.catch _ }
+instance (ε) : MonadExcept ε (ExceptM ε) :=
+{ throw := fun α err => ⟨Except.error err⟩, catch := @ExceptM.catch _ }
 
 /-- Adapt a Monad stack, changing its top-most error Type.
 
