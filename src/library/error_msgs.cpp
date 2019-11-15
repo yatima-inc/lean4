@@ -51,7 +51,7 @@ list<options> const & get_distinguishing_pp_options() {
 
 expr erase_binder_info(expr const & e) {
     return replace(e, [](expr const & e) {
-            if (is_local(e) || is_metavar(e)) {
+            if (is_local_or_fvar(e) || is_metavar(e)) {
                 return some_expr(e);
             } else if (is_binding(e) && binding_info(e) != mk_binder_info()) {
                 return some_expr(update_binding(e, erase_binder_info(binding_domain(e)),
@@ -95,7 +95,7 @@ static void check_alias(name const & n, name const & id, name_map<name> & name_t
 
 static void collect_aliased_locals(expr const & e, name_map<name> & name_to_id, name_set & aliased) {
     for_each(e, [&](expr const & t, unsigned) {
-            if (is_local(t)) {
+            if (is_local_or_fvar(t)) {
                 check_alias(local_pp_name(t), local_name(t), name_to_id, aliased);
             } else if (is_mvar(t)) {
                 check_alias(mvar_name(t), mvar_name(t), name_to_id, aliased);

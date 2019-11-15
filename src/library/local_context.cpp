@@ -409,7 +409,7 @@ local_context local_context::instantiate_mvars(metavar_context & mctx) const {
 bool contains_let_local_decl(local_context const & lctx, expr const & e) {
     if (!has_local(e)) return false;
     return static_cast<bool>(find(e, [&](expr const & e, unsigned) {
-                if (!is_local(e)) return false;
+                if (!is_fvar(e)) return false;
                 optional<local_decl> d = lctx.find_local_decl(e);
                 return d && d->get_value();
             }));
@@ -419,7 +419,7 @@ expr zeta_expand(local_context const & lctx, expr const & e) {
     if (!contains_let_local_decl(lctx, e)) return e;
     return replace(e, [&](expr const & e, unsigned) {
             if (!has_local(e)) return some_expr(e);
-            if (is_local(e)) {
+            if (is_fvar(e)) {
                 if (auto d = lctx.find_local_decl(e)) {
                     if (auto v = d->get_value())
                         return some_expr(zeta_expand(lctx, *v));
