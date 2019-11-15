@@ -60,9 +60,9 @@ struct sigma_packer_fn {
         unpack_eqns const &  m_ues;
 
         optional<unsigned> get_fn_idx(expr const & fn) {
-            if (!is_local(fn)) return optional<unsigned>();
+            if (!is_fvar(fn)) return optional<unsigned>();
             for (unsigned fnidx = 0; fnidx < m_old_fns.size(); fnidx++) {
-                if (local_name(fn) == local_name(m_old_fns[fnidx]))
+                if (fvar_name(fn) == fvar_name(m_old_fns[fnidx]))
                     return optional<unsigned>(fnidx);
             }
             return optional<unsigned>();

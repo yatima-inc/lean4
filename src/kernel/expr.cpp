@@ -327,7 +327,7 @@ extern "C" object * lean_expr_mk_fvar(obj_arg n) {
 }
 
 expr mk_fvar(name const & n) {
-    return mk_local(n, n, expr(), mk_binder_info());
+    return expr(lean_expr_mk_fvar(n.to_obj_arg()));
 }
 
 extern "C" object * lean_expr_mk_const(obj_arg n, obj_arg ls) {

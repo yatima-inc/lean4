@@ -165,6 +165,7 @@ void type_context_old::update_local_instances(expr const & new_local, expr const
 
 expr type_context_old::push_local(name const & pp_name, expr const & type, binder_info bi) {
     expr local = m_lctx.mk_local_decl(pp_name, type, bi);
+    lean_assert(is_fvar(local));
     update_local_instances(local, type);
     return local;
 }
@@ -178,7 +179,7 @@ expr type_context_old::push_let(name const & ppn, expr const & type, expr const 
 void type_context_old::pop_local() {
     if (m_local_instances) {
         optional<local_decl> decl = m_lctx.find_last_local_decl();
-        if (decl && decl->get_name() == local_name(head(m_local_instances).get_local())) {
+        if (decl && decl->get_name() == fvar_name(head(m_local_instances).get_local())) {
             m_local_instances = tail(m_local_instances);
         }
     }
@@ -207,7 +208,7 @@ Moreover, if must_sort == false, d is at to_revert[i] and there is j > i s.t. d 
 static bool process_to_revert(metavar_context const & mctx, buffer<expr> & to_revert, unsigned num,
                               local_decl const & d, bool preserve_to_revert_order, bool & must_sort) {
     for (unsigned i = 0; i < num; i++) {
-        if (local_name(to_revert[i]) == d.get_name()) {
+        if (fvar_name(to_revert[i]) == d.get_name()) {
             if (!must_sort &&
                 depends_on(d, mctx, to_revert.size() - i - 1, to_revert.data() + i + 1)) {
                 /* to_revert[i] depends on to_revert[j] for j > i.
@@ -1034,7 +1035,7 @@ expr type_context_old::infer_core(expr const & e) {
 }
 
 expr type_context_old::infer_fvar(expr const & e) {
-    lean_assert(is_local(e));
+    lean_assert(is_fvar(e));
     optional<local_decl> d = m_lctx.find_local_decl(e);
     if (!d) {
         throw generic_exception(e, [=](formatter const & fmt) {
@@ -1866,7 +1867,7 @@ bool type_context_old::process_assignment(expr const & m, expr const & v) {
             }
         } else {
             if (std::any_of(locals.begin(), locals.end(),
-                            [&](expr const & local) { return local_name(local) == local_name(arg); })) {
+                            [&](expr const & local) { return fvar_name(local) == fvar_name(arg); })) {
                 if (fo_unif_approx()) {
                     use_fo     = true;
                     add_locals = false;
@@ -2146,7 +2147,7 @@ struct check_assignment_fn : public replace_visitor {
                 }
             }
             if (std::all_of(m_locals.begin(), m_locals.end(), [&](expr const & a) {
-                        return local_name(a) != local_name(e); })) {
+                        return fvar_name(a) != fvar_name(e); })) {
                 lean_trace(name({"type_context", "is_def_eq_detail"}),
                            scope_trace_env scope(m_ctx.env(), m_ctx);
                            tout() << "failed to assign " << m_mvar << " to\n" << m_value << "\n" <<
@@ -3192,7 +3193,7 @@ bool type_context_old::is_def_eq_core_core(expr t, expr s) {
         return is_def_eq(const_levels(t), const_levels(s));
     }
 
-    if (is_local(t) && is_local(s) && local_name(t) == local_name(s))
+    if (is_fvar(t) && is_fvar(s) && fvar_name(t) == fvar_name(s))
         return true;
 
     r = is_def_eq_proj(t, s);

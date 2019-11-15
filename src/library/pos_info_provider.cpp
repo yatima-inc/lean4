@@ -77,7 +77,7 @@ void finalize_pos_info_provider() {
 
 optional<expr> is_local_p(expr const & e) {
     auto e2 = unwrap_pos(e);
-    if (is_local(e2))
+    if (is_local_or_fvar(e2))
         return some_expr(e2);
     else
         return none_expr();

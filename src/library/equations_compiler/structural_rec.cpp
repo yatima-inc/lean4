@@ -127,7 +127,7 @@ struct structural_rec_fn {
                 for (unsigned i = 0; i < args.size(); i++)
                     if (!check_rhs(args[i]))
                         return false;
-                if (is_local(fn) && local_name(fn) == local_name(m_fn)) {
+                if (is_fvar(fn) && fvar_name(fn) == fvar_name(m_fn)) {
                     /* recusive application */
                     if (m_arg_idx < args.size()) {
                         expr const & arg = args[m_arg_idx];
@@ -246,7 +246,7 @@ struct structural_rec_fn {
             unsigned first_index_pos = I_args.size() - nindices;
             for (unsigned i = first_index_pos; i < I_args.size(); i++) {
                 expr const & idx = I_args[i];
-                if (!is_local(idx)) {
+                if (!is_fvar(idx)) {
                     trace_struct(tout() << "structural recursion on argument #" << (arg_idx+1) << " was not used "
                                  << "for '" << fn << "' because the inductive type '" << I << "' is an indexed family, "
                                  << "and index #" << (i+1) << " is not a variable\n  "
@@ -258,7 +258,7 @@ struct structural_rec_fn {
                 buffer<expr> const & xs = locals.as_buffer();
                 for (; idx_pos < xs.size(); idx_pos++) {
                     expr const & x = xs[idx_pos];
-                    if (local_name(x) == local_name(idx)) {
+                    if (fvar_name(x) == fvar_name(idx)) {
                         break;
                     }
                 }
@@ -287,7 +287,7 @@ struct structural_rec_fn {
                 /* Each index can only occur once */
                 for (unsigned j = first_index_pos; j < i; j++) {
                     expr const & prev_idx = I_args[j];
-                    if (local_name(prev_idx) == local_name(idx)) {
+                    if (fvar_name(prev_idx) == fvar_name(idx)) {
                         trace_struct(tout() << "structural recursion on argument #" << (arg_idx+1) << " was not used "
                                      << "for '" << fn << "' because the inductive type '" << I << "' is an indexed family, "
                                      << "and index #" << (i+1) << " and #" << (j+1) << " must be different variables\n  "
@@ -440,8 +440,8 @@ struct structural_rec_fn {
                     return r;
                 else
                     return none_expr();
-            } else if (is_local(fn)) {
-                if (local_name(m_C) == local_name(fn) && m_ctx.is_def_eq(app_arg(d), a))
+            } else if (is_fvar(fn)) {
+                if (fvar_name(m_C) == fvar_name(fn) && m_ctx.is_def_eq(app_arg(d), a))
                     return some_expr(F);
                 return none_expr();
             } else if (is_pi(d)) {
@@ -485,7 +485,7 @@ struct structural_rec_fn {
         }
 
         virtual expr visit_local(expr const & e) {
-            if (local_name(e) == local_name(m_fn)) {
+            if (fvar_name(e) == fvar_name(m_fn)) {
                 /* unexpected occurrence of recursive function */
                 trace_struct_aux(tout() << "unexpected occurrence of recursive function: " << e << "\n";);
                 throw elim_rec_apps_failed();
@@ -495,7 +495,7 @@ struct structural_rec_fn {
 
         virtual expr visit_app(expr const & e) {
             expr const & fn = get_app_fn(e);
-            if (is_local(fn) && local_name(fn) == local_name(m_fn)) {
+            if (is_fvar(fn) && fvar_name(fn) == fvar_name(m_fn)) {
                 buffer<expr> args;
                 get_app_args(e, args);
                 if (m_arg_pos >= args.size()) throw elim_rec_apps_failed();
@@ -535,14 +535,14 @@ struct structural_rec_fn {
 
             if (!has_case_analysis_before) {
                 for (unsigned i = 0; i < m_arg_pos; i++) {
-                    if (!is_local(lhs_args[i]) && !is_inaccessible(lhs_args[i])) {
+                    if (!is_fvar(lhs_args[i]) && !is_inaccessible(lhs_args[i])) {
                         has_case_analysis_before = true;
                         break;
                     }
                 }
             }
 
-            if (is_local(lhs_args[m_arg_pos]))
+            if (is_fvar(lhs_args[m_arg_pos]))
                 incomplete = true;
 
             if (has_case_analysis_before && incomplete)
@@ -564,7 +564,7 @@ struct structural_rec_fn {
             expr rhs = ue.rhs();
             buffer<expr> lhs_args;
             get_app_args(lhs, lhs_args);
-            if (complete && is_local(lhs_args[m_arg_pos])) {
+            if (complete && is_fvar(lhs_args[m_arg_pos])) {
                 expr var = lhs_args[m_arg_pos];
                 for_each_compatible_constructor(ctx, var,
                 [&](expr const & c, buffer<expr> const & new_c_vars) {

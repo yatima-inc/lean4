@@ -135,7 +135,9 @@ local_decl local_context::mk_local_decl_core(name const & n, name const & un, ex
 
 expr local_context::mk_local_decl(name const & n, name const & un, expr const & type, optional<expr> const & value, binder_info bi) {
     local_decl d = value ? local_ctx::mk_local_decl(n, un, type, *value) : local_ctx::mk_local_decl(n, un, type, bi);
-    return d.mk_ref();
+    expr r = d.mk_ref();
+    lean_assert(is_fvar(r));
+    return r;
 }
 
 expr local_context::mk_local_decl(expr const & type, binder_info bi) {
