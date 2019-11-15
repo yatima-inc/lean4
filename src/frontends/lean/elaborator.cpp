@@ -582,8 +582,8 @@ auto elaborator::use_elim_elab_core(name const & fn) -> optional<elim_info> {
     while (i > 0) {
         --i;
         expr const & param = params[i];
-
-        if (!is_explicit(local_info(param))) {
+        local_decl param_decl = m_ctx.lctx().get_local_decl(param);
+        if (!is_explicit(param_decl.get_info())) {
             continue;
         }
         nexplicit++;
