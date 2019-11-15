@@ -28,7 +28,7 @@ static local_context split_rec_fns(environment const & env, metavar_context & mc
     local_context new_lctx = lctx;
     for (unsigned fidx = 0; fidx < ues1.get_num_fns(); fidx++) {
         expr const & fn = ues1.get_fn(fidx);
-        local_decl decl = lctx.get_local_decl(fn);
+        local_decl decl = ctx1.lctx().get_local_decl(fn);
         expr aux_rec_fn = new_lctx.mk_local_decl(name(decl.get_user_name(), "_rec"), ctx1.infer(fn), decl.get_info());
         aux_rec_fns.push_back(aux_rec_fn);
     }

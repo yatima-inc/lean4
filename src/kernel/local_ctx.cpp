@@ -66,10 +66,12 @@ optional<local_decl> local_ctx::find_local_decl(name const & n) const {
 }
 
 local_decl local_ctx::get_local_decl(name const & n) const {
-    if (optional<local_decl> r = find_local_decl(n))
+    if (optional<local_decl> r = find_local_decl(n)) {
         return *r;
-    else
+    } else {
+        // lean_assert(false);
         throw exception(sstream() << "unknown free variable: " << n);
+    }
 }
 
 expr local_ctx::get_local(name const & n) const {
