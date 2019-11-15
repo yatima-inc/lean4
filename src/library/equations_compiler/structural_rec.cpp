@@ -114,9 +114,10 @@ struct structural_rec_fn {
         /** \brief Return true iff all recursive applications in \c e are structurally smaller than \c m_pattern. */
         bool check_rhs(expr const & e) {
             switch (e.kind()) {
-            case expr_kind::BVar: case expr_kind::MVar:
-            case expr_kind::FVar: case expr_kind::Const:
-            case expr_kind::Sort: case expr_kind::Lit:
+            case expr_kind::BVar:  case expr_kind::MVar:
+            case expr_kind::FVar:  case expr_kind::Const:
+            case expr_kind::Sort:  case expr_kind::Lit:
+            case expr_kind::Local:
                 return true;
             case expr_kind::App: {
                 buffer<expr> args;

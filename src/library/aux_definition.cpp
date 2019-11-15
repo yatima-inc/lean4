@@ -251,6 +251,10 @@ struct abstract_nested_proofs_fn : public replace_visitor_with_tc {
         return e;
     }
 
+    virtual expr visit_fvar(expr const & e) override {
+        return e;
+    }
+
     virtual expr visit_meta(expr const & e) override {
         return e;
     }

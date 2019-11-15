@@ -84,8 +84,6 @@ void collect_locals(expr const & e, collected_locals & ls, bool restricted) {
             visit(proj_expr(e));
             break;
         case expr_kind::FVar:
-            if (!restricted)
-                visit(local_type(e));
             ls.insert(e);
             break;
         case expr_kind::App:
@@ -101,6 +99,11 @@ void collect_locals(expr const & e, collected_locals & ls, bool restricted) {
             visit(let_type(e));
             visit(let_value(e));
             visit(let_body(e));
+            break;
+        case expr_kind::Local:
+            if (!restricted)
+                visit(local_type(e));
+            ls.insert(e);
             break;
         }
     };

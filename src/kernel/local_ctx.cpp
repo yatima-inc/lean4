@@ -13,12 +13,8 @@ namespace lean {
 static expr *       g_dummy_type;
 static local_decl * g_dummy_decl;
 
-static expr mk_local_ref(name const & n, name const & un, binder_info bi) {
-    return mk_local(n, un, *g_dummy_type, bi); // TODO(Leo): fix after we remove legacy code
-}
-
 bool is_local_decl_ref(expr const & e) { // TODO(Leo): delete
-    return is_local(e) && local_type(e) == *g_dummy_type;
+    return is_fvar(e);
 }
 
 local_decl::local_decl():object_ref(*g_dummy_decl) {}
@@ -39,8 +35,7 @@ local_decl::local_decl(local_decl const & d, expr const & t):
     local_decl(d.get_idx(), d.get_name(), d.get_user_name(), t, d.get_info()) {}
 
 expr local_decl::mk_ref() const {
-    // TODO(Leo):
-    return mk_local_ref(get_name(), get_user_name(), get_info());
+    return mk_fvar(get_name());
 }
 
 extern "C" object * lean_mk_empty_local_ctx(object*);

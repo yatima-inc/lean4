@@ -234,8 +234,11 @@ struct print_expr_fn {
         case expr_kind::MVar:
             out() << "?" << fix_name(mvar_name(a));
             break;
-        case expr_kind::FVar:
+        case expr_kind::Local:
             out() << fix_name(local_pp_name(a));
+            break;
+        case expr_kind::FVar:
+            out() << fvar_name(a);
             break;
         case expr_kind::MData:
             print_mdata(a);

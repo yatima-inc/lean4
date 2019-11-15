@@ -733,6 +733,8 @@ expr type_context_old::whnf_core(expr const & e0, bool proj_reduce, bool aux_rec
     case expr_kind::Const: case expr_kind::Lit:
         /* Remark: we do not unfold Constants eagerly in this method */
         return e;
+    case expr_kind::Local:
+        return e;
     case expr_kind::FVar:
         if (is_local_decl_ref(e)) {
             if (auto d = m_lctx.find_local_decl(e)) {
@@ -985,7 +987,10 @@ expr type_context_old::infer_core(expr const & e) {
     expr r;
     switch (e.kind()) {
     case expr_kind::FVar:
-        r = infer_local(e);
+        r = infer_fvar(e);
+        break;
+    case expr_kind::Local:
+        r = local_type(e);
         break;
     case expr_kind::Lit:
         r = lit_type(e);
@@ -1028,22 +1033,16 @@ expr type_context_old::infer_core(expr const & e) {
     return r;
 }
 
-expr type_context_old::infer_local(expr const & e) {
+expr type_context_old::infer_fvar(expr const & e) {
     lean_assert(is_local(e));
-    if (is_local_decl_ref(e)) {
-        optional<local_decl> d = m_lctx.find_local_decl(e);
-        if (!d) {
-            throw generic_exception(e, [=](formatter const & fmt) {
-                    return format("infer type failed, unknown variable") + pp_indent_expr(fmt, e);
-                });
-        }
-        lean_assert(d);
-        return d->get_type();
-    } else {
-        /* Remark: depending on how we re-organize the parser, we may be able
-           to remove this branch. */
-        return local_type(e);
+    optional<local_decl> d = m_lctx.find_local_decl(e);
+    if (!d) {
+        throw generic_exception(e, [=](formatter const & fmt) {
+                                       return format("infer type failed, unknown variable") + pp_indent_expr(fmt, e);
+                                   });
     }
+    lean_assert(d);
+    return d->get_type();
 }
 
 static void throw_unknown_metavar(expr const & e) {
@@ -2687,6 +2686,7 @@ lbool type_context_old::quick_is_def_eq(expr const & e1, expr const & e2) {
         case expr_kind::FVar:  case expr_kind::App:
         case expr_kind::Const: case expr_kind::Proj:
         case expr_kind::Let:
+        case expr_kind::Local:
             // We do not handle these cases in this method.
             break;
         }
@@ -3291,6 +3291,7 @@ lbool type_context_old::is_quick_class(expr const & type, name & result) {
         switch (it->kind()) {
         case expr_kind::BVar: case expr_kind::Sort:   case expr_kind::FVar:
         case expr_kind::MVar: case expr_kind::Lambda: case expr_kind::Lit:
+        case expr_kind::Local:
             return l_false;
         case expr_kind::Let:
             return l_undef;
