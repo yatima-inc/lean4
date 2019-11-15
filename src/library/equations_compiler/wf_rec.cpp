@@ -165,7 +165,7 @@ struct wf_rec_fn {
         elim_rec_apps_fn(wf_rec_fn & parent, type_context_old & ctx, name const & fn_name, expr const & fn, expr const & x, expr const & F):
             replace_visitor_with_tc(ctx), m_parent(parent), m_fn_name(fn_name), m_fn(fn), m_x(x), m_F(F) {}
 
-        virtual expr visit_local(expr const & e) {
+        virtual expr visit_fvar(expr const & e) {
             if (fvar_name(e) == fvar_name(m_fn)) {
                 /* unexpected occurrence of recursive function */
                 throw generic_exception(e, "unexpected occurrence of recursive function\n");

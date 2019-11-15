@@ -108,7 +108,7 @@ struct sigma_packer_fn {
             return copy_pos(e, mk_app(r, args.size() - arity, args.data() + arity));
         }
 
-        virtual expr visit_local(expr const & e) override {
+        virtual expr visit_fvar(expr const & e) override {
             auto fnidx = get_fn_idx(e);
             if (!fnidx) return replace_visitor_with_tc::visit_local(e);
             expr new_fn = m_ues.get_fn(*fnidx);

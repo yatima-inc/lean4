@@ -484,7 +484,7 @@ struct structural_rec_fn {
             }
         }
 
-        virtual expr visit_local(expr const & e) {
+        virtual expr visit_fvar(expr const & e) {
             if (fvar_name(e) == fvar_name(m_fn)) {
                 /* unexpected occurrence of recursive function */
                 trace_struct_aux(tout() << "unexpected occurrence of recursive function: " << e << "\n";);

@@ -87,7 +87,7 @@ static expr remove_aux_main_name(expr const & e) {
 struct eta_expand_rec_apps_fn : public replace_visitor_with_tc {
     eta_expand_rec_apps_fn(type_context_old & ctx): replace_visitor_with_tc(ctx) {}
 
-    virtual expr visit_local(expr const & e) {
+    virtual expr visit_fvar(expr const & e) {
         if (is_rec(m_ctx.lctx().get_local_decl(e).get_info())) {
             expr e2 = m_ctx.eta_expand(e);
             lean_assert(!is_fvar(e2));

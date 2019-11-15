@@ -125,7 +125,7 @@ struct pack_mutual_fn {
             }
         }
 
-        virtual expr visit_local(expr const & e) override {
+        virtual expr visit_fvar(expr const & e) override {
             if (get_fidx(e)) {
                 throw generic_exception(e, "unexpected occurrence of recursive function\n");
             } else {
