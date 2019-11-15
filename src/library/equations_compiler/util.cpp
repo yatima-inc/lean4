@@ -142,7 +142,6 @@ expr unpack_eqns::repack() {
     for (buffer<expr> const & fn_eqs : m_eqs) {
         for (expr const & eq : fn_eqs) {
             new_eqs.push_back(m_locals.ctx().mk_lambda(m_fns, unwrap_pos(eq)));
-            std::cout << "repack: " << new_eqs.back() << "\n";
         }
     }
     return update_equations(m_src, new_eqs);
@@ -183,7 +182,6 @@ expr unpack_eqn::repack() {
         equation_rhs(m_nested_src) == m_rhs) return m_src;
     expr new_eq = copy_pos(m_nested_src, mk_equation(m_lhs, m_rhs, m_ignore_if_unused));
     expr r = copy_pos(m_src, m_locals.ctx().mk_lambda(m_vars, new_eq));
-    std::cout << "2. repack " << r << "\n";
     return r;
 }
 

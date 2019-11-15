@@ -134,7 +134,6 @@ static expr compile_equations_main(environment & env, elaborator & elab,
 
     buffer<expr> fns; to_buffer(r.m_fns, fns);
     expr eqn_result = mk_equations_result(fns.size(), fns.data());
-    std::cout << "eqn_result: " << eqn_result << "\n";
     return eqn_result;
 }
 

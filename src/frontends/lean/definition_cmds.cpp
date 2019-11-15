@@ -160,15 +160,11 @@ declare_definition(environment const & env, decl_cmd_kind kind, buffer<name> con
     if (env.find(c_real_name)) {
         throw exception(sstream() << "invalid definition, a declaration named '" << c_real_name << "' has already been declared");
     }
-    if (val)
-        std::cout << "1. >> " << *val << "\n";
     if (val && !meta.m_modifiers.m_is_unsafe && !type_checker(env).is_prop(type)) {
         /* We only abstract nested proofs if the type of the definition is not a proposition */
         std::tie(new_env, type) = abstract_nested_proofs(new_env, c_real_name, type);
         std::tie(new_env, *val) = abstract_nested_proofs(new_env, c_real_name, *val);
     }
-    if (val)
-        std::cout << "2. >> " << *val << "\n";
     bool is_unsafe      = meta.m_modifiers.m_is_unsafe;
     declaration def;
     switch (kind) {
@@ -464,7 +460,6 @@ static environment elab_single_def(parser & p, decl_cmd_kind const & kind, cmd_m
                 lean_assert(get_equations_result_size(val) == 1);
                 val = get_equations_result(val, 0);
             }
-            std::cout << "get eqn: " << val << "\n";
             finalize_definition(elab, new_params, type, val, lp_names);
             new_env = declare_definition(elab.env(), kind, lp_names, c_name, prv_name, type, some_expr(val), meta);
         }

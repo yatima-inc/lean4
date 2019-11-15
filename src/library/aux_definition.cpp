@@ -162,7 +162,7 @@ struct mk_aux_definition_fn : public closure_helper {
         if (!is_unsafe)
             is_unsafe = use_unsafe(env, def_type) || use_unsafe(env, def_value);
         declaration d;
-        std::cout << ">>> " << def_value << "\n";
+        // std::cout << ">>> " << def_value << "\n";
         if (is_lemma) {
             d = mk_theorem(c, get_norm_level_names(), def_type, def_value);
         } else {
