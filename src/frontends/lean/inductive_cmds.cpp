@@ -60,10 +60,19 @@ static level mk_succn(level const & l, unsigned offset) {
     return result;
 }
 
+expr to_kernel_param(expr const & fvar, expr const & type) {
+    if (is_fvar(fvar)) {
+        name n = fvar_name(fvar);
+        return mk_local(n, type);
+    } else {
+        return update_local(fvar, type);
+    }
+}
+
 static void convert_params_to_kernel(elaborator & elab, buffer<expr> const & lctx_params, buffer<expr> & kernel_params) {
     for (unsigned i = 0; i < lctx_params.size(); ++i) {
         expr new_type = replace_locals(elab.infer_type(lctx_params[i]), i, lctx_params.data(), kernel_params.data());
-        kernel_params.push_back(update_local_p(lctx_params[i], new_type));
+        kernel_params.push_back(to_kernel_param(lctx_params[i], new_type));
     }
 }
 
@@ -72,7 +81,7 @@ static void replace_params(buffer<expr> const & params, buffer<expr> const & new
     for (expr const & ir : intro_rules) {
         expr new_type = replace_locals(local_type_p(ir), params, new_params);
         new_type = replace_locals(new_type, inds, new_inds);
-        new_intro_rules.push_back(update_local_p(ir, new_type));
+        new_intro_rules.push_back(to_kernel_param(ir, new_type));
     }
 }
 

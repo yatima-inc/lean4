@@ -123,7 +123,6 @@ static expr compile_equations_main(environment & env, elaborator & elab,
     // } else {
     r = compile_equations_core(env, elab, mctx, lctx, eqns);
     // }
-
     if (report_cexs && r.m_counter_examples) {
         auto pp = mk_pp_ctx(env, elab.get_options(), mctx, lctx);
         auto fmt = format("non-exhaustive match, the following cases are missing:");
@@ -134,7 +133,9 @@ static expr compile_equations_main(environment & env, elaborator & elab,
     }
 
     buffer<expr> fns; to_buffer(r.m_fns, fns);
-    return mk_equations_result(fns.size(), fns.data());
+    expr eqn_result = mk_equations_result(fns.size(), fns.data());
+    std::cout << "eqn_result: " << eqn_result << "\n";
+    return eqn_result;
 }
 
 expr compile_equations(environment & env, elaborator & elab, metavar_context & mctx, local_context const & lctx, expr const & eqns) {

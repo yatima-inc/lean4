@@ -1277,6 +1277,7 @@ elim_match_result elim_match(environment & env, elaborator & elab, metavar_conte
     elim_match_fn elim(env, elab, mctx);
     auto r = elim(lctx, eqns);
     env = elim.m_env;
+    std::cout << "elim_match: " << r.m_fn << "\n";
     return r;
 }
 
