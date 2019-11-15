@@ -42,12 +42,12 @@ struct depends_on_fn {
     bool visit_local(expr const & e) {
         lean_assert(is_fvar(e));
         if (std::any_of(m_locals, m_locals + m_num,
-                        [&](expr const & l) { return local_name(e) == local_name(l); }))
+                        [&](expr const & l) { return fvar_name(e) == fvar_name(l); }))
             return true;
 
-        if (!m_lctx || m_visited_decls.contains(local_name(e)))
+        if (!m_lctx || m_visited_decls.contains(fvar_name(e)))
             return false;
-        m_visited_decls.insert(local_name(e));
+        m_visited_decls.insert(fvar_name(e));
         optional<local_decl> decl = m_lctx->find_local_decl(e);
         if (!decl)
             return false;
@@ -284,7 +284,7 @@ static bool locals_subset_of(expr const & e, name_set const & s) {
     bool ok = true;
     for_each(e, [&](expr const & e, unsigned) {
             if (!ok) return false; // stop search
-            if (is_fvar(e) && !s.contains(local_name(e))) {
+            if (is_fvar(e) && !s.contains(fvar_name(e))) {
                 ok = false;
                 return false;
             }
