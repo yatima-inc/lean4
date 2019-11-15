@@ -737,7 +737,7 @@ expr type_context_old::whnf_core(expr const & e0, bool proj_reduce, bool aux_rec
     case expr_kind::Local:
         return e;
     case expr_kind::FVar:
-        if (is_local_decl_ref(e)) {
+        if (is_fvar(e)) {
             if (auto d = m_lctx.find_local_decl(e)) {
                 if (auto v = d->get_value()) {
                     /* zeta-reduction */
@@ -1656,7 +1656,7 @@ optional<constant_info> type_context_old::is_delta(expr const & e) {
 
 /* If \c e is a let local-decl, then unfold it, otherwise return e. */
 expr type_context_old::try_zeta(expr const & e) {
-    if (!is_local_decl_ref(e))
+    if (!is_fvar(e))
         return e;
     if (auto d = m_lctx.find_local_decl(e)) {
         if (auto v = d->get_value())
@@ -1667,7 +1667,7 @@ expr type_context_old::try_zeta(expr const & e) {
 
 expr type_context_old::expand_let_decls(expr const & e) {
     return replace(e, [&](expr const & e, unsigned) {
-            if (is_local_decl_ref(e)) {
+            if (is_fvar(e)) {
                 if (auto d = m_lctx.find_local_decl(e)) {
                     if (auto v = d->get_value())
                         return some_expr(*v);
@@ -1856,7 +1856,7 @@ bool type_context_old::process_assignment(expr const & m, expr const & v) {
             arg = instantiate_mvars(arg);
         arg = try_zeta(arg); /* unfold let-constant if needed. */
         args[i] = arg;
-        if (!is_local_decl_ref(arg)) {
+        if (!is_fvar(arg)) {
             /* m is of the form (?M ... t ...) where t is not a local constant. */
             if (fo_unif_approx()) {
                 /* workaround A5 */
@@ -2129,9 +2129,7 @@ struct check_assignment_fn : public replace_visitor {
         }
     }
 
-    expr visit_local(expr const & e) override {
-        if (!is_local_decl_ref(e)) return e;
-
+    expr visit_fvar(expr const & e) override {
         bool in_ctx;
         if (m_ctx.in_tmp_mode()) {
             in_ctx = static_cast<bool>(m_ctx.m_tmp_data->m_mvar_lctx.find_local_decl(e));

@@ -82,7 +82,7 @@ optional<expr> is_local_p(expr const & e) {
     else
         return none_expr();
 }
-name const & local_name_p(expr const & e) { auto o = is_local_p(e); lean_assert(o); return local_name(*o); }
+name const & local_name_p(expr const & e) { auto o = is_local_p(e); lean_assert(o); return local_or_fvar_name(*o); }
 name const & local_pp_name_p(expr const & e) { auto o = is_local_p(e); lean_assert(o); return local_pp_name(*o); }
 expr const & local_type_p(expr const & e) { auto o = is_local_p(e); lean_assert(o); return local_type(*o); }
 binder_info local_info_p(expr const & e) { auto o = is_local_p(e); lean_assert(o); return local_info(*o); }

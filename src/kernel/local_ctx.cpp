@@ -13,10 +13,6 @@ namespace lean {
 static expr *       g_dummy_type;
 static local_decl * g_dummy_decl;
 
-bool is_local_decl_ref(expr const & e) { // TODO(Leo): delete
-    return is_fvar(e);
-}
-
 local_decl::local_decl():object_ref(*g_dummy_decl) {}
 
 local_decl::local_decl(unsigned idx, name const & n, name const & un, expr const & t, expr const & v):

@@ -31,16 +31,16 @@ struct depends_on_fn {
 
     depends_on_fn(metavar_context const & mctx, local_context const & lctx, unsigned num, expr const * locals):
         m_mctx(mctx), m_lctx(&lctx), m_num(num), m_locals(locals) {
-        lean_assert(std::all_of(locals, locals+num, is_local_decl_ref));
+        lean_assert(std::all_of(locals, locals+num, is_fvar));
     }
 
     depends_on_fn(metavar_context const & mctx, unsigned num, expr const * locals):
         m_mctx(mctx), m_lctx(nullptr), m_num(num), m_locals(locals) {
-        lean_assert(std::all_of(locals, locals+num, is_local_decl_ref));
+        lean_assert(std::all_of(locals, locals+num, is_fvar));
     }
 
     bool visit_local(expr const & e) {
-        lean_assert(is_local_decl_ref(e));
+        lean_assert(is_fvar(e));
         if (std::any_of(m_locals, m_locals + m_num,
                         [&](expr const & l) { return local_name(e) == local_name(l); }))
             return true;
@@ -83,7 +83,7 @@ struct depends_on_fn {
         for_each(e, [&](expr const & e, unsigned) {
                 if (found) return false;
                 if (!has_local(e) && !has_expr_metavar(e)) return false;
-                if (is_local_decl_ref(e) && visit_local(e)) {
+                if (is_fvar(e) && visit_local(e)) {
                     found = true;
                     return false;
                 }
@@ -267,7 +267,7 @@ bool local_context::is_subset_of(local_context const & ctx) const {
 local_context local_context::remove(buffer<expr> const & locals) const {
     lean_assert(std::all_of(locals.begin(), locals.end(),
                             [&](expr const & l) {
-                                return is_local_decl_ref(l) && find_local_decl(l);
+                                return is_fvar(l) && find_local_decl(l);
                             }));
     /* TODO(Leo): check whether the following loop is a performance bottleneck. */
     local_context r          = *this;
@@ -284,7 +284,7 @@ static bool locals_subset_of(expr const & e, name_set const & s) {
     bool ok = true;
     for_each(e, [&](expr const & e, unsigned) {
             if (!ok) return false; // stop search
-            if (is_local_decl_ref(e) && !s.contains(local_name(e))) {
+            if (is_fvar(e) && !s.contains(local_name(e))) {
                 ok = false;
                 return false;
             }
@@ -316,7 +316,7 @@ bool local_context::well_formed(expr const & e) const {
     bool ok = true;
     ::lean::for_each(e, [&](expr const & e, unsigned) {
             if (!ok) return false;
-            if (is_local_decl_ref(e) && !find_local_decl(e)) {
+            if (is_fvar(e) && !find_local_decl(e)) {
                 ok = false;
             }
             return true;
