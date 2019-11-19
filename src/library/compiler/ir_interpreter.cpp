@@ -333,6 +333,7 @@ class interpreter {
     }
 
     value eval_expr(expr const & e, type t) {
+        std::cout << "tag " << (unsigned)expr_tag(e) << "\n";
         switch (expr_tag(e)) {
             case expr_kind::Ctor:
                 return value { alloc_ctor(expr_ctor_info(e), expr_ctor_args(e)) };
@@ -368,6 +369,7 @@ class interpreter {
             case expr_kind::Proj: // object field access
                 return cnstr_get(var(expr_proj_obj(e)).m_obj, expr_proj_idx(e).get_small_value());
             case expr_kind::UProj: // USize field access
+                std::cout << "HERE " << expr_uproj_idx(e).get_small_value() << "\n";
                 return cnstr_get_usize(var(expr_uproj_obj(e)).m_obj, expr_uproj_idx(e).get_small_value());
             case expr_kind::SProj: { // other unboxed field access
                 size_t offset = expr_sproj_idx(e).get_small_value() * sizeof(void *) +
@@ -643,6 +645,7 @@ class interpreter {
             symbol_cache_entry e_new { get_decl(fn), nullptr, false };
             // check for boxed version first
             if (void *p_boxed = lookup_symbol_in_cur_exe(boxed_mangled.data())) {
+                std::cout << "has boxed version " << fn << "\n";
                 e_new.m_addr = p_boxed;
                 e_new.m_boxed = true;
             } else if (void *p = lookup_symbol_in_cur_exe(mangled.data())) {
@@ -729,7 +732,11 @@ class interpreter {
             }
             push_frame(e.m_decl, old_size);
             object * o = curry(e.m_addr, args.size(), args2);
+            if (fn == name{"H"}) {
+                std::cout << fn << " ==> tag: " << (unsigned)lean_ptr_tag(o) << ", " << lean_ctor_get_usize(o, 0) << ", result: " << lean_unbox_usize(o) << "\n";
+            }
             r = unbox_t(o, decl_type(e.m_decl));
+            std::cout << "call " << fn << " : " << r.m_num << "\n";
         } else {
             if (decl_tag(e.m_decl) == decl_kind::Extern) {
                 throw exception(sstream() << "unexpected external declaration '" << fn << "'");

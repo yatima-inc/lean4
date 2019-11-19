@@ -2,6 +2,44 @@ import Init.Lean.Meta
 open Lean
 open Lean.Meta
 
+def tstEnv : IO Unit :=
+do env ← importModules [`Init.Data.List];
+   env.constants.map₁.foldM (fun _ k v => IO.println (toString k ++ " " ++ toString k.hash)) ();
+   match env.find `List.map with
+   | some d => IO.println "found"
+   | none => IO.println "not found"
+
+
+def main : IO Unit :=
+tstEnv
+
+#exit
+
+set_option trace.compiler.ir.init true
+
+def H : Name → USize
+| Name.anonymous => 1723
+| Name.str p s h => h
+| Name.num p v h => h
+
+#exit
+
+
+#check `List.map
+
+#eval hash (`List.map)
+#eval hash (`List)
+#eval hash Name.anonymous
+#eval mixHash (mixHash (hash Name.anonymous) (hash "List")) (hash "map")
+#eval hash (Name.str Name.anonymous "List" (mixHash (hash Name.anonymous) (hash "List")))
+#eval H (Name.str Name.anonymous "List" (mixHash (hash Name.anonymous) (hash "List")))
+
+#print Name.hash
+
+#eval tstEnv
+
+#exit
+
 def tstInferType (mods : List Name) (e : Expr) : IO Unit :=
 do env ← importModules mods;
    match inferType e {} { env := env } with
