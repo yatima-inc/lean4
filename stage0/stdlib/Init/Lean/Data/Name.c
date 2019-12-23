@@ -38,6 +38,7 @@ lean_object* l_Lean_Name_updatePrefix(lean_object*, lean_object*);
 lean_object* l_Lean_Name_isAnonymous___boxed(lean_object*);
 lean_object* l_Lean_Name_HasToString___closed__1;
 lean_object* l_Lean_mkNameSimple(lean_object*);
+lean_object* l_Lean_Name_toString___boxed(lean_object*);
 lean_object* lean_string_append(lean_object*, lean_object*);
 uint8_t l_Lean_Name_isPrefixOf(lean_object*, lean_object*);
 lean_object* l_Lean_Name_inhabited;
@@ -86,10 +87,13 @@ uint8_t l_Lean_Name_isAtomic(lean_object*);
 uint32_t lean_string_utf8_get(lean_object*, lean_object*);
 lean_object* l_Lean_Name_getNumParts(lean_object*);
 lean_object* l_Lean_NameMap_HasEmptyc(lean_object*);
+lean_object* l_Lean_Name_components_x27___main___boxed(lean_object*);
+lean_object* l_Lean_Name_updatePrefix___boxed(lean_object*, lean_object*);
 lean_object* l_Lean_Name_toStringWithSep___boxed(lean_object*, lean_object*);
 lean_object* l_Lean_Name_isInternal___main___boxed(lean_object*);
 lean_object* l_RBNode_insert___at_Lean_NameSet_insert___spec__1(lean_object*, lean_object*, lean_object*);
 lean_object* l_Lean_mkNameSet;
+lean_object* l_Lean_Name_components_x27___boxed(lean_object*);
 size_t lean_usize_of_nat(lean_object*);
 lean_object* l_Lean_Name_quickLtAux___main___boxed(lean_object*, lean_object*);
 lean_object* l_Lean_Name_replacePrefix___main(lean_object*, lean_object*, lean_object*);
@@ -97,6 +101,7 @@ lean_object* l_Lean_stringToName___closed__1;
 lean_object* l_Lean_Name_toStringWithSep___main___boxed(lean_object*, lean_object*);
 lean_object* l_Lean_Name_toStringWithSep___main___closed__1;
 uint8_t l_Lean_Name_quickLtAux___main(lean_object*, lean_object*);
+lean_object* l_Lean_Name_components___boxed(lean_object*);
 lean_object* l_List_foldl___main___at_String_toName___spec__1___boxed(lean_object*, lean_object*);
 lean_object* l_Lean_NameMap_contains___rarg___boxed(lean_object*, lean_object*);
 lean_object* l_Lean_Name_quickLtAux___boxed(lean_object*, lean_object*);
@@ -351,7 +356,6 @@ case 1:
 lean_object* x_3; lean_object* x_4; 
 x_3 = lean_ctor_get(x_1, 1);
 lean_inc(x_3);
-lean_dec(x_1);
 x_4 = lean_name_mk_string(x_2, x_3);
 return x_4;
 }
@@ -360,11 +364,19 @@ default:
 lean_object* x_5; lean_object* x_6; 
 x_5 = lean_ctor_get(x_1, 1);
 lean_inc(x_5);
-lean_dec(x_1);
 x_6 = lean_name_mk_numeral(x_2, x_5);
 return x_6;
 }
 }
+}
+}
+lean_object* l_Lean_Name_updatePrefix___boxed(lean_object* x_1, lean_object* x_2) {
+_start:
+{
+lean_object* x_3; 
+x_3 = l_Lean_Name_updatePrefix(x_1, x_2);
+lean_dec(x_1);
+return x_3;
 }
 }
 lean_object* l_Lean_Name_components_x27___main(lean_object* x_1) {
@@ -381,11 +393,9 @@ case 1:
 {
 lean_object* x_3; lean_object* x_4; lean_object* x_5; lean_object* x_6; lean_object* x_7; lean_object* x_8; 
 x_3 = lean_ctor_get(x_1, 0);
-lean_inc(x_3);
 x_4 = lean_ctor_get(x_1, 1);
-lean_inc(x_4);
-lean_dec(x_1);
 x_5 = lean_box(0);
+lean_inc(x_4);
 x_6 = lean_name_mk_string(x_5, x_4);
 x_7 = l_Lean_Name_components_x27___main(x_3);
 x_8 = lean_alloc_ctor(1, 2, 0);
@@ -397,11 +407,9 @@ default:
 {
 lean_object* x_9; lean_object* x_10; lean_object* x_11; lean_object* x_12; lean_object* x_13; lean_object* x_14; 
 x_9 = lean_ctor_get(x_1, 0);
-lean_inc(x_9);
 x_10 = lean_ctor_get(x_1, 1);
-lean_inc(x_10);
-lean_dec(x_1);
 x_11 = lean_box(0);
+lean_inc(x_10);
 x_12 = lean_name_mk_numeral(x_11, x_10);
 x_13 = l_Lean_Name_components_x27___main(x_9);
 x_14 = lean_alloc_ctor(1, 2, 0);
@@ -412,11 +420,29 @@ return x_14;
 }
 }
 }
+lean_object* l_Lean_Name_components_x27___main___boxed(lean_object* x_1) {
+_start:
+{
+lean_object* x_2; 
+x_2 = l_Lean_Name_components_x27___main(x_1);
+lean_dec(x_1);
+return x_2;
+}
+}
 lean_object* l_Lean_Name_components_x27(lean_object* x_1) {
 _start:
 {
 lean_object* x_2; 
 x_2 = l_Lean_Name_components_x27___main(x_1);
+return x_2;
+}
+}
+lean_object* l_Lean_Name_components_x27___boxed(lean_object* x_1) {
+_start:
+{
+lean_object* x_2; 
+x_2 = l_Lean_Name_components_x27(x_1);
+lean_dec(x_1);
 return x_2;
 }
 }
@@ -427,6 +453,15 @@ lean_object* x_2; lean_object* x_3;
 x_2 = l_Lean_Name_components_x27___main(x_1);
 x_3 = l_List_reverse___rarg(x_2);
 return x_3;
+}
+}
+lean_object* l_Lean_Name_components___boxed(lean_object* x_1) {
+_start:
+{
+lean_object* x_2; 
+x_2 = l_Lean_Name_components(x_1);
+lean_dec(x_1);
+return x_2;
 }
 }
 lean_object* l_Lean_Name_beq___boxed(lean_object* x_1, lean_object* x_2) {
@@ -509,11 +544,9 @@ case 1:
 {
 lean_object* x_3; lean_object* x_4; lean_object* x_5; lean_object* x_6; 
 x_3 = lean_ctor_get(x_2, 0);
-lean_inc(x_3);
 x_4 = lean_ctor_get(x_2, 1);
-lean_inc(x_4);
-lean_dec(x_2);
 x_5 = l_Lean_Name_append___main(x_1, x_3);
+lean_inc(x_4);
 x_6 = lean_name_mk_string(x_5, x_4);
 return x_6;
 }
@@ -521,11 +554,9 @@ default:
 {
 lean_object* x_7; lean_object* x_8; lean_object* x_9; lean_object* x_10; 
 x_7 = lean_ctor_get(x_2, 0);
-lean_inc(x_7);
 x_8 = lean_ctor_get(x_2, 1);
-lean_inc(x_8);
-lean_dec(x_2);
 x_9 = l_Lean_Name_append___main(x_1, x_7);
+lean_inc(x_8);
 x_10 = lean_name_mk_numeral(x_9, x_8);
 return x_10;
 }
@@ -537,6 +568,7 @@ _start:
 {
 lean_object* x_3; 
 x_3 = l_Lean_Name_append___main(x_1, x_2);
+lean_dec(x_2);
 lean_dec(x_1);
 return x_3;
 }
@@ -554,6 +586,7 @@ _start:
 {
 lean_object* x_3; 
 x_3 = l_Lean_Name_append(x_1, x_2);
+lean_dec(x_2);
 lean_dec(x_1);
 return x_3;
 }
@@ -594,22 +627,18 @@ case 1:
 {
 lean_object* x_4; lean_object* x_5; uint8_t x_6; 
 x_4 = lean_ctor_get(x_1, 0);
-lean_inc(x_4);
 x_5 = lean_ctor_get(x_1, 1);
-lean_inc(x_5);
 x_6 = lean_name_eq(x_1, x_2);
-lean_dec(x_1);
 if (x_6 == 0)
 {
 lean_object* x_7; lean_object* x_8; 
 x_7 = l_Lean_Name_replacePrefix___main(x_4, x_2, x_3);
+lean_inc(x_5);
 x_8 = lean_name_mk_string(x_7, x_5);
 return x_8;
 }
 else
 {
-lean_dec(x_5);
-lean_dec(x_4);
 lean_inc(x_3);
 return x_3;
 }
@@ -618,22 +647,18 @@ default:
 {
 lean_object* x_9; lean_object* x_10; uint8_t x_11; 
 x_9 = lean_ctor_get(x_1, 0);
-lean_inc(x_9);
 x_10 = lean_ctor_get(x_1, 1);
-lean_inc(x_10);
 x_11 = lean_name_eq(x_1, x_2);
-lean_dec(x_1);
 if (x_11 == 0)
 {
 lean_object* x_12; lean_object* x_13; 
 x_12 = l_Lean_Name_replacePrefix___main(x_9, x_2, x_3);
+lean_inc(x_10);
 x_13 = lean_name_mk_numeral(x_12, x_10);
 return x_13;
 }
 else
 {
-lean_dec(x_10);
-lean_dec(x_9);
 lean_inc(x_3);
 return x_3;
 }
@@ -648,6 +673,7 @@ lean_object* x_4;
 x_4 = l_Lean_Name_replacePrefix___main(x_1, x_2, x_3);
 lean_dec(x_3);
 lean_dec(x_2);
+lean_dec(x_1);
 return x_4;
 }
 }
@@ -666,6 +692,7 @@ lean_object* x_4;
 x_4 = l_Lean_Name_replacePrefix(x_1, x_2, x_3);
 lean_dec(x_3);
 lean_dec(x_2);
+lean_dec(x_1);
 return x_4;
 }
 }
@@ -1106,12 +1133,10 @@ case 1:
 {
 lean_object* x_4; lean_object* x_5; lean_object* x_6; 
 x_4 = lean_ctor_get(x_2, 0);
-lean_inc(x_4);
 x_5 = lean_ctor_get(x_2, 1);
-lean_inc(x_5);
-lean_dec(x_2);
 if (lean_obj_tag(x_4) == 0)
 {
+lean_inc(x_5);
 return x_5;
 }
 else
@@ -1128,7 +1153,6 @@ lean_dec(x_6);
 x_7 = l_Lean_Name_toStringWithSep___main(x_1, x_4);
 x_8 = lean_string_append(x_7, x_1);
 x_9 = lean_string_append(x_8, x_5);
-lean_dec(x_5);
 return x_9;
 }
 }
@@ -1136,13 +1160,11 @@ default:
 {
 lean_object* x_12; lean_object* x_13; lean_object* x_14; 
 x_12 = lean_ctor_get(x_2, 0);
-lean_inc(x_12);
 x_13 = lean_ctor_get(x_2, 1);
-lean_inc(x_13);
-lean_dec(x_2);
 if (lean_obj_tag(x_12) == 0)
 {
 lean_object* x_20; 
+lean_inc(x_13);
 x_20 = l_Nat_repr(x_13);
 return x_20;
 }
@@ -1159,6 +1181,7 @@ lean_object* x_15; lean_object* x_16; lean_object* x_17; lean_object* x_18;
 lean_dec(x_14);
 x_15 = l_Lean_Name_toStringWithSep___main(x_1, x_12);
 x_16 = lean_string_append(x_15, x_1);
+lean_inc(x_13);
 x_17 = l_Nat_repr(x_13);
 x_18 = lean_string_append(x_16, x_17);
 lean_dec(x_17);
@@ -1173,6 +1196,7 @@ _start:
 {
 lean_object* x_3; 
 x_3 = l_Lean_Name_toStringWithSep___main(x_1, x_2);
+lean_dec(x_2);
 lean_dec(x_1);
 return x_3;
 }
@@ -1190,6 +1214,7 @@ _start:
 {
 lean_object* x_3; 
 x_3 = l_Lean_Name_toStringWithSep(x_1, x_2);
+lean_dec(x_2);
 lean_dec(x_1);
 return x_3;
 }
@@ -1211,11 +1236,20 @@ x_3 = l_Lean_Name_toStringWithSep___main(x_2, x_1);
 return x_3;
 }
 }
+lean_object* l_Lean_Name_toString___boxed(lean_object* x_1) {
+_start:
+{
+lean_object* x_2; 
+x_2 = l_Lean_Name_toString(x_1);
+lean_dec(x_1);
+return x_2;
+}
+}
 lean_object* _init_l_Lean_Name_HasToString___closed__1() {
 _start:
 {
 lean_object* x_1; 
-x_1 = lean_alloc_closure((void*)(l_Lean_Name_toString), 1, 0);
+x_1 = lean_alloc_closure((void*)(l_Lean_Name_toString___boxed), 1, 0);
 return x_1;
 }
 }

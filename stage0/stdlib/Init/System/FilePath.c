@@ -267,12 +267,8 @@ else
 {
 lean_object* x_4; lean_object* x_5; uint32_t x_6; uint8_t x_7; 
 x_4 = lean_ctor_get(x_2, 0);
-lean_inc(x_4);
 x_5 = lean_ctor_get(x_2, 1);
-lean_inc(x_5);
-lean_dec(x_2);
 x_6 = lean_unbox_uint32(x_4);
-lean_dec(x_4);
 x_7 = x_1 == x_6;
 if (x_7 == 0)
 {
@@ -282,7 +278,6 @@ goto _start;
 else
 {
 uint8_t x_9; 
-lean_dec(x_5);
 x_9 = 1;
 return x_9;
 }
@@ -393,6 +388,7 @@ uint32_t x_3; uint8_t x_4; lean_object* x_5;
 x_3 = lean_unbox_uint32(x_1);
 lean_dec(x_1);
 x_4 = l_List_elem___main___at_System_FilePath_splitSearchPath___spec__1(x_3, x_2);
+lean_dec(x_2);
 x_5 = lean_box(x_4);
 return x_5;
 }
@@ -470,13 +466,9 @@ else
 {
 lean_object* x_4; lean_object* x_5; uint8_t x_6; uint32_t x_7; uint8_t x_8; 
 x_4 = lean_ctor_get(x_3, 0);
-lean_inc(x_4);
 x_5 = lean_ctor_get(x_3, 1);
-lean_inc(x_5);
-lean_dec(x_3);
 x_6 = l_List_foldr___main___at_System_FilePath_normalizePath___spec__1(x_1, x_2, x_5);
 x_7 = lean_unbox_uint32(x_4);
-lean_dec(x_4);
 x_8 = x_1 == x_7;
 if (x_8 == 0)
 {
@@ -591,6 +583,7 @@ lean_dec(x_1);
 x_5 = lean_unbox(x_2);
 lean_dec(x_2);
 x_6 = l_List_foldr___main___at_System_FilePath_normalizePath___spec__1(x_4, x_5, x_3);
+lean_dec(x_3);
 x_7 = lean_box(x_6);
 return x_7;
 }

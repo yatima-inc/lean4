@@ -25,6 +25,7 @@ lean_object* l_String_toNat(lean_object*);
 lean_object* lean_io_mk_ref(lean_object*, lean_object*);
 lean_object* l_Lean_KVMap_setString(lean_object*, lean_object*, lean_object*);
 lean_object* lean_io_ref_get(lean_object*, lean_object*);
+lean_object* l_Lean_getOptionDecl___boxed(lean_object*, lean_object*);
 lean_object* l_Lean_maxMemoryOption(lean_object*);
 lean_object* l_Lean_getOptionDefaulValue(lean_object*, lean_object*);
 lean_object* l_Lean_getOptionDecls(lean_object*);
@@ -34,7 +35,6 @@ extern lean_object* l_String_splitAux___main___closed__1;
 lean_object* l_String_splitOn(lean_object*, lean_object*);
 lean_object* l_Lean_getOptionDecl___closed__1;
 uint8_t l_Lean_NameMap_contains___rarg(lean_object*, lean_object*);
-lean_object* l_Lean_KVMap_HasToString(lean_object*);
 lean_object* l_Lean_Options_HasToString___closed__1;
 lean_object* l_Lean_timeoutOption___closed__4;
 lean_object* l_Lean_registerOption___closed__1;
@@ -53,6 +53,7 @@ lean_object* l_Lean_KVMap_setInt(lean_object*, lean_object*, lean_object*);
 uint8_t l_String_isNat(lean_object*);
 lean_object* l_Lean_verboseOption___closed__4;
 lean_object* l_Lean_Options_empty;
+lean_object* l_Lean_getOptionDescr___boxed(lean_object*, lean_object*);
 lean_object* l_Lean_setOptionFromString___closed__5;
 lean_object* l_Lean_maxMemoryOption___closed__5;
 lean_object* l_Lean_maxMemoryOption___closed__3;
@@ -78,7 +79,9 @@ lean_object* l_Lean_timeoutOption___closed__3;
 lean_object* l_Lean_Options_HasEmptyc;
 lean_object* l_RBNode_fold___main___at_Lean_getOptionDeclsArray___spec__1(lean_object*, lean_object*);
 lean_object* l_Lean_Name_toStringWithSep___main(lean_object*, lean_object*);
+lean_object* l_Lean_KVMap_HasToString___boxed(lean_object*);
 lean_object* l_Lean_verboseOption___closed__5;
+lean_object* l_Lean_getOptionDefaulValue___boxed(lean_object*, lean_object*);
 lean_object* l_Lean_getOptionDescr(lean_object*, lean_object*);
 lean_object* l_Lean_timeoutOption(lean_object*);
 lean_object* l_Lean_setOptionFromString___closed__3;
@@ -116,7 +119,7 @@ lean_object* _init_l_Lean_Options_HasToString___closed__1() {
 _start:
 {
 lean_object* x_1; 
-x_1 = lean_alloc_closure((void*)(l_Lean_KVMap_HasToString), 1, 0);
+x_1 = lean_alloc_closure((void*)(l_Lean_KVMap_HasToString___boxed), 1, 0);
 return x_1;
 }
 }
@@ -184,6 +187,7 @@ lean_dec(x_7);
 lean_dec(x_2);
 x_12 = l_Lean_Name_toString___closed__1;
 x_13 = l_Lean_Name_toStringWithSep___main(x_12, x_1);
+lean_dec(x_1);
 x_14 = l_Lean_registerOption___closed__1;
 x_15 = lean_string_append(x_14, x_13);
 lean_dec(x_13);
@@ -217,6 +221,7 @@ lean_dec(x_18);
 lean_dec(x_2);
 x_23 = l_Lean_Name_toString___closed__1;
 x_24 = l_Lean_Name_toStringWithSep___main(x_23, x_1);
+lean_dec(x_1);
 x_25 = l_Lean_registerOption___closed__1;
 x_26 = lean_string_append(x_25, x_24);
 lean_dec(x_24);
@@ -445,7 +450,6 @@ return x_4;
 else
 {
 lean_object* x_14; 
-lean_dec(x_1);
 x_14 = lean_ctor_get(x_7, 0);
 lean_inc(x_14);
 lean_dec(x_7);
@@ -481,7 +485,6 @@ return x_24;
 else
 {
 lean_object* x_25; lean_object* x_26; 
-lean_dec(x_1);
 x_25 = lean_ctor_get(x_17, 0);
 lean_inc(x_25);
 lean_dec(x_17);
@@ -495,7 +498,6 @@ return x_26;
 else
 {
 uint8_t x_27; 
-lean_dec(x_1);
 x_27 = !lean_is_exclusive(x_4);
 if (x_27 == 0)
 {
@@ -523,6 +525,15 @@ _start:
 lean_object* x_3; 
 x_3 = l_RBNode_find___main___at_Lean_getOptionDecl___spec__1(x_1, x_2);
 lean_dec(x_2);
+lean_dec(x_1);
+return x_3;
+}
+}
+lean_object* l_Lean_getOptionDecl___boxed(lean_object* x_1, lean_object* x_2) {
+_start:
+{
+lean_object* x_3; 
+x_3 = l_Lean_getOptionDecl(x_1, x_2);
 lean_dec(x_1);
 return x_3;
 }
@@ -587,6 +598,15 @@ return x_14;
 }
 }
 }
+lean_object* l_Lean_getOptionDefaulValue___boxed(lean_object* x_1, lean_object* x_2) {
+_start:
+{
+lean_object* x_3; 
+x_3 = l_Lean_getOptionDefaulValue(x_1, x_2);
+lean_dec(x_1);
+return x_3;
+}
+}
 lean_object* l_Lean_getOptionDescr(lean_object* x_1, lean_object* x_2) {
 _start:
 {
@@ -645,6 +665,15 @@ lean_ctor_set(x_14, 1, x_13);
 return x_14;
 }
 }
+}
+}
+lean_object* l_Lean_getOptionDescr___boxed(lean_object* x_1, lean_object* x_2) {
+_start:
+{
+lean_object* x_3; 
+x_3 = l_Lean_getOptionDescr(x_1, x_2);
+lean_dec(x_1);
+return x_3;
 }
 }
 lean_object* l_List_map___main___at_Lean_setOptionFromString___spec__1(lean_object* x_1) {
@@ -781,6 +810,7 @@ lean_dec(x_9);
 lean_inc(x_13);
 x_15 = l_String_toName(x_13);
 x_16 = l_Lean_getOptionDefaulValue(x_15, x_3);
+lean_dec(x_15);
 if (lean_obj_tag(x_16) == 0)
 {
 lean_object* x_17; 

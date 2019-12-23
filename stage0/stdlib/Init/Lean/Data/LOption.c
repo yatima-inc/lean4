@@ -13,8 +13,10 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+lean_object* l_Lean_LOption_beq___rarg___boxed(lean_object*, lean_object*, lean_object*);
 extern lean_object* l_Option_HasRepr___rarg___closed__2;
 lean_object* l_toLOptionM___rarg___lambda__1___boxed(lean_object*, lean_object*);
+lean_object* l_Lean_LOption_HasToString___rarg___boxed(lean_object*, lean_object*);
 lean_object* l_Option_toLOption___rarg(lean_object*);
 lean_object* l_toLOptionM(lean_object*, lean_object*);
 extern lean_object* l_Option_HasRepr___rarg___closed__1;
@@ -65,7 +67,6 @@ case 1:
 lean_object* x_4; lean_object* x_5; lean_object* x_6; lean_object* x_7; lean_object* x_8; lean_object* x_9; 
 x_4 = lean_ctor_get(x_2, 0);
 lean_inc(x_4);
-lean_dec(x_2);
 x_5 = lean_apply_1(x_1, x_4);
 x_6 = l_Option_HasRepr___rarg___closed__2;
 x_7 = lean_string_append(x_6, x_5);
@@ -88,8 +89,17 @@ lean_object* l_Lean_LOption_HasToString(lean_object* x_1) {
 _start:
 {
 lean_object* x_2; 
-x_2 = lean_alloc_closure((void*)(l_Lean_LOption_HasToString___rarg), 2, 0);
+x_2 = lean_alloc_closure((void*)(l_Lean_LOption_HasToString___rarg___boxed), 2, 0);
 return x_2;
+}
+}
+lean_object* l_Lean_LOption_HasToString___rarg___boxed(lean_object* x_1, lean_object* x_2) {
+_start:
+{
+lean_object* x_3; 
+x_3 = l_Lean_LOption_HasToString___rarg(x_1, x_2);
+lean_dec(x_2);
+return x_3;
 }
 }
 lean_object* l_Lean_LOption_beq___rarg(lean_object* x_1, lean_object* x_2, lean_object* x_3) {
@@ -109,7 +119,6 @@ return x_5;
 else
 {
 uint8_t x_6; lean_object* x_7; 
-lean_dec(x_3);
 x_6 = 0;
 x_7 = lean_box(x_6);
 return x_7;
@@ -121,19 +130,15 @@ if (lean_obj_tag(x_3) == 1)
 {
 lean_object* x_8; lean_object* x_9; lean_object* x_10; 
 x_8 = lean_ctor_get(x_2, 0);
-lean_inc(x_8);
-lean_dec(x_2);
 x_9 = lean_ctor_get(x_3, 0);
 lean_inc(x_9);
-lean_dec(x_3);
+lean_inc(x_8);
 x_10 = lean_apply_2(x_1, x_8, x_9);
 return x_10;
 }
 else
 {
 uint8_t x_11; lean_object* x_12; 
-lean_dec(x_3);
-lean_dec(x_2);
 lean_dec(x_1);
 x_11 = 0;
 x_12 = lean_box(x_11);
@@ -153,7 +158,6 @@ return x_14;
 else
 {
 uint8_t x_15; lean_object* x_16; 
-lean_dec(x_3);
 x_15 = 0;
 x_16 = lean_box(x_15);
 return x_16;
@@ -166,15 +170,25 @@ lean_object* l_Lean_LOption_beq(lean_object* x_1) {
 _start:
 {
 lean_object* x_2; 
-x_2 = lean_alloc_closure((void*)(l_Lean_LOption_beq___rarg), 3, 0);
+x_2 = lean_alloc_closure((void*)(l_Lean_LOption_beq___rarg___boxed), 3, 0);
 return x_2;
+}
+}
+lean_object* l_Lean_LOption_beq___rarg___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3) {
+_start:
+{
+lean_object* x_4; 
+x_4 = l_Lean_LOption_beq___rarg(x_1, x_2, x_3);
+lean_dec(x_3);
+lean_dec(x_2);
+return x_4;
 }
 }
 lean_object* l_Lean_LOption_HasBeq___rarg(lean_object* x_1) {
 _start:
 {
 lean_object* x_2; 
-x_2 = lean_alloc_closure((void*)(l_Lean_LOption_beq___rarg), 3, 1);
+x_2 = lean_alloc_closure((void*)(l_Lean_LOption_beq___rarg___boxed), 3, 1);
 lean_closure_set(x_2, 0, x_1);
 return x_2;
 }
@@ -229,12 +243,9 @@ _start:
 {
 lean_object* x_3; lean_object* x_4; lean_object* x_5; lean_object* x_6; 
 x_3 = lean_ctor_get(x_1, 0);
-lean_inc(x_3);
-lean_dec(x_1);
 x_4 = lean_ctor_get(x_3, 1);
-lean_inc(x_4);
-lean_dec(x_3);
 x_5 = l_Option_toLOption___rarg(x_2);
+lean_inc(x_4);
 x_6 = lean_apply_2(x_4, lean_box(0), x_5);
 return x_6;
 }
@@ -265,6 +276,7 @@ _start:
 lean_object* x_3; 
 x_3 = l_toLOptionM___rarg___lambda__1(x_1, x_2);
 lean_dec(x_2);
+lean_dec(x_1);
 return x_3;
 }
 }

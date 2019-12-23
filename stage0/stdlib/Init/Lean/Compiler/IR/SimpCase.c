@@ -176,7 +176,6 @@ lean_dec(x_6);
 if (x_7 == 0)
 {
 lean_dec(x_4);
-lean_dec(x_2);
 return x_5;
 }
 else
@@ -185,8 +184,8 @@ lean_object* x_8; lean_object* x_9; uint8_t x_10; lean_object* x_11; lean_object
 x_8 = lean_array_fget(x_3, x_4);
 x_9 = l_Lean_IR_AltCore_body(x_8);
 lean_dec(x_8);
-lean_inc(x_2);
 x_10 = l_Lean_IR_FnBody_beq(x_9, x_2);
+lean_dec(x_9);
 x_11 = lean_unsigned_to_nat(1u);
 x_12 = lean_nat_add(x_4, x_11);
 lean_dec(x_4);
@@ -218,6 +217,7 @@ lean_dec(x_4);
 x_6 = lean_unsigned_to_nat(1u);
 x_7 = lean_nat_add(x_2, x_6);
 x_8 = l_Array_iterateMAux___main___at___private_Init_Lean_Compiler_IR_SimpCase_1__getOccsOf___spec__1(x_1, x_5, x_1, x_7, x_6);
+lean_dec(x_5);
 return x_8;
 }
 }
@@ -227,6 +227,7 @@ _start:
 lean_object* x_6; 
 x_6 = l_Array_iterateMAux___main___at___private_Init_Lean_Compiler_IR_SimpCase_1__getOccsOf___spec__1(x_1, x_2, x_3, x_4, x_5);
 lean_dec(x_3);
+lean_dec(x_2);
 lean_dec(x_1);
 return x_6;
 }
@@ -379,6 +380,8 @@ x_9 = l_Lean_IR_AltCore_body(x_8);
 lean_dec(x_8);
 x_10 = l_Lean_IR_AltCore_body(x_1);
 x_11 = l_Lean_IR_FnBody_beq(x_9, x_10);
+lean_dec(x_10);
+lean_dec(x_9);
 if (x_11 == 0)
 {
 uint8_t x_12; 
@@ -519,6 +522,7 @@ x_8 = l_Lean_IR_AltCore_body(x_7);
 lean_dec(x_7);
 x_9 = lean_box(13);
 x_10 = l_Lean_IR_FnBody_beq(x_8, x_9);
+lean_dec(x_8);
 if (x_10 == 0)
 {
 uint8_t x_11; 

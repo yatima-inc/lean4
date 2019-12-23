@@ -3525,7 +3525,6 @@ if (x_11 == 0)
 lean_dec(x_10);
 lean_dec(x_9);
 lean_dec(x_5);
-lean_dec(x_4);
 lean_dec(x_3);
 lean_dec(x_1);
 return x_6;
@@ -3538,7 +3537,6 @@ if (x_12 == 0)
 {
 lean_dec(x_10);
 lean_dec(x_9);
-lean_dec(x_4);
 lean_dec(x_3);
 lean_dec(x_1);
 return x_6;
@@ -3554,7 +3552,6 @@ x_14 = lean_ctor_get_uint8(x_10, 2);
 if (x_14 == 0)
 {
 lean_object* x_15; uint8_t x_16; 
-lean_dec(x_4);
 lean_dec(x_3);
 lean_dec(x_1);
 x_15 = lean_unsigned_to_nat(0u);
@@ -3687,7 +3684,6 @@ return x_6;
 else
 {
 lean_dec(x_5);
-lean_dec(x_4);
 lean_dec(x_3);
 lean_dec(x_1);
 return x_6;
@@ -3717,6 +3713,7 @@ _start:
 {
 lean_object* x_7; 
 x_7 = l___private_Init_Lean_Compiler_IR_RC_7__addIncBeforeAux___lambda__1(x_1, x_2, x_3, x_4, x_5, x_6);
+lean_dec(x_4);
 lean_dec(x_2);
 return x_7;
 }
@@ -5156,7 +5153,6 @@ _start:
 {
 lean_object* x_7; 
 lean_inc(x_6);
-lean_inc(x_4);
 x_7 = l_Lean_IR_LiveVars_collectExpr(x_4, x_6);
 switch (lean_obj_tag(x_4)) {
 case 0:
@@ -5681,7 +5677,6 @@ if (x_23 == 0)
 {
 lean_object* x_24; lean_object* x_25; lean_object* x_26; uint8_t x_27; 
 x_24 = lean_ctor_get(x_2, 3);
-lean_inc(x_22);
 lean_inc(x_13);
 x_25 = l_Lean_IR_LiveVars_updateJPLiveVarMap(x_13, x_14, x_22, x_24);
 lean_ctor_set(x_2, 3, x_25);
@@ -5726,7 +5721,6 @@ lean_inc(x_34);
 lean_inc(x_33);
 lean_inc(x_32);
 lean_dec(x_2);
-lean_inc(x_22);
 lean_inc(x_13);
 x_37 = l_Lean_IR_LiveVars_updateJPLiveVarMap(x_13, x_14, x_22, x_35);
 x_38 = lean_alloc_ctor(0, 5, 0);
@@ -5804,7 +5798,6 @@ if (lean_is_exclusive(x_2)) {
  lean_dec_ref(x_2);
  x_59 = lean_box(0);
 }
-lean_inc(x_53);
 lean_inc(x_44);
 x_60 = l_Lean_IR_LiveVars_updateJPLiveVarMap(x_44, x_45, x_53, x_57);
 if (lean_is_scalar(x_59)) {
@@ -6102,7 +6095,6 @@ lean_inc(x_141);
 x_142 = lean_ctor_get(x_2, 3);
 lean_inc(x_142);
 x_143 = lean_box(0);
-lean_inc(x_1);
 x_144 = l_Lean_IR_LiveVars_collectFnBody___main(x_1, x_142, x_143);
 x_145 = !lean_is_exclusive(x_1);
 if (x_145 == 0)
@@ -6232,7 +6224,6 @@ x_179 = lean_ctor_get(x_2, 3);
 lean_inc(x_179);
 lean_dec(x_2);
 x_180 = lean_box(0);
-lean_inc(x_178);
 x_181 = l_Lean_IR_LiveVars_collectFnBody___main(x_178, x_179, x_180);
 x_182 = lean_alloc_ctor(0, 2, 0);
 lean_ctor_set(x_182, 0, x_178);

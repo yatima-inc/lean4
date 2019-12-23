@@ -22,6 +22,7 @@ lean_object* l_Lean_IR_CtorFieldInfo_Lean_HasFormat___closed__1;
 lean_object* l_Lean_IR_CtorFieldInfo_format(lean_object*);
 lean_object* l_Lean_IR_CtorFieldInfo_format___closed__3;
 lean_object* l_Lean_IR_CtorFieldInfo_format___closed__1;
+lean_object* l_Lean_IR_CtorFieldInfo_format___boxed(lean_object*);
 lean_object* l_Lean_IR_CtorFieldInfo_format___closed__8;
 lean_object* l_Lean_IR_CtorFieldInfo_format___closed__9;
 lean_object* l_Lean_fmt___at_Lean_IR_CtorFieldInfo_format___spec__1___boxed(lean_object*);
@@ -138,7 +139,6 @@ case 1:
 lean_object* x_3; lean_object* x_4; uint8_t x_5; lean_object* x_6; lean_object* x_7; 
 x_3 = lean_ctor_get(x_1, 0);
 lean_inc(x_3);
-lean_dec(x_1);
 x_4 = l_Lean_fmt___at_Lean_Level_LevelToFormat_Result_format___main___spec__1(x_3);
 x_5 = 0;
 x_6 = l_Lean_IR_CtorFieldInfo_format___closed__2;
@@ -153,7 +153,6 @@ case 2:
 lean_object* x_8; lean_object* x_9; uint8_t x_10; lean_object* x_11; lean_object* x_12; 
 x_8 = lean_ctor_get(x_1, 0);
 lean_inc(x_8);
-lean_dec(x_1);
 x_9 = l_Lean_fmt___at_Lean_Level_LevelToFormat_Result_format___main___spec__1(x_8);
 x_10 = 0;
 x_11 = l_Lean_IR_CtorFieldInfo_format___closed__4;
@@ -167,12 +166,9 @@ default:
 {
 lean_object* x_13; lean_object* x_14; lean_object* x_15; lean_object* x_16; uint8_t x_17; lean_object* x_18; lean_object* x_19; lean_object* x_20; lean_object* x_21; lean_object* x_22; lean_object* x_23; lean_object* x_24; lean_object* x_25; lean_object* x_26; lean_object* x_27; 
 x_13 = lean_ctor_get(x_1, 0);
-lean_inc(x_13);
 x_14 = lean_ctor_get(x_1, 1);
-lean_inc(x_14);
 x_15 = lean_ctor_get(x_1, 2);
-lean_inc(x_15);
-lean_dec(x_1);
+lean_inc(x_13);
 x_16 = l_Lean_fmt___at_Lean_Level_LevelToFormat_Result_format___main___spec__1(x_13);
 x_17 = 0;
 x_18 = l_Lean_IR_CtorFieldInfo_format___closed__6;
@@ -185,6 +181,7 @@ x_21 = lean_alloc_ctor(4, 2, 1);
 lean_ctor_set(x_21, 0, x_19);
 lean_ctor_set(x_21, 1, x_20);
 lean_ctor_set_uint8(x_21, sizeof(void*)*2, x_17);
+lean_inc(x_14);
 x_22 = l_Lean_fmt___at_Lean_Level_LevelToFormat_Result_format___main___spec__1(x_14);
 x_23 = lean_alloc_ctor(4, 2, 1);
 lean_ctor_set(x_23, 0, x_21);
@@ -196,7 +193,6 @@ lean_ctor_set(x_25, 0, x_23);
 lean_ctor_set(x_25, 1, x_24);
 lean_ctor_set_uint8(x_25, sizeof(void*)*2, x_17);
 x_26 = l___private_Init_Lean_Compiler_IR_Format_5__formatIRType___main(x_15);
-lean_dec(x_15);
 x_27 = lean_alloc_ctor(4, 2, 1);
 lean_ctor_set(x_27, 0, x_25);
 lean_ctor_set(x_27, 1, x_26);
@@ -215,11 +211,20 @@ lean_dec(x_1);
 return x_2;
 }
 }
+lean_object* l_Lean_IR_CtorFieldInfo_format___boxed(lean_object* x_1) {
+_start:
+{
+lean_object* x_2; 
+x_2 = l_Lean_IR_CtorFieldInfo_format(x_1);
+lean_dec(x_1);
+return x_2;
+}
+}
 lean_object* _init_l_Lean_IR_CtorFieldInfo_Lean_HasFormat___closed__1() {
 _start:
 {
 lean_object* x_1; 
-x_1 = lean_alloc_closure((void*)(l_Lean_IR_CtorFieldInfo_format), 1, 0);
+x_1 = lean_alloc_closure((void*)(l_Lean_IR_CtorFieldInfo_format___boxed), 1, 0);
 return x_1;
 }
 }

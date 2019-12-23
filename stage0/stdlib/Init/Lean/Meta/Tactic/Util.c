@@ -24,6 +24,7 @@ extern lean_object* l___private_Init_Lean_Meta_Basic_11__regTraceClasses___close
 lean_object* l___private_Init_Lean_Meta_Tactic_Util_1__regTraceClasses(lean_object*);
 lean_object* lean_name_mk_string(lean_object*, lean_object*);
 lean_object* l_Lean_Meta_getMVarType___boxed(lean_object*, lean_object*, lean_object*);
+lean_object* l_Lean_Meta_mkFreshExprSyntheticOpaqueMVar___boxed(lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_Lean_Meta_checkNotAssigned(lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_Lean_Meta_mkFreshExprMVar(lean_object*, lean_object*, uint8_t, lean_object*, lean_object*);
 lean_object* l_Lean_Meta_getMVarDecl(lean_object*, lean_object*, lean_object*);
@@ -37,6 +38,15 @@ uint8_t x_5; lean_object* x_6;
 x_5 = 2;
 x_6 = l_Lean_Meta_mkFreshExprMVar(x_1, x_2, x_5, x_3, x_4);
 return x_6;
+}
+}
+lean_object* l_Lean_Meta_mkFreshExprSyntheticOpaqueMVar___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3, lean_object* x_4) {
+_start:
+{
+lean_object* x_5; 
+x_5 = l_Lean_Meta_mkFreshExprSyntheticOpaqueMVar(x_1, x_2, x_3, x_4);
+lean_dec(x_3);
+return x_5;
 }
 }
 lean_object* _init_l_Lean_Meta_checkNotAssigned___closed__1() {

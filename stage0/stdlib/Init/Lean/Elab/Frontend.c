@@ -18,11 +18,13 @@ lean_object* l_Lean_Parser_parseHeader(lean_object*, lean_object*);
 lean_object* l___private_Init_Lean_Elab_Frontend_1__getCmdContext(lean_object*, lean_object*);
 lean_object* l_Lean_Elab_Frontend_runCommandElabM___boxed(lean_object*, lean_object*, lean_object*);
 extern lean_object* l_Lean_Parser_ModuleParserState_inhabited___closed__1;
+lean_object* l_Lean_Elab_process___boxed(lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_Lean_Elab_Frontend_runCommandElabM(lean_object*, lean_object*, lean_object*);
 lean_object* l_PersistentArray_push___rarg(lean_object*, lean_object*);
 lean_object* l_Lean_Elab_Frontend_processCommandsAux___main___rarg(lean_object*, lean_object*);
 lean_object* l_Lean_Elab_processHeader(lean_object*, lean_object*, lean_object*, uint32_t, lean_object*);
 extern lean_object* l_Lean_Elab_parseImports___closed__1;
+lean_object* l_Lean_Elab_testFrontend___boxed(lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_Lean_Elab_Command_mkState(lean_object*, lean_object*, lean_object*);
 lean_object* l_Lean_Parser_parseCommand___main(lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_Lean_Elab_Frontend_processCommandsAux___boxed(lean_object*);
@@ -918,7 +920,6 @@ else
 lean_object* x_25; lean_object* x_26; lean_object* x_27; 
 x_25 = lean_ctor_get(x_4, 0);
 lean_inc(x_25);
-lean_dec(x_4);
 x_26 = l_Lean_Parser_mkParserContextCore(x_2, x_1, x_25);
 lean_dec(x_2);
 x_27 = l_Lean_Elab_Frontend_processCommandsAux___main___rarg(x_26, x_21);
@@ -967,6 +968,15 @@ lean_ctor_set(x_18, 1, x_17);
 return x_18;
 }
 }
+}
+}
+lean_object* l_Lean_Elab_process___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3, lean_object* x_4) {
+_start:
+{
+lean_object* x_5; 
+x_5 = l_Lean_Elab_process(x_1, x_2, x_3, x_4);
+lean_dec(x_4);
+return x_5;
 }
 }
 lean_object* l_Lean_Elab_testFrontend(lean_object* x_1, lean_object* x_2, lean_object* x_3, lean_object* x_4) {
@@ -1145,7 +1155,6 @@ lean_inc(x_54);
 lean_dec(x_6);
 x_55 = lean_ctor_get(x_3, 0);
 lean_inc(x_55);
-lean_dec(x_3);
 x_56 = l_Lean_Parser_mkParserContextCore(x_53, x_1, x_55);
 lean_inc(x_56);
 x_57 = l_Lean_Parser_parseHeader(x_53, x_56);
@@ -1299,7 +1308,6 @@ return x_98;
 else
 {
 uint8_t x_99; 
-lean_dec(x_3);
 lean_dec(x_2);
 lean_dec(x_1);
 x_99 = !lean_is_exclusive(x_6);
@@ -1321,6 +1329,15 @@ lean_ctor_set(x_102, 1, x_101);
 return x_102;
 }
 }
+}
+}
+lean_object* l_Lean_Elab_testFrontend___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3, lean_object* x_4) {
+_start:
+{
+lean_object* x_5; 
+x_5 = l_Lean_Elab_testFrontend(x_1, x_2, x_3, x_4);
+lean_dec(x_3);
+return x_5;
 }
 }
 lean_object* initialize_Init_Lean_Elab_Import(lean_object*);

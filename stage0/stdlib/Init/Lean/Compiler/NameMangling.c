@@ -21,6 +21,7 @@ extern lean_object* l_String_splitAux___main___closed__1;
 uint8_t lean_nat_dec_eq(lean_object*, lean_object*);
 extern lean_object* l_Lean_Name_appendIndexAfter___closed__1;
 lean_object* lean_nat_sub(lean_object*, lean_object*);
+lean_object* l___private_Init_Lean_Compiler_NameMangling_2__Name_mangleAux___boxed(lean_object*);
 lean_object* l___private_Init_Lean_Compiler_NameMangling_1__String_mangleAux(lean_object*, lean_object*, lean_object*);
 lean_object* l_Nat_repr(lean_object*);
 lean_object* l___private_Init_Lean_Compiler_NameMangling_1__String_mangleAux___main___closed__1;
@@ -36,6 +37,7 @@ uint32_t l_String_Iterator_curr(lean_object*);
 lean_object* lean_name_mangle(lean_object*, lean_object*);
 lean_object* lean_string_length(lean_object*);
 lean_object* lean_nat_mod(lean_object*, lean_object*);
+lean_object* l___private_Init_Lean_Compiler_NameMangling_2__Name_mangleAux___main___boxed(lean_object*);
 lean_object* lean_uint32_to_nat(uint32_t);
 lean_object* l___private_Init_Lean_Compiler_NameMangling_1__String_mangleAux___main___closed__3;
 uint8_t lean_nat_dec_lt(lean_object*, lean_object*);
@@ -228,10 +230,8 @@ case 1:
 {
 lean_object* x_3; lean_object* x_4; lean_object* x_5; lean_object* x_6; 
 x_3 = lean_ctor_get(x_1, 0);
-lean_inc(x_3);
 x_4 = lean_ctor_get(x_1, 1);
 lean_inc(x_4);
-lean_dec(x_1);
 x_5 = l_Lean_String_mangle(x_4);
 if (lean_obj_tag(x_3) == 0)
 {
@@ -260,13 +260,11 @@ default:
 {
 lean_object* x_13; lean_object* x_14; lean_object* x_15; lean_object* x_16; lean_object* x_17; lean_object* x_18; lean_object* x_19; lean_object* x_20; 
 x_13 = lean_ctor_get(x_1, 0);
-lean_inc(x_13);
 x_14 = lean_ctor_get(x_1, 1);
-lean_inc(x_14);
-lean_dec(x_1);
 x_15 = l___private_Init_Lean_Compiler_NameMangling_2__Name_mangleAux___main(x_13);
 x_16 = l_Lean_Name_appendIndexAfter___closed__1;
 x_17 = lean_string_append(x_15, x_16);
+lean_inc(x_14);
 x_18 = l_Nat_repr(x_14);
 x_19 = lean_string_append(x_17, x_18);
 lean_dec(x_18);
@@ -274,6 +272,15 @@ x_20 = lean_string_append(x_19, x_16);
 return x_20;
 }
 }
+}
+}
+lean_object* l___private_Init_Lean_Compiler_NameMangling_2__Name_mangleAux___main___boxed(lean_object* x_1) {
+_start:
+{
+lean_object* x_2; 
+x_2 = l___private_Init_Lean_Compiler_NameMangling_2__Name_mangleAux___main(x_1);
+lean_dec(x_1);
+return x_2;
 }
 }
 lean_object* l___private_Init_Lean_Compiler_NameMangling_2__Name_mangleAux(lean_object* x_1) {
@@ -284,11 +291,21 @@ x_2 = l___private_Init_Lean_Compiler_NameMangling_2__Name_mangleAux___main(x_1);
 return x_2;
 }
 }
+lean_object* l___private_Init_Lean_Compiler_NameMangling_2__Name_mangleAux___boxed(lean_object* x_1) {
+_start:
+{
+lean_object* x_2; 
+x_2 = l___private_Init_Lean_Compiler_NameMangling_2__Name_mangleAux(x_1);
+lean_dec(x_1);
+return x_2;
+}
+}
 lean_object* lean_name_mangle(lean_object* x_1, lean_object* x_2) {
 _start:
 {
 lean_object* x_3; lean_object* x_4; 
 x_3 = l___private_Init_Lean_Compiler_NameMangling_2__Name_mangleAux___main(x_1);
+lean_dec(x_1);
 x_4 = lean_string_append(x_2, x_3);
 lean_dec(x_3);
 return x_4;

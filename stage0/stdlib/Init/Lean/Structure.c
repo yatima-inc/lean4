@@ -31,6 +31,7 @@ lean_object* l___private_Init_Lean_Structure_2__isSubobjectFieldAux___main(lean_
 lean_object* l_Array_findMAux___main___at_Lean_findField_x3f___main___spec__3(lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_Lean_Expr_getAppFn___main(lean_object*);
 lean_object* l_Array_contains___at_Lean_findField_x3f___main___spec__1___boxed(lean_object*, lean_object*);
+lean_object* l_Lean_deinternalizeFieldName___boxed(lean_object*);
 uint8_t l_Lean_Environment_isProjectionFn(lean_object*, lean_object*);
 lean_object* lean_nat_add(lean_object*, lean_object*);
 lean_object* l___private_Init_Lean_Structure_2__isSubobjectFieldAux___boxed(lean_object*, lean_object*, lean_object*, lean_object*);
@@ -247,17 +248,14 @@ if (lean_obj_tag(x_1) == 1)
 {
 lean_object* x_2; lean_object* x_3; lean_object* x_4; lean_object* x_5; uint8_t x_6; 
 x_2 = lean_ctor_get(x_1, 0);
-lean_inc(x_2);
 x_3 = lean_ctor_get(x_1, 1);
-lean_inc(x_3);
 x_4 = lean_string_length(x_3);
 x_5 = lean_unsigned_to_nat(0u);
 x_6 = lean_nat_dec_lt(x_5, x_4);
 lean_dec(x_4);
 if (x_6 == 0)
 {
-lean_dec(x_3);
-lean_dec(x_2);
+lean_inc(x_1);
 return x_1;
 }
 else
@@ -268,17 +266,15 @@ x_8 = 95;
 x_9 = x_7 == x_8;
 if (x_9 == 0)
 {
-lean_dec(x_3);
-lean_dec(x_2);
+lean_inc(x_1);
 return x_1;
 }
 else
 {
 lean_object* x_10; lean_object* x_11; lean_object* x_12; 
-lean_dec(x_1);
 x_10 = lean_unsigned_to_nat(1u);
 x_11 = l_String_drop(x_3, x_10);
-lean_dec(x_3);
+lean_inc(x_2);
 x_12 = lean_name_mk_string(x_2, x_11);
 return x_12;
 }
@@ -286,8 +282,18 @@ return x_12;
 }
 else
 {
+lean_inc(x_1);
 return x_1;
 }
+}
+}
+lean_object* l_Lean_deinternalizeFieldName___boxed(lean_object* x_1) {
+_start:
+{
+lean_object* x_2; 
+x_2 = l_Lean_deinternalizeFieldName(x_1);
+lean_dec(x_1);
+return x_2;
 }
 }
 lean_object* _init_l_Lean_getStructureCtor___closed__1() {
@@ -472,10 +478,7 @@ if (lean_obj_tag(x_3) == 7)
 {
 lean_object* x_5; lean_object* x_6; uint8_t x_7; 
 x_5 = lean_ctor_get(x_3, 0);
-lean_inc(x_5);
 x_6 = lean_ctor_get(x_3, 2);
-lean_inc(x_6);
-lean_dec(x_3);
 x_7 = lean_nat_dec_lt(x_2, x_1);
 if (x_7 == 0)
 {
@@ -493,7 +496,6 @@ goto _start;
 else
 {
 lean_object* x_13; lean_object* x_14; 
-lean_dec(x_5);
 x_13 = lean_unsigned_to_nat(1u);
 x_14 = lean_nat_add(x_2, x_13);
 lean_dec(x_2);
@@ -504,7 +506,6 @@ goto _start;
 }
 else
 {
-lean_dec(x_3);
 lean_dec(x_2);
 return x_4;
 }
@@ -515,6 +516,7 @@ _start:
 {
 lean_object* x_5; 
 x_5 = l___private_Init_Lean_Structure_1__getStructureFieldsAux___main(x_1, x_2, x_3, x_4);
+lean_dec(x_3);
 lean_dec(x_1);
 return x_5;
 }
@@ -532,6 +534,7 @@ _start:
 {
 lean_object* x_5; 
 x_5 = l___private_Init_Lean_Structure_1__getStructureFieldsAux(x_1, x_2, x_3, x_4);
+lean_dec(x_3);
 lean_dec(x_1);
 return x_5;
 }
@@ -552,6 +555,7 @@ lean_dec(x_5);
 x_7 = lean_unsigned_to_nat(0u);
 x_8 = l_Array_empty___closed__1;
 x_9 = l___private_Init_Lean_Structure_1__getStructureFieldsAux___main(x_4, x_7, x_6, x_8);
+lean_dec(x_6);
 lean_dec(x_4);
 return x_9;
 }
@@ -1032,25 +1036,21 @@ if (lean_obj_tag(x_5) == 7)
 {
 lean_object* x_6; lean_object* x_7; uint8_t x_8; 
 x_6 = lean_ctor_get(x_5, 0);
-lean_inc(x_6);
 x_7 = lean_ctor_get(x_5, 2);
-lean_inc(x_7);
-lean_dec(x_5);
 x_8 = lean_nat_dec_lt(x_4, x_3);
 if (x_8 == 0)
 {
 lean_object* x_9; lean_object* x_10; uint8_t x_11; 
-lean_dec(x_7);
 lean_dec(x_4);
 x_9 = l_Lean_deinternalizeFieldName(x_6);
 x_10 = l_Lean_Name_append___main(x_2, x_9);
+lean_dec(x_9);
 x_11 = l_Lean_Environment_isProjectionFn(x_1, x_10);
 return x_11;
 }
 else
 {
 lean_object* x_12; lean_object* x_13; 
-lean_dec(x_6);
 x_12 = lean_unsigned_to_nat(1u);
 x_13 = lean_nat_add(x_4, x_12);
 lean_dec(x_4);
@@ -1062,7 +1062,6 @@ goto _start;
 else
 {
 uint8_t x_15; 
-lean_dec(x_5);
 lean_dec(x_4);
 x_15 = 0;
 return x_15;
@@ -1074,6 +1073,7 @@ _start:
 {
 uint8_t x_6; lean_object* x_7; 
 x_6 = l___private_Init_Lean_Structure_4__hasProjFn___main(x_1, x_2, x_3, x_4, x_5);
+lean_dec(x_5);
 lean_dec(x_3);
 lean_dec(x_2);
 lean_dec(x_1);
@@ -1094,6 +1094,7 @@ _start:
 {
 uint8_t x_6; lean_object* x_7; 
 x_6 = l___private_Init_Lean_Structure_4__hasProjFn(x_1, x_2, x_3, x_4, x_5);
+lean_dec(x_5);
 lean_dec(x_3);
 lean_dec(x_2);
 lean_dec(x_1);
@@ -1132,6 +1133,7 @@ lean_inc(x_8);
 lean_dec(x_7);
 x_9 = lean_unsigned_to_nat(0u);
 x_10 = l___private_Init_Lean_Structure_4__hasProjFn___main(x_1, x_2, x_6, x_9, x_8);
+lean_dec(x_8);
 lean_dec(x_6);
 lean_dec(x_2);
 lean_dec(x_1);
@@ -1190,6 +1192,7 @@ x_15 = lean_ctor_get(x_11, 0);
 lean_inc(x_15);
 lean_dec(x_11);
 x_16 = l_Lean_Name_append___main(x_3, x_10);
+lean_dec(x_10);
 lean_inc(x_4);
 x_17 = lean_alloc_ctor(1, 2, 0);
 lean_ctor_set(x_17, 0, x_16);

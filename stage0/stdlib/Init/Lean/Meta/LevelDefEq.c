@@ -1172,7 +1172,6 @@ x_11 = l_Lean_Level_occurs___main(x_1, x_2);
 if (x_11 == 0)
 {
 uint8_t x_12; lean_object* x_13; 
-lean_dec(x_1);
 x_12 = 0;
 x_13 = lean_box(x_12);
 lean_ctor_set(x_6, 0, x_13);
@@ -1182,7 +1181,6 @@ else
 {
 uint8_t x_14; 
 x_14 = l___private_Init_Lean_Meta_LevelDefEq_3__strictOccursMax(x_1, x_2);
-lean_dec(x_1);
 if (x_14 == 0)
 {
 uint8_t x_15; lean_object* x_16; 
@@ -1211,7 +1209,6 @@ x_20 = l_Lean_Level_occurs___main(x_1, x_2);
 if (x_20 == 0)
 {
 uint8_t x_21; lean_object* x_22; lean_object* x_23; 
-lean_dec(x_1);
 x_21 = 0;
 x_22 = lean_box(x_21);
 x_23 = lean_alloc_ctor(0, 2, 0);
@@ -1223,7 +1220,6 @@ else
 {
 uint8_t x_24; 
 x_24 = l___private_Init_Lean_Meta_LevelDefEq_3__strictOccursMax(x_1, x_2);
-lean_dec(x_1);
 if (x_24 == 0)
 {
 uint8_t x_25; lean_object* x_26; lean_object* x_27; 
@@ -1250,7 +1246,6 @@ return x_30;
 else
 {
 uint8_t x_31; 
-lean_dec(x_1);
 x_31 = !lean_is_exclusive(x_6);
 if (x_31 == 0)
 {
@@ -1280,7 +1275,6 @@ return x_38;
 else
 {
 uint8_t x_39; 
-lean_dec(x_1);
 x_39 = !lean_is_exclusive(x_6);
 if (x_39 == 0)
 {
@@ -1304,7 +1298,6 @@ return x_42;
 else
 {
 uint8_t x_43; lean_object* x_44; lean_object* x_45; 
-lean_dec(x_1);
 x_43 = 2;
 x_44 = lean_box(x_43);
 x_45 = lean_alloc_ctor(0, 2, 0);
@@ -1321,6 +1314,7 @@ lean_object* x_5;
 x_5 = l___private_Init_Lean_Meta_LevelDefEq_7__getLevelConstraintKind(x_1, x_2, x_3, x_4);
 lean_dec(x_3);
 lean_dec(x_2);
+lean_dec(x_1);
 return x_5;
 }
 }
@@ -1746,7 +1740,6 @@ block_345:
 {
 lean_object* x_22; 
 lean_dec(x_21);
-lean_inc(x_1);
 x_22 = l___private_Init_Lean_Meta_LevelDefEq_7__getLevelConstraintKind(x_1, x_2, x_3, x_13);
 if (lean_obj_tag(x_22) == 0)
 {
@@ -1834,7 +1827,6 @@ lean_object* x_48; lean_object* x_49; lean_object* x_50;
 x_48 = lean_ctor_get(x_22, 1);
 x_49 = lean_ctor_get(x_22, 0);
 lean_dec(x_49);
-lean_inc(x_2);
 x_50 = l___private_Init_Lean_Meta_LevelDefEq_7__getLevelConstraintKind(x_2, x_1, x_3, x_48);
 if (lean_obj_tag(x_50) == 0)
 {
@@ -2522,7 +2514,6 @@ lean_object* x_207; lean_object* x_208;
 x_207 = lean_ctor_get(x_22, 1);
 lean_inc(x_207);
 lean_dec(x_22);
-lean_inc(x_2);
 x_208 = l___private_Init_Lean_Meta_LevelDefEq_7__getLevelConstraintKind(x_2, x_1, x_3, x_207);
 if (lean_obj_tag(x_208) == 0)
 {
@@ -3369,7 +3360,6 @@ block_534:
 {
 lean_object* x_376; 
 lean_dec(x_375);
-lean_inc(x_1);
 x_376 = l___private_Init_Lean_Meta_LevelDefEq_7__getLevelConstraintKind(x_1, x_2, x_3, x_367);
 if (lean_obj_tag(x_376) == 0)
 {
@@ -3452,7 +3442,6 @@ if (lean_is_exclusive(x_376)) {
  lean_dec_ref(x_376);
  x_396 = lean_box(0);
 }
-lean_inc(x_2);
 x_397 = l___private_Init_Lean_Meta_LevelDefEq_7__getLevelConstraintKind(x_2, x_1, x_3, x_395);
 if (lean_obj_tag(x_397) == 0)
 {
@@ -4241,6 +4230,7 @@ _start:
 lean_object* x_4; 
 x_4 = l___private_Init_Lean_Util_Trace_5__checkTraceOptionM___at_Lean_Meta_isLevelDefEqAux___main___spec__1(x_1, x_2, x_3);
 lean_dec(x_2);
+lean_dec(x_1);
 return x_4;
 }
 }
@@ -4297,7 +4287,6 @@ return x_7;
 else
 {
 uint8_t x_8; lean_object* x_9; lean_object* x_10; 
-lean_dec(x_2);
 x_8 = 0;
 x_9 = lean_box(x_8);
 x_10 = lean_alloc_ctor(0, 2, 0);
@@ -4311,7 +4300,6 @@ else
 if (lean_obj_tag(x_2) == 0)
 {
 uint8_t x_11; lean_object* x_12; lean_object* x_13; 
-lean_dec(x_1);
 x_11 = 0;
 x_12 = lean_box(x_11);
 x_13 = lean_alloc_ctor(0, 2, 0);
@@ -4323,15 +4311,11 @@ else
 {
 lean_object* x_14; lean_object* x_15; lean_object* x_16; lean_object* x_17; lean_object* x_18; 
 x_14 = lean_ctor_get(x_1, 0);
-lean_inc(x_14);
 x_15 = lean_ctor_get(x_1, 1);
-lean_inc(x_15);
-lean_dec(x_1);
 x_16 = lean_ctor_get(x_2, 0);
-lean_inc(x_16);
 x_17 = lean_ctor_get(x_2, 1);
-lean_inc(x_17);
-lean_dec(x_2);
+lean_inc(x_16);
+lean_inc(x_14);
 x_18 = l_Lean_Meta_isLevelDefEqAux___main(x_14, x_16, x_3, x_4);
 if (lean_obj_tag(x_18) == 0)
 {
@@ -4342,8 +4326,6 @@ x_20 = lean_unbox(x_19);
 if (x_20 == 0)
 {
 uint8_t x_21; 
-lean_dec(x_17);
-lean_dec(x_15);
 x_21 = !lean_is_exclusive(x_18);
 if (x_21 == 0)
 {
@@ -4380,8 +4362,6 @@ goto _start;
 else
 {
 uint8_t x_27; 
-lean_dec(x_17);
-lean_dec(x_15);
 x_27 = !lean_is_exclusive(x_18);
 if (x_27 == 0)
 {
@@ -4411,6 +4391,8 @@ _start:
 lean_object* x_5; 
 x_5 = l_Lean_Meta_isListLevelDefEqAux___main(x_1, x_2, x_3, x_4);
 lean_dec(x_3);
+lean_dec(x_2);
+lean_dec(x_1);
 return x_5;
 }
 }
@@ -4428,6 +4410,8 @@ _start:
 lean_object* x_5; 
 x_5 = l_Lean_Meta_isListLevelDefEqAux(x_1, x_2, x_3, x_4);
 lean_dec(x_3);
+lean_dec(x_2);
+lean_dec(x_1);
 return x_5;
 }
 }

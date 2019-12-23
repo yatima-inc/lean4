@@ -54,7 +54,9 @@ lean_object* l___private_Init_Lean_Data_Position_1__ofStringAux(lean_object*, le
 uint8_t l_UInt32_decEq(uint32_t, uint32_t);
 lean_object* l_Lean_Position_Lean_HasFormat___closed__1;
 lean_object* l___private_Init_Lean_Data_Position_2__toColumnAux___main(lean_object*, lean_object*, lean_object*, lean_object*);
+lean_object* l_Lean_Position_Lean_HasFormat___boxed(lean_object*);
 lean_object* l_Lean_Position_DecidableEq___boxed(lean_object*, lean_object*);
+lean_object* l_Lean_Position_HasToString___boxed(lean_object*);
 lean_object* l___private_Init_Lean_Data_Position_2__toColumnAux(lean_object*, lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_Lean_FileMap_Inhabited___closed__1;
 lean_object* l_Lean_Position_lt___closed__1;
@@ -152,6 +154,8 @@ lean_ctor_set(x_8, 1, x_6);
 x_9 = l_Lean_Position_lt___closed__1;
 x_10 = l_Lean_Position_lt___closed__2;
 x_11 = l_prodHasDecidableLt___rarg(x_9, x_9, x_10, x_10, x_7, x_8);
+lean_dec(x_8);
+lean_dec(x_7);
 return x_11;
 }
 }
@@ -201,10 +205,8 @@ _start:
 {
 lean_object* x_2; lean_object* x_3; lean_object* x_4; uint8_t x_5; lean_object* x_6; lean_object* x_7; lean_object* x_8; lean_object* x_9; lean_object* x_10; lean_object* x_11; lean_object* x_12; lean_object* x_13; 
 x_2 = lean_ctor_get(x_1, 0);
-lean_inc(x_2);
 x_3 = lean_ctor_get(x_1, 1);
-lean_inc(x_3);
-lean_dec(x_1);
+lean_inc(x_2);
 x_4 = l_Lean_fmt___at_Lean_Position_Lean_HasFormat___spec__1(x_2);
 x_5 = 0;
 x_6 = l_Lean_Position_Lean_HasFormat___closed__1;
@@ -217,6 +219,7 @@ x_9 = lean_alloc_ctor(4, 2, 1);
 lean_ctor_set(x_9, 0, x_7);
 lean_ctor_set(x_9, 1, x_8);
 lean_ctor_set_uint8(x_9, sizeof(void*)*2, x_5);
+lean_inc(x_3);
 x_10 = l_Lean_fmt___at_Lean_Position_Lean_HasFormat___spec__1(x_3);
 x_11 = lean_alloc_ctor(4, 2, 1);
 lean_ctor_set(x_11, 0, x_9);
@@ -230,27 +233,44 @@ lean_ctor_set_uint8(x_13, sizeof(void*)*2, x_5);
 return x_13;
 }
 }
+lean_object* l_Lean_Position_Lean_HasFormat___boxed(lean_object* x_1) {
+_start:
+{
+lean_object* x_2; 
+x_2 = l_Lean_Position_Lean_HasFormat(x_1);
+lean_dec(x_1);
+return x_2;
+}
+}
 lean_object* l_Lean_Position_HasToString(lean_object* x_1) {
 _start:
 {
 lean_object* x_2; lean_object* x_3; lean_object* x_4; lean_object* x_5; lean_object* x_6; lean_object* x_7; lean_object* x_8; lean_object* x_9; lean_object* x_10; lean_object* x_11; lean_object* x_12; 
 x_2 = lean_ctor_get(x_1, 0);
-lean_inc(x_2);
 x_3 = lean_ctor_get(x_1, 1);
-lean_inc(x_3);
-lean_dec(x_1);
+lean_inc(x_2);
 x_4 = l_Nat_repr(x_2);
 x_5 = l_Sigma_HasRepr___rarg___closed__1;
 x_6 = lean_string_append(x_5, x_4);
 lean_dec(x_4);
 x_7 = l_List_reprAux___main___rarg___closed__1;
 x_8 = lean_string_append(x_6, x_7);
+lean_inc(x_3);
 x_9 = l_Nat_repr(x_3);
 x_10 = lean_string_append(x_8, x_9);
 lean_dec(x_9);
 x_11 = l_Sigma_HasRepr___rarg___closed__2;
 x_12 = lean_string_append(x_10, x_11);
 return x_12;
+}
+}
+lean_object* l_Lean_Position_HasToString___boxed(lean_object* x_1) {
+_start:
+{
+lean_object* x_2; 
+x_2 = l_Lean_Position_HasToString(x_1);
+lean_dec(x_1);
+return x_2;
 }
 }
 lean_object* _init_l_Lean_Position_Inhabited___closed__1() {

@@ -45,6 +45,7 @@ lean_object* l_Array_umapMAux___main___at_Lean_IR_ExpandResetReuse_reuseToSet___
 lean_object* l_Array_umapMAux___main___at_Lean_IR_ExpandResetReuse_reuseToSet___main___spec__1(lean_object*, lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_Lean_IR_ExpandResetReuse_reuseToCtor___main(lean_object*, lean_object*);
 lean_object* l_mkHashMap___at_Lean_IR_ExpandResetReuse_mkProjMap___spec__1(lean_object*);
+lean_object* l_Lean_IR_ExpandResetReuse_mkProjMap___boxed(lean_object*);
 lean_object* l_Lean_IR_ExpandResetReuse_removeSelfSet(lean_object*, lean_object*);
 lean_object* l_AssocList_replace___main___at_Lean_IR_ExpandResetReuse_CollectProjMap_collectVDecl___spec__6(lean_object*, lean_object*, lean_object*);
 lean_object* l_AssocList_foldlM___main___at_Lean_IR_ExpandResetReuse_CollectProjMap_collectVDecl___spec__5(lean_object*, lean_object*);
@@ -648,19 +649,26 @@ if (lean_obj_tag(x_1) == 0)
 {
 lean_object* x_2; lean_object* x_3; lean_object* x_4; 
 x_2 = lean_ctor_get(x_1, 3);
-lean_inc(x_2);
-lean_dec(x_1);
 x_3 = l_Lean_IR_ExpandResetReuse_mkProjMap___closed__1;
+lean_inc(x_2);
 x_4 = l_Lean_IR_ExpandResetReuse_CollectProjMap_collectFnBody___main(x_2, x_3);
 return x_4;
 }
 else
 {
 lean_object* x_5; 
-lean_dec(x_1);
 x_5 = l_Lean_IR_ExpandResetReuse_mkProjMap___closed__1;
 return x_5;
 }
+}
+}
+lean_object* l_Lean_IR_ExpandResetReuse_mkProjMap___boxed(lean_object* x_1) {
+_start:
+{
+lean_object* x_2; 
+x_2 = l_Lean_IR_ExpandResetReuse_mkProjMap(x_1);
+lean_dec(x_1);
+return x_2;
 }
 }
 uint8_t l_Array_anyRangeMAux___main___at_Lean_IR_ExpandResetReuse_consumed___main___spec__1(lean_object* x_1, lean_object* x_2, lean_object* x_3, lean_object* x_4, lean_object* x_5) {
@@ -3448,10 +3456,8 @@ x_4 = lean_ctor_get(x_1, 2);
 lean_inc(x_4);
 x_5 = lean_ctor_get(x_1, 3);
 lean_inc(x_5);
-lean_inc(x_1);
 x_6 = l_Lean_IR_ExpandResetReuse_mkProjMap(x_1);
 x_7 = lean_unsigned_to_nat(0u);
-lean_inc(x_1);
 x_8 = l_Lean_IR_MaxIndex_collectDecl(x_1, x_7);
 x_9 = !lean_is_exclusive(x_1);
 if (x_9 == 0)

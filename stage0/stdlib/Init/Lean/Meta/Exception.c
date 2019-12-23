@@ -42,6 +42,7 @@ lean_object* lean_string_append(lean_object*, lean_object*);
 lean_object* l_Lean_Meta_Exception_toStr___closed__1;
 lean_object* l_Lean_Meta_Exception_toTraceMessageData___closed__52;
 lean_object* l_Lean_Meta_Exception_toTraceMessageData___closed__50;
+lean_object* l_Lean_Meta_Exception_toStr___boxed(lean_object*);
 extern lean_object* l_String_splitAux___main___closed__1;
 lean_object* l_Lean_Meta_Exception_Inhabited___closed__1;
 extern lean_object* l_List_repr___rarg___closed__3;
@@ -104,6 +105,7 @@ lean_object* l_Lean_Meta_Exception_toTraceMessageData___closed__33;
 lean_object* l_Lean_Meta_Exception_toTraceMessageData___closed__5;
 lean_object* l_Lean_Meta_Exception_toTraceMessageData___closed__78;
 lean_object* l_Lean_mkApp(lean_object*, lean_object*);
+lean_object* l_List_toString___at_Lean_Meta_Exception_toStr___spec__1___boxed(lean_object*);
 lean_object* l_Lean_Meta_Exception_toTraceMessageData___closed__61;
 lean_object* l_Lean_Meta_Exception_toStr___closed__10;
 lean_object* l_Lean_Meta_Exception_toTraceMessageData___closed__12;
@@ -137,6 +139,7 @@ lean_object* l_Lean_mkBVar(lean_object*);
 lean_object* l_Lean_Meta_Exception_toStr___closed__3;
 lean_object* l_Lean_Meta_Exception_toTraceMessageData___closed__1;
 lean_object* l_Lean_Level_format(lean_object*);
+lean_object* l_Lean_Meta_Exception_toTraceMessageData___boxed(lean_object*);
 lean_object* l_Lean_mkConst(lean_object*, lean_object*);
 lean_object* l_Lean_Meta_Exception_toTraceMessageData___closed__66;
 lean_object* l_Lean_Meta_Exception_toTraceMessageData___closed__56;
@@ -177,10 +180,7 @@ else
 {
 lean_object* x_4; lean_object* x_5; lean_object* x_6; lean_object* x_7; lean_object* x_8; lean_object* x_9; lean_object* x_10; lean_object* x_11; lean_object* x_12; 
 x_4 = lean_ctor_get(x_2, 0);
-lean_inc(x_4);
 x_5 = lean_ctor_get(x_2, 1);
-lean_inc(x_5);
-lean_dec(x_2);
 x_6 = l_Lean_Level_format(x_4);
 x_7 = l_Lean_Options_empty;
 x_8 = l_Lean_Format_pretty(x_6, x_7);
@@ -205,10 +205,7 @@ else
 {
 lean_object* x_14; lean_object* x_15; lean_object* x_16; lean_object* x_17; lean_object* x_18; uint8_t x_19; lean_object* x_20; lean_object* x_21; 
 x_14 = lean_ctor_get(x_2, 0);
-lean_inc(x_14);
 x_15 = lean_ctor_get(x_2, 1);
-lean_inc(x_15);
-lean_dec(x_2);
 x_16 = l_Lean_Level_format(x_14);
 x_17 = l_Lean_Options_empty;
 x_18 = l_Lean_Format_pretty(x_16, x_17);
@@ -404,8 +401,6 @@ case 0:
 {
 lean_object* x_2; lean_object* x_3; lean_object* x_4; lean_object* x_5; lean_object* x_6; lean_object* x_7; lean_object* x_8; 
 x_2 = lean_ctor_get(x_1, 0);
-lean_inc(x_2);
-lean_dec(x_1);
 x_3 = l_Lean_Name_toString___closed__1;
 x_4 = l_Lean_Name_toStringWithSep___main(x_3, x_2);
 x_5 = l_Lean_Meta_Exception_toStr___closed__1;
@@ -419,8 +414,6 @@ case 1:
 {
 lean_object* x_9; lean_object* x_10; lean_object* x_11; lean_object* x_12; lean_object* x_13; lean_object* x_14; lean_object* x_15; 
 x_9 = lean_ctor_get(x_1, 0);
-lean_inc(x_9);
-lean_dec(x_1);
 x_10 = l_Lean_Name_toString___closed__1;
 x_11 = l_Lean_Name_toStringWithSep___main(x_10, x_9);
 x_12 = l_Lean_Meta_Exception_toStr___closed__2;
@@ -434,8 +427,6 @@ case 2:
 {
 lean_object* x_16; lean_object* x_17; lean_object* x_18; lean_object* x_19; lean_object* x_20; lean_object* x_21; lean_object* x_22; 
 x_16 = lean_ctor_get(x_1, 0);
-lean_inc(x_16);
-lean_dec(x_1);
 x_17 = l_Lean_Name_toString___closed__1;
 x_18 = l_Lean_Name_toStringWithSep___main(x_17, x_16);
 x_19 = l_Lean_Meta_Exception_toStr___closed__3;
@@ -449,8 +440,6 @@ case 3:
 {
 lean_object* x_23; lean_object* x_24; lean_object* x_25; lean_object* x_26; lean_object* x_27; lean_object* x_28; lean_object* x_29; 
 x_23 = lean_ctor_get(x_1, 0);
-lean_inc(x_23);
-lean_dec(x_1);
 x_24 = l_Lean_Name_toString___closed__1;
 x_25 = l_Lean_Name_toStringWithSep___main(x_24, x_23);
 x_26 = l_Lean_Meta_Exception_toStr___closed__4;
@@ -465,7 +454,6 @@ case 4:
 lean_object* x_30; lean_object* x_31; lean_object* x_32; lean_object* x_33; 
 x_30 = lean_ctor_get(x_1, 0);
 lean_inc(x_30);
-lean_dec(x_1);
 x_31 = l_Nat_repr(x_30);
 x_32 = l_Lean_Meta_Exception_toStr___closed__5;
 x_33 = lean_string_append(x_32, x_31);
@@ -475,14 +463,12 @@ return x_33;
 case 5:
 {
 lean_object* x_34; 
-lean_dec(x_1);
 x_34 = l_Lean_Meta_Exception_toStr___closed__6;
 return x_34;
 }
 case 6:
 {
 lean_object* x_35; 
-lean_dec(x_1);
 x_35 = l_Lean_Meta_Exception_toStr___closed__7;
 return x_35;
 }
@@ -490,10 +476,7 @@ case 7:
 {
 lean_object* x_36; lean_object* x_37; lean_object* x_38; lean_object* x_39; lean_object* x_40; lean_object* x_41; lean_object* x_42; lean_object* x_43; lean_object* x_44; lean_object* x_45; 
 x_36 = lean_ctor_get(x_1, 0);
-lean_inc(x_36);
 x_37 = lean_ctor_get(x_1, 1);
-lean_inc(x_37);
-lean_dec(x_1);
 x_38 = l_Lean_Name_toString___closed__1;
 x_39 = l_Lean_Name_toStringWithSep___main(x_38, x_36);
 x_40 = l_Lean_Meta_Exception_toStr___closed__8;
@@ -509,63 +492,54 @@ return x_45;
 case 8:
 {
 lean_object* x_46; 
-lean_dec(x_1);
 x_46 = l_Lean_Meta_Exception_toStr___closed__10;
 return x_46;
 }
 case 9:
 {
 lean_object* x_47; 
-lean_dec(x_1);
 x_47 = l_Lean_Meta_Exception_toStr___closed__11;
 return x_47;
 }
 case 10:
 {
 lean_object* x_48; 
-lean_dec(x_1);
 x_48 = l_Lean_Meta_Exception_toStr___closed__12;
 return x_48;
 }
 case 13:
 {
 lean_object* x_49; 
-lean_dec(x_1);
 x_49 = l_Lean_Meta_Exception_toStr___closed__14;
 return x_49;
 }
 case 14:
 {
 lean_object* x_50; 
-lean_dec(x_1);
 x_50 = l_Lean_Meta_Exception_toStr___closed__15;
 return x_50;
 }
 case 15:
 {
 lean_object* x_51; 
-lean_dec(x_1);
 x_51 = l_Lean_Meta_Exception_toStr___closed__16;
 return x_51;
 }
 case 16:
 {
 lean_object* x_52; 
-lean_dec(x_1);
 x_52 = l_Lean_Meta_Exception_toStr___closed__17;
 return x_52;
 }
 case 17:
 {
 lean_object* x_53; 
-lean_dec(x_1);
 x_53 = l_Lean_Meta_Exception_toStr___closed__18;
 return x_53;
 }
 case 18:
 {
 lean_object* x_54; 
-lean_dec(x_1);
 x_54 = l_Lean_Meta_Exception_toStr___closed__19;
 return x_54;
 }
@@ -574,13 +548,11 @@ case 19:
 lean_object* x_55; 
 x_55 = lean_ctor_get(x_1, 0);
 lean_inc(x_55);
-lean_dec(x_1);
 return x_55;
 }
 default: 
 {
 lean_object* x_56; 
-lean_dec(x_1);
 x_56 = l_Lean_Meta_Exception_toStr___closed__13;
 return x_56;
 }
@@ -594,14 +566,33 @@ uint8_t x_3; lean_object* x_4;
 x_3 = lean_unbox(x_1);
 lean_dec(x_1);
 x_4 = l_List_toStringAux___main___at_Lean_Meta_Exception_toStr___spec__2(x_3, x_2);
+lean_dec(x_2);
 return x_4;
+}
+}
+lean_object* l_List_toString___at_Lean_Meta_Exception_toStr___spec__1___boxed(lean_object* x_1) {
+_start:
+{
+lean_object* x_2; 
+x_2 = l_List_toString___at_Lean_Meta_Exception_toStr___spec__1(x_1);
+lean_dec(x_1);
+return x_2;
+}
+}
+lean_object* l_Lean_Meta_Exception_toStr___boxed(lean_object* x_1) {
+_start:
+{
+lean_object* x_2; 
+x_2 = l_Lean_Meta_Exception_toStr(x_1);
+lean_dec(x_1);
+return x_2;
 }
 }
 lean_object* _init_l_Lean_Meta_Exception_HasToString___closed__1() {
 _start:
 {
 lean_object* x_1; 
-x_1 = lean_alloc_closure((void*)(l_Lean_Meta_Exception_toStr), 1, 0);
+x_1 = lean_alloc_closure((void*)(l_Lean_Meta_Exception_toStr___boxed), 1, 0);
 return x_1;
 }
 }
@@ -1405,16 +1396,15 @@ case 0:
 {
 lean_object* x_2; lean_object* x_3; lean_object* x_4; lean_object* x_5; lean_object* x_6; lean_object* x_7; 
 x_2 = lean_ctor_get(x_1, 0);
-lean_inc(x_2);
 x_3 = lean_ctor_get(x_1, 1);
-lean_inc(x_3);
-lean_dec(x_1);
+lean_inc(x_2);
 x_4 = lean_alloc_ctor(4, 1, 0);
 lean_ctor_set(x_4, 0, x_2);
 x_5 = l_Lean_Meta_Exception_toTraceMessageData___closed__5;
 x_6 = lean_alloc_ctor(8, 2, 0);
 lean_ctor_set(x_6, 0, x_5);
 lean_ctor_set(x_6, 1, x_4);
+lean_inc(x_3);
 x_7 = lean_alloc_ctor(5, 2, 0);
 lean_ctor_set(x_7, 0, x_3);
 lean_ctor_set(x_7, 1, x_6);
@@ -1424,16 +1414,15 @@ case 1:
 {
 lean_object* x_8; lean_object* x_9; lean_object* x_10; lean_object* x_11; lean_object* x_12; lean_object* x_13; 
 x_8 = lean_ctor_get(x_1, 0);
-lean_inc(x_8);
 x_9 = lean_ctor_get(x_1, 1);
-lean_inc(x_9);
-lean_dec(x_1);
+lean_inc(x_8);
 x_10 = lean_alloc_ctor(4, 1, 0);
 lean_ctor_set(x_10, 0, x_8);
 x_11 = l_Lean_Meta_Exception_toTraceMessageData___closed__9;
 x_12 = lean_alloc_ctor(8, 2, 0);
 lean_ctor_set(x_12, 0, x_11);
 lean_ctor_set(x_12, 1, x_10);
+lean_inc(x_9);
 x_13 = lean_alloc_ctor(5, 2, 0);
 lean_ctor_set(x_13, 0, x_9);
 lean_ctor_set(x_13, 1, x_12);
@@ -1443,10 +1432,8 @@ case 2:
 {
 lean_object* x_14; lean_object* x_15; lean_object* x_16; lean_object* x_17; lean_object* x_18; lean_object* x_19; lean_object* x_20; 
 x_14 = lean_ctor_get(x_1, 0);
-lean_inc(x_14);
 x_15 = lean_ctor_get(x_1, 1);
-lean_inc(x_15);
-lean_dec(x_1);
+lean_inc(x_14);
 x_16 = l_Lean_mkMVar(x_14);
 x_17 = lean_alloc_ctor(2, 1, 0);
 lean_ctor_set(x_17, 0, x_16);
@@ -1454,6 +1441,7 @@ x_18 = l_Lean_Meta_Exception_toTraceMessageData___closed__13;
 x_19 = lean_alloc_ctor(8, 2, 0);
 lean_ctor_set(x_19, 0, x_18);
 lean_ctor_set(x_19, 1, x_17);
+lean_inc(x_15);
 x_20 = lean_alloc_ctor(5, 2, 0);
 lean_ctor_set(x_20, 0, x_15);
 lean_ctor_set(x_20, 1, x_19);
@@ -1463,10 +1451,8 @@ case 3:
 {
 lean_object* x_21; lean_object* x_22; lean_object* x_23; lean_object* x_24; lean_object* x_25; lean_object* x_26; lean_object* x_27; 
 x_21 = lean_ctor_get(x_1, 0);
-lean_inc(x_21);
 x_22 = lean_ctor_get(x_1, 1);
-lean_inc(x_22);
-lean_dec(x_1);
+lean_inc(x_21);
 x_23 = l_Lean_mkLevelMVar(x_21);
 x_24 = lean_alloc_ctor(3, 1, 0);
 lean_ctor_set(x_24, 0, x_23);
@@ -1474,6 +1460,7 @@ x_25 = l_Lean_Meta_Exception_toTraceMessageData___closed__17;
 x_26 = lean_alloc_ctor(8, 2, 0);
 lean_ctor_set(x_26, 0, x_25);
 lean_ctor_set(x_26, 1, x_24);
+lean_inc(x_22);
 x_27 = lean_alloc_ctor(5, 2, 0);
 lean_ctor_set(x_27, 0, x_22);
 lean_ctor_set(x_27, 1, x_26);
@@ -1484,7 +1471,6 @@ case 4:
 lean_object* x_28; lean_object* x_29; lean_object* x_30; lean_object* x_31; lean_object* x_32; 
 x_28 = lean_ctor_get(x_1, 0);
 lean_inc(x_28);
-lean_dec(x_1);
 x_29 = l_Lean_mkBVar(x_28);
 x_30 = lean_alloc_ctor(2, 1, 0);
 lean_ctor_set(x_30, 0, x_29);
@@ -1498,12 +1484,10 @@ case 5:
 {
 lean_object* x_33; lean_object* x_34; lean_object* x_35; lean_object* x_36; lean_object* x_37; lean_object* x_38; lean_object* x_39; lean_object* x_40; 
 x_33 = lean_ctor_get(x_1, 0);
-lean_inc(x_33);
 x_34 = lean_ctor_get(x_1, 1);
-lean_inc(x_34);
 x_35 = lean_ctor_get(x_1, 2);
-lean_inc(x_35);
-lean_dec(x_1);
+lean_inc(x_34);
+lean_inc(x_33);
 x_36 = l_Lean_mkApp(x_33, x_34);
 x_37 = lean_alloc_ctor(2, 1, 0);
 lean_ctor_set(x_37, 0, x_36);
@@ -1511,6 +1495,7 @@ x_38 = l_Lean_Meta_Exception_toTraceMessageData___closed__25;
 x_39 = lean_alloc_ctor(8, 2, 0);
 lean_ctor_set(x_39, 0, x_38);
 lean_ctor_set(x_39, 1, x_37);
+lean_inc(x_35);
 x_40 = lean_alloc_ctor(5, 2, 0);
 lean_ctor_set(x_40, 0, x_35);
 lean_ctor_set(x_40, 1, x_39);
@@ -1520,16 +1505,15 @@ case 6:
 {
 lean_object* x_41; lean_object* x_42; lean_object* x_43; lean_object* x_44; lean_object* x_45; lean_object* x_46; 
 x_41 = lean_ctor_get(x_1, 0);
-lean_inc(x_41);
 x_42 = lean_ctor_get(x_1, 1);
-lean_inc(x_42);
-lean_dec(x_1);
+lean_inc(x_41);
 x_43 = lean_alloc_ctor(2, 1, 0);
 lean_ctor_set(x_43, 0, x_41);
 x_44 = l_Lean_Meta_Exception_toTraceMessageData___closed__29;
 x_45 = lean_alloc_ctor(8, 2, 0);
 lean_ctor_set(x_45, 0, x_44);
 lean_ctor_set(x_45, 1, x_43);
+lean_inc(x_42);
 x_46 = lean_alloc_ctor(5, 2, 0);
 lean_ctor_set(x_46, 0, x_42);
 lean_ctor_set(x_46, 1, x_45);
@@ -1539,12 +1523,10 @@ case 7:
 {
 lean_object* x_47; lean_object* x_48; lean_object* x_49; lean_object* x_50; lean_object* x_51; lean_object* x_52; lean_object* x_53; lean_object* x_54; 
 x_47 = lean_ctor_get(x_1, 0);
-lean_inc(x_47);
 x_48 = lean_ctor_get(x_1, 1);
-lean_inc(x_48);
 x_49 = lean_ctor_get(x_1, 2);
-lean_inc(x_49);
-lean_dec(x_1);
+lean_inc(x_48);
+lean_inc(x_47);
 x_50 = l_Lean_mkConst(x_47, x_48);
 x_51 = lean_alloc_ctor(2, 1, 0);
 lean_ctor_set(x_51, 0, x_50);
@@ -1552,6 +1534,7 @@ x_52 = l_Lean_Meta_Exception_toTraceMessageData___closed__33;
 x_53 = lean_alloc_ctor(8, 2, 0);
 lean_ctor_set(x_53, 0, x_52);
 lean_ctor_set(x_53, 1, x_51);
+lean_inc(x_49);
 x_54 = lean_alloc_ctor(5, 2, 0);
 lean_ctor_set(x_54, 0, x_49);
 lean_ctor_set(x_54, 1, x_53);
@@ -1561,14 +1544,12 @@ case 8:
 {
 lean_object* x_55; lean_object* x_56; lean_object* x_57; lean_object* x_58; lean_object* x_59; lean_object* x_60; lean_object* x_61; lean_object* x_62; lean_object* x_63; 
 x_55 = lean_ctor_get(x_1, 0);
-lean_inc(x_55);
 x_56 = lean_ctor_get(x_1, 1);
-lean_inc(x_56);
 x_57 = lean_ctor_get(x_1, 2);
-lean_inc(x_57);
 x_58 = lean_ctor_get(x_1, 3);
-lean_inc(x_58);
-lean_dec(x_1);
+lean_inc(x_57);
+lean_inc(x_56);
+lean_inc(x_55);
 x_59 = l_Lean_mkProj(x_55, x_56, x_57);
 x_60 = lean_alloc_ctor(2, 1, 0);
 lean_ctor_set(x_60, 0, x_59);
@@ -1576,6 +1557,7 @@ x_61 = l_Lean_Meta_Exception_toTraceMessageData___closed__37;
 x_62 = lean_alloc_ctor(8, 2, 0);
 lean_ctor_set(x_62, 0, x_61);
 lean_ctor_set(x_62, 1, x_60);
+lean_inc(x_58);
 x_63 = lean_alloc_ctor(5, 2, 0);
 lean_ctor_set(x_63, 0, x_58);
 lean_ctor_set(x_63, 1, x_62);
@@ -1585,9 +1567,8 @@ case 9:
 {
 lean_object* x_64; lean_object* x_65; lean_object* x_66; 
 x_64 = lean_ctor_get(x_1, 2);
-lean_inc(x_64);
-lean_dec(x_1);
 x_65 = l_Lean_Meta_Exception_toTraceMessageData___closed__40;
+lean_inc(x_64);
 x_66 = lean_alloc_ctor(5, 2, 0);
 lean_ctor_set(x_66, 0, x_64);
 lean_ctor_set(x_66, 1, x_65);
@@ -1597,10 +1578,8 @@ case 10:
 {
 lean_object* x_67; lean_object* x_68; lean_object* x_69; lean_object* x_70; lean_object* x_71; lean_object* x_72; lean_object* x_73; 
 x_67 = lean_ctor_get(x_1, 0);
-lean_inc(x_67);
 x_68 = lean_ctor_get(x_1, 1);
-lean_inc(x_68);
-lean_dec(x_1);
+lean_inc(x_67);
 x_69 = l_Lean_mkMVar(x_67);
 x_70 = lean_alloc_ctor(2, 1, 0);
 lean_ctor_set(x_70, 0, x_69);
@@ -1608,6 +1587,7 @@ x_71 = l_Lean_Meta_Exception_toTraceMessageData___closed__44;
 x_72 = lean_alloc_ctor(8, 2, 0);
 lean_ctor_set(x_72, 0, x_71);
 lean_ctor_set(x_72, 1, x_70);
+lean_inc(x_68);
 x_73 = lean_alloc_ctor(5, 2, 0);
 lean_ctor_set(x_73, 0, x_68);
 lean_ctor_set(x_73, 1, x_72);
@@ -1617,12 +1597,9 @@ case 11:
 {
 lean_object* x_74; lean_object* x_75; lean_object* x_76; lean_object* x_77; lean_object* x_78; lean_object* x_79; lean_object* x_80; lean_object* x_81; lean_object* x_82; lean_object* x_83; lean_object* x_84; 
 x_74 = lean_ctor_get(x_1, 0);
-lean_inc(x_74);
 x_75 = lean_ctor_get(x_1, 1);
-lean_inc(x_75);
 x_76 = lean_ctor_get(x_1, 2);
-lean_inc(x_76);
-lean_dec(x_1);
+lean_inc(x_74);
 x_77 = lean_alloc_ctor(3, 1, 0);
 lean_ctor_set(x_77, 0, x_74);
 x_78 = l_Lean_Meta_Exception_toTraceMessageData___closed__48;
@@ -1633,11 +1610,13 @@ x_80 = l_Lean_Meta_Exception_toTraceMessageData___closed__51;
 x_81 = lean_alloc_ctor(8, 2, 0);
 lean_ctor_set(x_81, 0, x_79);
 lean_ctor_set(x_81, 1, x_80);
+lean_inc(x_75);
 x_82 = lean_alloc_ctor(3, 1, 0);
 lean_ctor_set(x_82, 0, x_75);
 x_83 = lean_alloc_ctor(8, 2, 0);
 lean_ctor_set(x_83, 0, x_81);
 lean_ctor_set(x_83, 1, x_82);
+lean_inc(x_76);
 x_84 = lean_alloc_ctor(5, 2, 0);
 lean_ctor_set(x_84, 0, x_76);
 lean_ctor_set(x_84, 1, x_83);
@@ -1647,12 +1626,9 @@ case 12:
 {
 lean_object* x_85; lean_object* x_86; lean_object* x_87; lean_object* x_88; lean_object* x_89; lean_object* x_90; lean_object* x_91; lean_object* x_92; lean_object* x_93; lean_object* x_94; lean_object* x_95; 
 x_85 = lean_ctor_get(x_1, 0);
-lean_inc(x_85);
 x_86 = lean_ctor_get(x_1, 1);
-lean_inc(x_86);
 x_87 = lean_ctor_get(x_1, 2);
-lean_inc(x_87);
-lean_dec(x_1);
+lean_inc(x_85);
 x_88 = lean_alloc_ctor(2, 1, 0);
 lean_ctor_set(x_88, 0, x_85);
 x_89 = l_Lean_Meta_Exception_toTraceMessageData___closed__55;
@@ -1663,11 +1639,13 @@ x_91 = l_Lean_Meta_Exception_toTraceMessageData___closed__51;
 x_92 = lean_alloc_ctor(8, 2, 0);
 lean_ctor_set(x_92, 0, x_90);
 lean_ctor_set(x_92, 1, x_91);
+lean_inc(x_86);
 x_93 = lean_alloc_ctor(2, 1, 0);
 lean_ctor_set(x_93, 0, x_86);
 x_94 = lean_alloc_ctor(8, 2, 0);
 lean_ctor_set(x_94, 0, x_92);
 lean_ctor_set(x_94, 1, x_93);
+lean_inc(x_87);
 x_95 = lean_alloc_ctor(5, 2, 0);
 lean_ctor_set(x_95, 0, x_87);
 lean_ctor_set(x_95, 1, x_94);
@@ -1677,10 +1655,8 @@ case 13:
 {
 lean_object* x_96; lean_object* x_97; lean_object* x_98; lean_object* x_99; lean_object* x_100; lean_object* x_101; lean_object* x_102; 
 x_96 = lean_ctor_get(x_1, 0);
-lean_inc(x_96);
 x_97 = lean_ctor_get(x_1, 1);
-lean_inc(x_97);
-lean_dec(x_1);
+lean_inc(x_96);
 x_98 = l_Lean_mkFVar(x_96);
 x_99 = lean_alloc_ctor(2, 1, 0);
 lean_ctor_set(x_99, 0, x_98);
@@ -1688,6 +1664,7 @@ x_100 = l_Lean_Meta_Exception_toTraceMessageData___closed__59;
 x_101 = lean_alloc_ctor(8, 2, 0);
 lean_ctor_set(x_101, 0, x_100);
 lean_ctor_set(x_101, 1, x_99);
+lean_inc(x_97);
 x_102 = lean_alloc_ctor(5, 2, 0);
 lean_ctor_set(x_102, 0, x_97);
 lean_ctor_set(x_102, 1, x_101);
@@ -1697,12 +1674,10 @@ case 14:
 {
 lean_object* x_103; lean_object* x_104; lean_object* x_105; lean_object* x_106; lean_object* x_107; lean_object* x_108; lean_object* x_109; lean_object* x_110; 
 x_103 = lean_ctor_get(x_1, 0);
-lean_inc(x_103);
 x_104 = lean_ctor_get(x_1, 1);
-lean_inc(x_104);
 x_105 = lean_ctor_get(x_1, 2);
-lean_inc(x_105);
-lean_dec(x_1);
+lean_inc(x_104);
+lean_inc(x_103);
 x_106 = l_Lean_mkApp(x_103, x_104);
 x_107 = lean_alloc_ctor(2, 1, 0);
 lean_ctor_set(x_107, 0, x_106);
@@ -1710,6 +1685,7 @@ x_108 = l_Lean_Meta_Exception_toTraceMessageData___closed__63;
 x_109 = lean_alloc_ctor(8, 2, 0);
 lean_ctor_set(x_109, 0, x_108);
 lean_ctor_set(x_109, 1, x_107);
+lean_inc(x_105);
 x_110 = lean_alloc_ctor(5, 2, 0);
 lean_ctor_set(x_110, 0, x_105);
 lean_ctor_set(x_110, 1, x_109);
@@ -1719,16 +1695,15 @@ case 15:
 {
 lean_object* x_111; lean_object* x_112; lean_object* x_113; lean_object* x_114; lean_object* x_115; lean_object* x_116; 
 x_111 = lean_ctor_get(x_1, 0);
-lean_inc(x_111);
 x_112 = lean_ctor_get(x_1, 1);
-lean_inc(x_112);
-lean_dec(x_1);
+lean_inc(x_111);
 x_113 = lean_alloc_ctor(2, 1, 0);
 lean_ctor_set(x_113, 0, x_111);
 x_114 = l_Lean_Meta_Exception_toTraceMessageData___closed__67;
 x_115 = lean_alloc_ctor(8, 2, 0);
 lean_ctor_set(x_115, 0, x_114);
 lean_ctor_set(x_115, 1, x_113);
+lean_inc(x_112);
 x_116 = lean_alloc_ctor(5, 2, 0);
 lean_ctor_set(x_116, 0, x_112);
 lean_ctor_set(x_116, 1, x_115);
@@ -1738,14 +1713,10 @@ case 16:
 {
 lean_object* x_117; lean_object* x_118; lean_object* x_119; lean_object* x_120; lean_object* x_121; lean_object* x_122; lean_object* x_123; lean_object* x_124; lean_object* x_125; lean_object* x_126; lean_object* x_127; lean_object* x_128; lean_object* x_129; lean_object* x_130; lean_object* x_131; lean_object* x_132; lean_object* x_133; lean_object* x_134; 
 x_117 = lean_ctor_get(x_1, 0);
-lean_inc(x_117);
 x_118 = lean_ctor_get(x_1, 1);
-lean_inc(x_118);
 x_119 = lean_ctor_get(x_1, 2);
-lean_inc(x_119);
 x_120 = lean_ctor_get(x_1, 3);
-lean_inc(x_120);
-lean_dec(x_1);
+lean_inc(x_117);
 x_121 = lean_alloc_ctor(4, 1, 0);
 lean_ctor_set(x_121, 0, x_117);
 x_122 = l_Lean_Meta_Exception_toTraceMessageData___closed__71;
@@ -1759,13 +1730,13 @@ lean_ctor_set(x_125, 1, x_124);
 x_126 = lean_unsigned_to_nat(0u);
 x_127 = l_Lean_MessageData_coeOfArrayExpr___closed__2;
 x_128 = l_Lean_MessageData_arrayExpr_toMessageData___main(x_119, x_126, x_127);
-lean_dec(x_119);
 x_129 = lean_alloc_ctor(8, 2, 0);
 lean_ctor_set(x_129, 0, x_125);
 lean_ctor_set(x_129, 1, x_128);
 x_130 = lean_alloc_ctor(8, 2, 0);
 lean_ctor_set(x_130, 0, x_129);
 lean_ctor_set(x_130, 1, x_124);
+lean_inc(x_118);
 x_131 = lean_alloc_ctor(2, 1, 0);
 lean_ctor_set(x_131, 0, x_118);
 x_132 = lean_alloc_ctor(0, 1, 0);
@@ -1773,6 +1744,7 @@ lean_ctor_set(x_132, 0, x_131);
 x_133 = lean_alloc_ctor(8, 2, 0);
 lean_ctor_set(x_133, 0, x_130);
 lean_ctor_set(x_133, 1, x_132);
+lean_inc(x_120);
 x_134 = lean_alloc_ctor(5, 2, 0);
 lean_ctor_set(x_134, 0, x_120);
 lean_ctor_set(x_134, 1, x_133);
@@ -1782,16 +1754,15 @@ case 17:
 {
 lean_object* x_135; lean_object* x_136; lean_object* x_137; lean_object* x_138; lean_object* x_139; lean_object* x_140; 
 x_135 = lean_ctor_get(x_1, 0);
-lean_inc(x_135);
 x_136 = lean_ctor_get(x_1, 1);
-lean_inc(x_136);
-lean_dec(x_1);
+lean_inc(x_135);
 x_137 = lean_alloc_ctor(2, 1, 0);
 lean_ctor_set(x_137, 0, x_135);
 x_138 = l_Lean_Meta_Exception_toTraceMessageData___closed__75;
 x_139 = lean_alloc_ctor(8, 2, 0);
 lean_ctor_set(x_139, 0, x_138);
 lean_ctor_set(x_139, 1, x_137);
+lean_inc(x_136);
 x_140 = lean_alloc_ctor(5, 2, 0);
 lean_ctor_set(x_140, 0, x_136);
 lean_ctor_set(x_140, 1, x_139);
@@ -1800,7 +1771,6 @@ return x_140;
 case 18:
 {
 lean_object* x_141; 
-lean_dec(x_1);
 x_141 = l_Lean_Meta_Exception_toTraceMessageData___closed__78;
 return x_141;
 }
@@ -1809,7 +1779,6 @@ default:
 lean_object* x_142; lean_object* x_143; lean_object* x_144; 
 x_142 = lean_ctor_get(x_1, 0);
 lean_inc(x_142);
-lean_dec(x_1);
 x_143 = lean_alloc_ctor(2, 1, 0);
 lean_ctor_set(x_143, 0, x_142);
 x_144 = lean_alloc_ctor(0, 1, 0);
@@ -1817,6 +1786,15 @@ lean_ctor_set(x_144, 0, x_143);
 return x_144;
 }
 }
+}
+}
+lean_object* l_Lean_Meta_Exception_toTraceMessageData___boxed(lean_object* x_1) {
+_start:
+{
+lean_object* x_2; 
+x_2 = l_Lean_Meta_Exception_toTraceMessageData(x_1);
+lean_dec(x_1);
+return x_2;
 }
 }
 lean_object* initialize_Init_Lean_Environment(lean_object*);

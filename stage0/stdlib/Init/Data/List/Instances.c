@@ -232,6 +232,7 @@ x_6 = lean_ctor_get(x_2, 1);
 lean_inc(x_1);
 x_7 = l_List_map___main___at_List_Monad___spec__3___rarg(x_5, x_1);
 x_8 = l_List_join___main___rarg(x_7);
+lean_dec(x_7);
 x_9 = l_List_map___main___at_List_Monad___spec__4___rarg(x_1, x_6);
 lean_ctor_set(x_2, 1, x_9);
 lean_ctor_set(x_2, 0, x_8);
@@ -248,6 +249,7 @@ lean_dec(x_2);
 lean_inc(x_1);
 x_12 = l_List_map___main___at_List_Monad___spec__3___rarg(x_10, x_1);
 x_13 = l_List_join___main___rarg(x_12);
+lean_dec(x_12);
 x_14 = l_List_map___main___at_List_Monad___spec__4___rarg(x_1, x_11);
 x_15 = lean_alloc_ctor(1, 2, 0);
 lean_ctor_set(x_15, 0, x_13);
@@ -329,6 +331,7 @@ _start:
 lean_object* x_5; lean_object* x_6; 
 x_5 = l_List_map___main___at_List_Monad___spec__2___rarg(x_4, x_3);
 x_6 = l_List_join___main___rarg(x_5);
+lean_dec(x_5);
 return x_6;
 }
 }
@@ -338,6 +341,7 @@ _start:
 lean_object* x_5; lean_object* x_6; 
 x_5 = l_List_map___main___at_List_Monad___spec__4___rarg(x_4, x_3);
 x_6 = l_List_join___main___rarg(x_5);
+lean_dec(x_5);
 return x_6;
 }
 }
@@ -347,6 +351,7 @@ _start:
 lean_object* x_5; lean_object* x_6; 
 x_5 = l_List_map___main___at_List_Monad___spec__5___rarg(x_4, x_3);
 x_6 = l_List_join___main___rarg(x_5);
+lean_dec(x_5);
 return x_6;
 }
 }

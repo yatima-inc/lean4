@@ -666,6 +666,7 @@ lean_ctor_set(x_11, 0, x_1);
 lean_ctor_set(x_11, 1, x_9);
 lean_ctor_set(x_11, 2, x_8);
 x_12 = l_Substring_toNat(x_11);
+lean_dec(x_11);
 x_13 = lean_nat_to_int(x_12);
 x_14 = lean_int_neg(x_13);
 lean_dec(x_13);
@@ -720,6 +721,7 @@ lean_ctor_set(x_10, 0, x_1);
 lean_ctor_set(x_10, 1, x_8);
 lean_ctor_set(x_10, 2, x_7);
 x_11 = l_Substring_isNat(x_10);
+lean_dec(x_10);
 return x_11;
 }
 else

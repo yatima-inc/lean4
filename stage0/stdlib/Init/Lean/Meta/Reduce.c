@@ -262,6 +262,7 @@ x_10 = lean_ctor_get(x_8, 1);
 lean_inc(x_10);
 lean_dec(x_8);
 x_11 = l_Lean_Meta_mkLambda(x_4, x_9, x_6, x_10);
+lean_dec(x_6);
 return x_11;
 }
 else
@@ -305,6 +306,7 @@ x_10 = lean_ctor_get(x_8, 1);
 lean_inc(x_10);
 lean_dec(x_8);
 x_11 = l_Lean_Meta_mkForall(x_4, x_9, x_6, x_10);
+lean_dec(x_6);
 return x_11;
 }
 else
@@ -557,6 +559,7 @@ x_20 = lean_unsigned_to_nat(1u);
 x_21 = lean_nat_sub(x_14, x_20);
 lean_dec(x_14);
 x_22 = l___private_Init_Lean_Expr_3__getAppArgsAux___main(x_10, x_19, x_21);
+lean_dec(x_10);
 x_23 = lean_array_get_size(x_22);
 lean_inc(x_23);
 x_24 = l_Nat_foldMAux___main___at_Lean_Meta_reduceAux___main___spec__1(x_1, x_2, x_3, x_16, x_23, x_23, x_22, x_5, x_17);
@@ -656,6 +659,7 @@ lean_closure_set(x_44, 0, x_41);
 lean_closure_set(x_44, 1, x_42);
 lean_closure_set(x_44, 2, x_43);
 x_45 = l_Lean_Meta_lambdaTelescope___rarg(x_10, x_44, x_5, x_40);
+lean_dec(x_10);
 return x_45;
 }
 case 7:
@@ -672,6 +676,7 @@ lean_closure_set(x_50, 0, x_47);
 lean_closure_set(x_50, 1, x_48);
 lean_closure_set(x_50, 2, x_49);
 x_51 = l_Lean_Meta_forallTelescope___rarg(x_10, x_50, x_5, x_46);
+lean_dec(x_10);
 return x_51;
 }
 default: 

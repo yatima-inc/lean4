@@ -356,8 +356,6 @@ x_47 = lean_ctor_get(x_3, 3);
 lean_inc(x_46);
 lean_inc(x_1);
 x_48 = l___private_Init_Lean_Compiler_IR_ResetReuse_2__S___main(x_1, x_2, x_46);
-lean_inc(x_48);
-lean_inc(x_46);
 x_49 = l_Lean_IR_FnBody_beq(x_46, x_48);
 if (x_49 == 0)
 {
@@ -390,8 +388,6 @@ lean_dec(x_3);
 lean_inc(x_53);
 lean_inc(x_1);
 x_55 = l___private_Init_Lean_Compiler_IR_ResetReuse_2__S___main(x_1, x_2, x_53);
-lean_inc(x_55);
-lean_inc(x_53);
 x_56 = l_Lean_IR_FnBody_beq(x_53, x_55);
 if (x_56 == 0)
 {
@@ -562,8 +558,6 @@ x_8 = lean_ctor_get(x_6, 0);
 lean_inc(x_3);
 lean_inc(x_8);
 x_9 = l___private_Init_Lean_Compiler_IR_ResetReuse_2__S___main(x_8, x_2, x_3);
-lean_inc(x_9);
-lean_inc(x_3);
 x_10 = l_Lean_IR_FnBody_beq(x_3, x_9);
 if (x_10 == 0)
 {
@@ -603,8 +597,6 @@ lean_dec(x_6);
 lean_inc(x_3);
 lean_inc(x_15);
 x_17 = l___private_Init_Lean_Compiler_IR_ResetReuse_2__S___main(x_15, x_2, x_3);
-lean_inc(x_17);
-lean_inc(x_3);
 x_18 = l_Lean_IR_FnBody_beq(x_3, x_17);
 if (x_18 == 0)
 {
@@ -1115,6 +1107,7 @@ lean_inc(x_137);
 x_138 = lean_ctor_get(x_3, 3);
 lean_inc(x_138);
 lean_inc(x_4);
+lean_inc(x_3);
 x_139 = l_Lean_IR_FnBody_hasLiveVar(x_3, x_4, x_1);
 x_140 = lean_unbox(x_139);
 lean_dec(x_139);
@@ -1548,6 +1541,7 @@ return x_84;
 else
 {
 lean_object* x_85; uint8_t x_86; lean_object* x_87; lean_object* x_88; lean_object* x_89; 
+lean_inc(x_3);
 x_85 = l_Lean_IR_FnBody_hasLiveVar(x_3, x_4, x_1);
 lean_dec(x_1);
 x_86 = lean_unbox(x_85);
@@ -2005,7 +1999,6 @@ lean_inc(x_4);
 x_5 = lean_ctor_get(x_1, 3);
 lean_inc(x_5);
 x_6 = lean_unsigned_to_nat(0u);
-lean_inc(x_1);
 x_7 = l_Lean_IR_MaxIndex_collectDecl(x_1, x_6);
 x_8 = !lean_is_exclusive(x_1);
 if (x_8 == 0)

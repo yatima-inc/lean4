@@ -26,6 +26,7 @@ lean_object* l_RBNode_min___main___rarg(lean_object*);
 lean_object* l_RBMap_max_x21___rarg___closed__1;
 lean_object* l_RBMap_max_x21___rarg___boxed(lean_object*, lean_object*, lean_object*);
 lean_object* l_RBMap_find_x21___rarg___closed__2;
+lean_object* l_RBMap_find_x21___rarg___boxed(lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_RBMap_find_x21___rarg___closed__1;
 lean_object* l_RBMap_min_x21(lean_object*, lean_object*, lean_object*);
 lean_object* l_RBNode_find___main___rarg(lean_object*, lean_object*, lean_object*, lean_object*);
@@ -327,8 +328,17 @@ lean_object* l_RBMap_find_x21(lean_object* x_1, lean_object* x_2) {
 _start:
 {
 lean_object* x_3; 
-x_3 = lean_alloc_closure((void*)(l_RBMap_find_x21___rarg), 4, 0);
+x_3 = lean_alloc_closure((void*)(l_RBMap_find_x21___rarg___boxed), 4, 0);
 return x_3;
+}
+}
+lean_object* l_RBMap_find_x21___rarg___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3, lean_object* x_4) {
+_start:
+{
+lean_object* x_5; 
+x_5 = l_RBMap_find_x21___rarg(x_1, x_2, x_3, x_4);
+lean_dec(x_3);
+return x_5;
 }
 }
 lean_object* initialize_Init_Data_RBMap_Basic(lean_object*);

@@ -120,6 +120,7 @@ lean_object* l_stdNext___closed__129;
 lean_object* l_stdNext___closed__41;
 lean_object* l_Nat_repr(lean_object*);
 lean_object* l_stdNext___closed__13;
+lean_object* l_StdGen_HasRepr___boxed(lean_object*);
 lean_object* l_stdNext___closed__74;
 lean_object* l_stdNext___closed__157;
 lean_object* l_stdNext___closed__89;
@@ -204,6 +205,7 @@ lean_object* l_stdNext___closed__42;
 lean_object* l_stdNext___closed__53;
 lean_object* l_stdNext___closed__5;
 lean_object* l_stdNext___closed__105;
+lean_object* l_randBool___rarg___boxed(lean_object*, lean_object*);
 lean_object* l_StdGen_RandomGen___closed__3;
 lean_object* l_randNat___rarg___boxed(lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* lean_int_sub(lean_object*, lean_object*);
@@ -272,22 +274,30 @@ _start:
 {
 lean_object* x_2; lean_object* x_3; lean_object* x_4; lean_object* x_5; lean_object* x_6; lean_object* x_7; lean_object* x_8; lean_object* x_9; lean_object* x_10; lean_object* x_11; lean_object* x_12; 
 x_2 = lean_ctor_get(x_1, 0);
-lean_inc(x_2);
 x_3 = lean_ctor_get(x_1, 1);
-lean_inc(x_3);
-lean_dec(x_1);
+lean_inc(x_2);
 x_4 = l_Nat_repr(x_2);
 x_5 = l_Sigma_HasRepr___rarg___closed__1;
 x_6 = lean_string_append(x_5, x_4);
 lean_dec(x_4);
 x_7 = l_List_reprAux___main___rarg___closed__1;
 x_8 = lean_string_append(x_6, x_7);
+lean_inc(x_3);
 x_9 = l_Nat_repr(x_3);
 x_10 = lean_string_append(x_8, x_9);
 lean_dec(x_9);
 x_11 = l_Sigma_HasRepr___rarg___closed__2;
 x_12 = lean_string_append(x_10, x_11);
 return x_12;
+}
+}
+lean_object* l_StdGen_HasRepr___boxed(lean_object* x_1) {
+_start:
+{
+lean_object* x_2; 
+x_2 = l_StdGen_HasRepr(x_1);
+lean_dec(x_1);
+return x_2;
 }
 }
 lean_object* _init_l_stdNext___closed__1() {
@@ -2497,7 +2507,6 @@ goto _start;
 else
 {
 lean_dec(x_4);
-lean_dec(x_1);
 return x_5;
 }
 }
@@ -2517,6 +2526,7 @@ lean_object* x_6;
 x_6 = l___private_Init_Data_Random_1__randNatAux___main___rarg(x_1, x_2, x_3, x_4, x_5);
 lean_dec(x_3);
 lean_dec(x_2);
+lean_dec(x_1);
 return x_6;
 }
 }
@@ -2543,6 +2553,7 @@ lean_object* x_6;
 x_6 = l___private_Init_Data_Random_1__randNatAux___rarg(x_1, x_2, x_3, x_4, x_5);
 lean_dec(x_3);
 lean_dec(x_2);
+lean_dec(x_1);
 return x_6;
 }
 }
@@ -2790,6 +2801,7 @@ lean_object* x_5;
 x_5 = l_randNat___rarg(x_1, x_2, x_3, x_4);
 lean_dec(x_4);
 lean_dec(x_3);
+lean_dec(x_1);
 return x_5;
 }
 }
@@ -2833,8 +2845,17 @@ lean_object* l_randBool(lean_object* x_1) {
 _start:
 {
 lean_object* x_2; 
-x_2 = lean_alloc_closure((void*)(l_randBool___rarg), 2, 0);
+x_2 = lean_alloc_closure((void*)(l_randBool___rarg___boxed), 2, 0);
 return x_2;
+}
+}
+lean_object* l_randBool___rarg___boxed(lean_object* x_1, lean_object* x_2) {
+_start:
+{
+lean_object* x_3; 
+x_3 = l_randBool___rarg(x_1, x_2);
+lean_dec(x_1);
+return x_3;
 }
 }
 lean_object* _init_l_IO_mkStdGenRef___closed__1() {

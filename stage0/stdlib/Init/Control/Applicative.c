@@ -28,15 +28,13 @@ if (x_3 == 0)
 {
 lean_object* x_5; lean_object* x_6; lean_object* x_7; 
 x_5 = lean_ctor_get(x_1, 1);
-lean_inc(x_5);
-lean_dec(x_1);
 x_6 = lean_box(0);
+lean_inc(x_5);
 x_7 = lean_apply_2(x_5, lean_box(0), x_6);
 return x_7;
 }
 else
 {
-lean_dec(x_1);
 lean_inc(x_4);
 return x_4;
 }
@@ -58,6 +56,7 @@ x_5 = lean_unbox(x_3);
 lean_dec(x_3);
 x_6 = l_when___rarg(x_1, x_2, x_5, x_4);
 lean_dec(x_4);
+lean_dec(x_1);
 return x_6;
 }
 }
@@ -75,7 +74,6 @@ _start:
 {
 if (x_3 == 0)
 {
-lean_dec(x_1);
 lean_inc(x_4);
 return x_4;
 }
@@ -83,9 +81,8 @@ else
 {
 lean_object* x_5; lean_object* x_6; lean_object* x_7; 
 x_5 = lean_ctor_get(x_1, 1);
-lean_inc(x_5);
-lean_dec(x_1);
 x_6 = lean_box(0);
+lean_inc(x_5);
 x_7 = lean_apply_2(x_5, lean_box(0), x_6);
 return x_7;
 }
@@ -107,6 +104,7 @@ x_5 = lean_unbox(x_3);
 lean_dec(x_3);
 x_6 = l_unless___rarg(x_1, x_2, x_5, x_4);
 lean_dec(x_4);
+lean_dec(x_1);
 return x_6;
 }
 }

@@ -13,6 +13,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+lean_object* l_getModify___rarg___lambda__1___boxed(lean_object*, lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_StateT_failure___rarg___boxed(lean_object*, lean_object*, lean_object*);
 lean_object* l_StateT_set(lean_object*, lean_object*);
 lean_object* l_StateT_run_x27(lean_object*, lean_object*);
@@ -21,22 +22,28 @@ lean_object* l_StateT_get___boxed(lean_object*, lean_object*);
 lean_object* l_StateT_pure(lean_object*, lean_object*);
 lean_object* l_StateT_Monad___boxed(lean_object*, lean_object*);
 lean_object* l_MonadStateAdapter_adaptState_x27___rarg(lean_object*, lean_object*, lean_object*, lean_object*, lean_object*);
+lean_object* l_StateT_MonadRun___rarg___boxed(lean_object*, lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_StateT_MonadExcept___rarg___lambda__3(lean_object*, lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_monadStateRunnerTrans___rarg(lean_object*, lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_getModify___rarg___lambda__1(lean_object*, lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_StateT_MonadStateRunner___rarg(lean_object*, lean_object*, lean_object*, lean_object*);
+lean_object* l_StateT_orelse___rarg___boxed(lean_object*, lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_StateT_orelse(lean_object*, lean_object*, lean_object*);
 lean_object* l_StateT_run_x27___rarg___closed__1;
 lean_object* l_monadStateAdapterTrans___rarg___lambda__1(lean_object*, lean_object*, lean_object*, lean_object*, lean_object*);
+lean_object* l_StateT_Monad___rarg___lambda__3___boxed(lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_StateT_modifyGet(lean_object*, lean_object*);
 lean_object* l_StateT_Monad(lean_object*, lean_object*);
 lean_object* l_StateT_MonadExcept___boxed(lean_object*, lean_object*);
 lean_object* l_StateT_failure___rarg(lean_object*, lean_object*, lean_object*);
 lean_object* l_getModify___rarg(lean_object*, lean_object*, lean_object*);
+lean_object* l_StateT_map___rarg___lambda__1___boxed(lean_object*, lean_object*, lean_object*);
+lean_object* l_StateT_Monad___rarg___lambda__7___boxed(lean_object*, lean_object*);
 lean_object* l_StateT_run_x27___boxed(lean_object*, lean_object*);
 lean_object* l_StateT_MonadStateRunner___boxed(lean_object*, lean_object*);
 lean_object* l_StateT_MonadFunctor(lean_object*, lean_object*, lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_monadStateRunnerTrans___boxed(lean_object*, lean_object*, lean_object*, lean_object*, lean_object*);
+lean_object* l_StateT_MonadExcept___rarg___lambda__3___boxed(lean_object*, lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_StateT_Alternative(lean_object*, lean_object*);
 lean_object* l_StateT_failure___boxed(lean_object*, lean_object*, lean_object*);
 lean_object* l_StateT_orelse___boxed(lean_object*, lean_object*, lean_object*);
@@ -45,20 +52,26 @@ lean_object* l_monadStateTrans___rarg(lean_object*, lean_object*);
 lean_object* l_monadStateRunnerTrans___rarg___lambda__1(lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_StateT_pure___rarg(lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_StateT_adapt(lean_object*, lean_object*, lean_object*, lean_object*, lean_object*);
+lean_object* l_StateT_bind___rarg___boxed(lean_object*, lean_object*, lean_object*, lean_object*, lean_object*, lean_object*);
+lean_object* l_StateT_modifyGet___rarg___boxed(lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_getModify___boxed(lean_object*, lean_object*);
 lean_object* l_StateT_MonadExcept___rarg___lambda__2(lean_object*, lean_object*, lean_object*);
 lean_object* l_monadStateAdapterTrans___boxed(lean_object*, lean_object*, lean_object*, lean_object*, lean_object*, lean_object*);
+lean_object* l_StateT_Monad___rarg___lambda__5___boxed(lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_StateT_MonadStateAdapter(lean_object*, lean_object*, lean_object*);
 lean_object* l_StateT_MonadFunctor___rarg(lean_object*, lean_object*, lean_object*);
 lean_object* l_StateT_set___rarg___boxed(lean_object*, lean_object*, lean_object*);
 lean_object* l_StateT_MonadExcept___rarg(lean_object*, lean_object*, lean_object*);
 lean_object* l_monadStateTrans___boxed(lean_object*, lean_object*, lean_object*);
+lean_object* l_StateT_get___rarg___boxed(lean_object*, lean_object*);
 lean_object* l_finally___rarg___lambda__1___boxed(lean_object*, lean_object*, lean_object*);
 lean_object* l_StateT_map___rarg___lambda__1(lean_object*, lean_object*, lean_object*);
 lean_object* l_modify(lean_object*, lean_object*);
 lean_object* l_StateT_get___rarg(lean_object*, lean_object*);
 lean_object* l_StateT_run_x27___rarg___lambda__1(lean_object*);
 lean_object* l_StateT_HasMonadLift(lean_object*, lean_object*);
+lean_object* l_StateT_run_x27___rarg___boxed(lean_object*, lean_object*, lean_object*, lean_object*);
+lean_object* l_StateT_MonadStateRunner___rarg___boxed(lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_StateT_adapt___rarg(lean_object*, lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_StateT_pure___boxed(lean_object*, lean_object*);
 lean_object* l_StateT_Monad___rarg___lambda__1(lean_object*, lean_object*, lean_object*);
@@ -92,15 +105,19 @@ lean_object* l_StateT_Monad___rarg(lean_object*);
 lean_object* l_StateT_bind___rarg___lambda__1(lean_object*, lean_object*);
 lean_object* l_getModify(lean_object*, lean_object*);
 lean_object* l_StateT_Monad___rarg___lambda__6(lean_object*, lean_object*, lean_object*, lean_object*, lean_object*, lean_object*);
+lean_object* l_StateT_bind___rarg___lambda__1___boxed(lean_object*, lean_object*);
 lean_object* l_StateT_MonadRun(lean_object*, lean_object*, lean_object*);
 lean_object* l_StateT_Monad___rarg___lambda__2(lean_object*, lean_object*, lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_StateT_set___rarg(lean_object*, lean_object*, lean_object*);
+lean_object* l_StateT_lift___rarg___lambda__1___boxed(lean_object*, lean_object*, lean_object*);
 lean_object* l_MonadStateAdapter_adaptState_x27(lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_modify___boxed(lean_object*, lean_object*);
 lean_object* l_StateT_MonadState(lean_object*, lean_object*);
 lean_object* l_StateT_MonadStateRunner(lean_object*, lean_object*);
+lean_object* l_StateT_adapt___rarg___lambda__1___boxed(lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_StateT_MonadState___boxed(lean_object*, lean_object*);
 lean_object* l_StateT_modifyGet___rarg(lean_object*, lean_object*, lean_object*, lean_object*);
+lean_object* l_modify___rarg___boxed(lean_object*, lean_object*);
 lean_object* l_StateT_Monad___rarg___lambda__8(lean_object*, lean_object*, lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_monadStateRunnerTrans(lean_object*, lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_StateT_Alternative___rarg(lean_object*, lean_object*);
@@ -110,6 +127,7 @@ lean_object* l_MonadStateAdapter_adaptState_x27___rarg___lambda__2___boxed(lean_
 lean_object* l_StateT_run___boxed(lean_object*, lean_object*, lean_object*);
 lean_object* l_StateT_map___rarg(lean_object*, lean_object*, lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_StateT_bind___boxed(lean_object*, lean_object*);
+lean_object* l_StateT_Monad___rarg___lambda__8___boxed(lean_object*, lean_object*, lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_StateT_orelse___rarg(lean_object*, lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_StateT_run_x27___rarg(lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_StateT_lift___boxed(lean_object*, lean_object*);
@@ -117,9 +135,14 @@ lean_object* l_StateT_failure(lean_object*, lean_object*, lean_object*);
 lean_object* l_StateT_Monad___rarg___lambda__4(lean_object*, lean_object*, lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_StateT_run___rarg(lean_object*, lean_object*);
 lean_object* l_monadStateTrans___rarg___lambda__2(lean_object*, lean_object*, lean_object*, lean_object*);
+lean_object* l_monadStateTrans___rarg___lambda__1___boxed(lean_object*, lean_object*, lean_object*);
 lean_object* l_StateT_HasMonadLift___boxed(lean_object*, lean_object*);
 lean_object* l_StateT_MonadFunctor___boxed(lean_object*, lean_object*, lean_object*, lean_object*, lean_object*, lean_object*);
+lean_object* l_StateT_Monad___rarg___lambda__1___boxed(lean_object*, lean_object*, lean_object*);
 lean_object* l_modify___rarg(lean_object*, lean_object*);
+lean_object* l_monadStateTrans___rarg___lambda__2___boxed(lean_object*, lean_object*, lean_object*, lean_object*);
+lean_object* l_StateT_MonadExcept___rarg___lambda__1___boxed(lean_object*, lean_object*, lean_object*, lean_object*, lean_object*);
+lean_object* l_StateT_pure___rarg___boxed(lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_MonadStateAdapter_adaptState_x27___rarg___lambda__1(lean_object*, lean_object*);
 lean_object* l_StateT_lift___rarg___lambda__1(lean_object*, lean_object*, lean_object*);
 lean_object* l_StateT_HasMonadLift___rarg(lean_object*);
@@ -171,10 +194,9 @@ _start:
 {
 lean_object* x_5; lean_object* x_6; lean_object* x_7; lean_object* x_8; 
 x_5 = lean_ctor_get(x_1, 0);
-lean_inc(x_5);
-lean_dec(x_1);
 x_6 = lean_apply_1(x_3, x_4);
 x_7 = l_StateT_run_x27___rarg___closed__1;
+lean_inc(x_5);
 x_8 = lean_apply_4(x_5, lean_box(0), lean_box(0), x_7, x_6);
 return x_8;
 }
@@ -183,7 +205,7 @@ lean_object* l_StateT_run_x27(lean_object* x_1, lean_object* x_2) {
 _start:
 {
 lean_object* x_3; 
-x_3 = lean_alloc_closure((void*)(l_StateT_run_x27___rarg), 4, 0);
+x_3 = lean_alloc_closure((void*)(l_StateT_run_x27___rarg___boxed), 4, 0);
 return x_3;
 }
 }
@@ -194,6 +216,15 @@ lean_object* x_2;
 x_2 = l_StateT_run_x27___rarg___lambda__1(x_1);
 lean_dec(x_1);
 return x_2;
+}
+}
+lean_object* l_StateT_run_x27___rarg___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3, lean_object* x_4) {
+_start:
+{
+lean_object* x_5; 
+x_5 = l_StateT_run_x27___rarg(x_1, x_2, x_3, x_4);
+lean_dec(x_1);
+return x_5;
 }
 }
 lean_object* l_StateT_run_x27___boxed(lean_object* x_1, lean_object* x_2) {
@@ -210,14 +241,11 @@ _start:
 {
 lean_object* x_5; lean_object* x_6; lean_object* x_7; lean_object* x_8; 
 x_5 = lean_ctor_get(x_1, 0);
-lean_inc(x_5);
-lean_dec(x_1);
 x_6 = lean_ctor_get(x_5, 1);
-lean_inc(x_6);
-lean_dec(x_5);
 x_7 = lean_alloc_ctor(0, 2, 0);
 lean_ctor_set(x_7, 0, x_3);
 lean_ctor_set(x_7, 1, x_4);
+lean_inc(x_6);
 x_8 = lean_apply_2(x_6, lean_box(0), x_7);
 return x_8;
 }
@@ -226,8 +254,17 @@ lean_object* l_StateT_pure(lean_object* x_1, lean_object* x_2) {
 _start:
 {
 lean_object* x_3; 
-x_3 = lean_alloc_closure((void*)(l_StateT_pure___rarg), 4, 0);
+x_3 = lean_alloc_closure((void*)(l_StateT_pure___rarg___boxed), 4, 0);
 return x_3;
+}
+}
+lean_object* l_StateT_pure___rarg___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3, lean_object* x_4) {
+_start:
+{
+lean_object* x_5; 
+x_5 = l_StateT_pure___rarg(x_1, x_2, x_3, x_4);
+lean_dec(x_1);
+return x_5;
 }
 }
 lean_object* l_StateT_pure___boxed(lean_object* x_1, lean_object* x_2) {
@@ -244,10 +281,9 @@ _start:
 {
 lean_object* x_3; lean_object* x_4; lean_object* x_5; 
 x_3 = lean_ctor_get(x_2, 0);
-lean_inc(x_3);
 x_4 = lean_ctor_get(x_2, 1);
 lean_inc(x_4);
-lean_dec(x_2);
+lean_inc(x_3);
 x_5 = lean_apply_2(x_1, x_3, x_4);
 return x_5;
 }
@@ -257,11 +293,10 @@ _start:
 {
 lean_object* x_7; lean_object* x_8; lean_object* x_9; lean_object* x_10; 
 x_7 = lean_ctor_get(x_1, 1);
-lean_inc(x_7);
-lean_dec(x_1);
 x_8 = lean_apply_1(x_4, x_6);
-x_9 = lean_alloc_closure((void*)(l_StateT_bind___rarg___lambda__1), 2, 1);
+x_9 = lean_alloc_closure((void*)(l_StateT_bind___rarg___lambda__1___boxed), 2, 1);
 lean_closure_set(x_9, 0, x_5);
+lean_inc(x_7);
 x_10 = lean_apply_4(x_7, lean_box(0), lean_box(0), x_8, x_9);
 return x_10;
 }
@@ -270,8 +305,26 @@ lean_object* l_StateT_bind(lean_object* x_1, lean_object* x_2) {
 _start:
 {
 lean_object* x_3; 
-x_3 = lean_alloc_closure((void*)(l_StateT_bind___rarg), 6, 0);
+x_3 = lean_alloc_closure((void*)(l_StateT_bind___rarg___boxed), 6, 0);
 return x_3;
+}
+}
+lean_object* l_StateT_bind___rarg___lambda__1___boxed(lean_object* x_1, lean_object* x_2) {
+_start:
+{
+lean_object* x_3; 
+x_3 = l_StateT_bind___rarg___lambda__1(x_1, x_2);
+lean_dec(x_2);
+return x_3;
+}
+}
+lean_object* l_StateT_bind___rarg___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3, lean_object* x_4, lean_object* x_5, lean_object* x_6) {
+_start:
+{
+lean_object* x_7; 
+x_7 = l_StateT_bind___rarg(x_1, x_2, x_3, x_4, x_5, x_6);
+lean_dec(x_1);
+return x_7;
 }
 }
 lean_object* l_StateT_bind___boxed(lean_object* x_1, lean_object* x_2) {
@@ -293,13 +346,10 @@ if (x_4 == 0)
 lean_object* x_5; lean_object* x_6; lean_object* x_7; lean_object* x_8; lean_object* x_9; 
 x_5 = lean_ctor_get(x_3, 0);
 x_6 = lean_ctor_get(x_1, 0);
-lean_inc(x_6);
-lean_dec(x_1);
 x_7 = lean_ctor_get(x_6, 1);
-lean_inc(x_7);
-lean_dec(x_6);
 x_8 = lean_apply_1(x_2, x_5);
 lean_ctor_set(x_3, 0, x_8);
+lean_inc(x_7);
 x_9 = lean_apply_2(x_7, lean_box(0), x_3);
 return x_9;
 }
@@ -312,15 +362,12 @@ lean_inc(x_11);
 lean_inc(x_10);
 lean_dec(x_3);
 x_12 = lean_ctor_get(x_1, 0);
-lean_inc(x_12);
-lean_dec(x_1);
 x_13 = lean_ctor_get(x_12, 1);
-lean_inc(x_13);
-lean_dec(x_12);
 x_14 = lean_apply_1(x_2, x_10);
 x_15 = lean_alloc_ctor(0, 2, 0);
 lean_ctor_set(x_15, 0, x_14);
 lean_ctor_set(x_15, 1, x_11);
+lean_inc(x_13);
 x_16 = lean_apply_2(x_13, lean_box(0), x_15);
 return x_16;
 }
@@ -333,7 +380,7 @@ lean_object* x_7; lean_object* x_8; lean_object* x_9; lean_object* x_10;
 x_7 = lean_ctor_get(x_1, 1);
 lean_inc(x_7);
 x_8 = lean_apply_1(x_5, x_6);
-x_9 = lean_alloc_closure((void*)(l_StateT_map___rarg___lambda__1), 3, 2);
+x_9 = lean_alloc_closure((void*)(l_StateT_map___rarg___lambda__1___boxed), 3, 2);
 lean_closure_set(x_9, 0, x_1);
 lean_closure_set(x_9, 1, x_4);
 x_10 = lean_apply_4(x_7, lean_box(0), lean_box(0), x_8, x_9);
@@ -346,6 +393,15 @@ _start:
 lean_object* x_3; 
 x_3 = lean_alloc_closure((void*)(l_StateT_map___rarg), 6, 0);
 return x_3;
+}
+}
+lean_object* l_StateT_map___rarg___lambda__1___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3) {
+_start:
+{
+lean_object* x_4; 
+x_4 = l_StateT_map___rarg___lambda__1(x_1, x_2, x_3);
+lean_dec(x_1);
+return x_4;
 }
 }
 lean_object* l_StateT_map___boxed(lean_object* x_1, lean_object* x_2) {
@@ -368,12 +424,9 @@ lean_object* x_5; lean_object* x_6; lean_object* x_7; lean_object* x_8;
 x_5 = lean_ctor_get(x_3, 0);
 lean_dec(x_5);
 x_6 = lean_ctor_get(x_1, 0);
-lean_inc(x_6);
-lean_dec(x_1);
 x_7 = lean_ctor_get(x_6, 1);
-lean_inc(x_7);
-lean_dec(x_6);
 lean_ctor_set(x_3, 0, x_2);
+lean_inc(x_7);
 x_8 = lean_apply_2(x_7, lean_box(0), x_3);
 return x_8;
 }
@@ -384,14 +437,11 @@ x_9 = lean_ctor_get(x_3, 1);
 lean_inc(x_9);
 lean_dec(x_3);
 x_10 = lean_ctor_get(x_1, 0);
-lean_inc(x_10);
-lean_dec(x_1);
 x_11 = lean_ctor_get(x_10, 1);
-lean_inc(x_11);
-lean_dec(x_10);
 x_12 = lean_alloc_ctor(0, 2, 0);
 lean_ctor_set(x_12, 0, x_2);
 lean_ctor_set(x_12, 1, x_9);
+lean_inc(x_11);
 x_13 = lean_apply_2(x_11, lean_box(0), x_12);
 return x_13;
 }
@@ -404,7 +454,7 @@ lean_object* x_7; lean_object* x_8; lean_object* x_9; lean_object* x_10;
 x_7 = lean_ctor_get(x_1, 1);
 lean_inc(x_7);
 x_8 = lean_apply_1(x_5, x_6);
-x_9 = lean_alloc_closure((void*)(l_StateT_Monad___rarg___lambda__1), 3, 2);
+x_9 = lean_alloc_closure((void*)(l_StateT_Monad___rarg___lambda__1___boxed), 3, 2);
 lean_closure_set(x_9, 0, x_1);
 lean_closure_set(x_9, 1, x_4);
 x_10 = lean_apply_4(x_7, lean_box(0), lean_box(0), x_8, x_9);
@@ -416,12 +466,11 @@ _start:
 {
 lean_object* x_5; lean_object* x_6; lean_object* x_7; lean_object* x_8; lean_object* x_9; 
 x_5 = lean_ctor_get(x_4, 0);
-lean_inc(x_5);
 x_6 = lean_ctor_get(x_4, 1);
 lean_inc(x_6);
-lean_dec(x_4);
 x_7 = lean_apply_1(x_1, x_6);
-x_8 = lean_alloc_closure((void*)(l_StateT_map___rarg___lambda__1), 3, 2);
+lean_inc(x_5);
+x_8 = lean_alloc_closure((void*)(l_StateT_map___rarg___lambda__1___boxed), 3, 2);
 lean_closure_set(x_8, 0, x_2);
 lean_closure_set(x_8, 1, x_5);
 x_9 = lean_apply_4(x_3, lean_box(0), lean_box(0), x_7, x_8);
@@ -436,7 +485,7 @@ x_7 = lean_ctor_get(x_1, 1);
 lean_inc(x_7);
 x_8 = lean_apply_1(x_4, x_6);
 lean_inc(x_7);
-x_9 = lean_alloc_closure((void*)(l_StateT_Monad___rarg___lambda__3), 4, 3);
+x_9 = lean_alloc_closure((void*)(l_StateT_Monad___rarg___lambda__3___boxed), 4, 3);
 lean_closure_set(x_9, 0, x_5);
 lean_closure_set(x_9, 1, x_1);
 lean_closure_set(x_9, 2, x_7);
@@ -449,12 +498,11 @@ _start:
 {
 lean_object* x_5; lean_object* x_6; lean_object* x_7; lean_object* x_8; lean_object* x_9; 
 x_5 = lean_ctor_get(x_4, 0);
-lean_inc(x_5);
 x_6 = lean_ctor_get(x_4, 1);
 lean_inc(x_6);
-lean_dec(x_4);
 x_7 = lean_apply_1(x_1, x_6);
-x_8 = lean_alloc_closure((void*)(l_StateT_Monad___rarg___lambda__1), 3, 2);
+lean_inc(x_5);
+x_8 = lean_alloc_closure((void*)(l_StateT_Monad___rarg___lambda__1___boxed), 3, 2);
 lean_closure_set(x_8, 0, x_2);
 lean_closure_set(x_8, 1, x_5);
 x_9 = lean_apply_4(x_3, lean_box(0), lean_box(0), x_7, x_8);
@@ -469,7 +517,7 @@ x_7 = lean_ctor_get(x_1, 1);
 lean_inc(x_7);
 x_8 = lean_apply_1(x_4, x_6);
 lean_inc(x_7);
-x_9 = lean_alloc_closure((void*)(l_StateT_Monad___rarg___lambda__5), 4, 3);
+x_9 = lean_alloc_closure((void*)(l_StateT_Monad___rarg___lambda__5___boxed), 4, 3);
 lean_closure_set(x_9, 0, x_5);
 lean_closure_set(x_9, 1, x_1);
 lean_closure_set(x_9, 2, x_7);
@@ -483,7 +531,6 @@ _start:
 lean_object* x_3; lean_object* x_4; 
 x_3 = lean_ctor_get(x_2, 1);
 lean_inc(x_3);
-lean_dec(x_2);
 x_4 = lean_apply_1(x_1, x_3);
 return x_4;
 }
@@ -493,11 +540,10 @@ _start:
 {
 lean_object* x_7; lean_object* x_8; lean_object* x_9; lean_object* x_10; 
 x_7 = lean_ctor_get(x_1, 1);
-lean_inc(x_7);
-lean_dec(x_1);
 x_8 = lean_apply_1(x_4, x_6);
-x_9 = lean_alloc_closure((void*)(l_StateT_Monad___rarg___lambda__7), 2, 1);
+x_9 = lean_alloc_closure((void*)(l_StateT_Monad___rarg___lambda__7___boxed), 2, 1);
 lean_closure_set(x_9, 0, x_5);
+lean_inc(x_7);
 x_10 = lean_apply_4(x_7, lean_box(0), lean_box(0), x_8, x_9);
 return x_10;
 }
@@ -516,7 +562,7 @@ x_4 = lean_alloc_ctor(0, 2, 0);
 lean_ctor_set(x_4, 0, x_2);
 lean_ctor_set(x_4, 1, x_3);
 lean_inc(x_1);
-x_5 = lean_alloc_closure((void*)(l_StateT_pure___rarg), 4, 1);
+x_5 = lean_alloc_closure((void*)(l_StateT_pure___rarg___boxed), 4, 1);
 lean_closure_set(x_5, 0, x_1);
 lean_inc(x_1);
 x_6 = lean_alloc_closure((void*)(l_StateT_Monad___rarg___lambda__4), 6, 1);
@@ -525,7 +571,7 @@ lean_inc(x_1);
 x_7 = lean_alloc_closure((void*)(l_StateT_Monad___rarg___lambda__6), 6, 1);
 lean_closure_set(x_7, 0, x_1);
 lean_inc(x_1);
-x_8 = lean_alloc_closure((void*)(l_StateT_Monad___rarg___lambda__8), 6, 1);
+x_8 = lean_alloc_closure((void*)(l_StateT_Monad___rarg___lambda__8___boxed), 6, 1);
 lean_closure_set(x_8, 0, x_1);
 x_9 = lean_alloc_ctor(0, 5, 0);
 lean_ctor_set(x_9, 0, x_4);
@@ -533,7 +579,7 @@ lean_ctor_set(x_9, 1, x_5);
 lean_ctor_set(x_9, 2, x_6);
 lean_ctor_set(x_9, 3, x_7);
 lean_ctor_set(x_9, 4, x_8);
-x_10 = lean_alloc_closure((void*)(l_StateT_bind___rarg), 6, 1);
+x_10 = lean_alloc_closure((void*)(l_StateT_bind___rarg___boxed), 6, 1);
 lean_closure_set(x_10, 0, x_1);
 x_11 = lean_alloc_ctor(0, 2, 0);
 lean_ctor_set(x_11, 0, x_9);
@@ -547,6 +593,51 @@ _start:
 lean_object* x_3; 
 x_3 = lean_alloc_closure((void*)(l_StateT_Monad___rarg), 1, 0);
 return x_3;
+}
+}
+lean_object* l_StateT_Monad___rarg___lambda__1___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3) {
+_start:
+{
+lean_object* x_4; 
+x_4 = l_StateT_Monad___rarg___lambda__1(x_1, x_2, x_3);
+lean_dec(x_1);
+return x_4;
+}
+}
+lean_object* l_StateT_Monad___rarg___lambda__3___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3, lean_object* x_4) {
+_start:
+{
+lean_object* x_5; 
+x_5 = l_StateT_Monad___rarg___lambda__3(x_1, x_2, x_3, x_4);
+lean_dec(x_4);
+return x_5;
+}
+}
+lean_object* l_StateT_Monad___rarg___lambda__5___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3, lean_object* x_4) {
+_start:
+{
+lean_object* x_5; 
+x_5 = l_StateT_Monad___rarg___lambda__5(x_1, x_2, x_3, x_4);
+lean_dec(x_4);
+return x_5;
+}
+}
+lean_object* l_StateT_Monad___rarg___lambda__7___boxed(lean_object* x_1, lean_object* x_2) {
+_start:
+{
+lean_object* x_3; 
+x_3 = l_StateT_Monad___rarg___lambda__7(x_1, x_2);
+lean_dec(x_2);
+return x_3;
+}
+}
+lean_object* l_StateT_Monad___rarg___lambda__8___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3, lean_object* x_4, lean_object* x_5, lean_object* x_6) {
+_start:
+{
+lean_object* x_7; 
+x_7 = l_StateT_Monad___rarg___lambda__8(x_1, x_2, x_3, x_4, x_5, x_6);
+lean_dec(x_1);
+return x_7;
 }
 }
 lean_object* l_StateT_Monad___boxed(lean_object* x_1, lean_object* x_2) {
@@ -563,11 +654,10 @@ _start:
 {
 lean_object* x_6; lean_object* x_7; lean_object* x_8; lean_object* x_9; 
 x_6 = lean_ctor_get(x_1, 2);
-lean_inc(x_6);
-lean_dec(x_1);
 lean_inc(x_5);
 x_7 = lean_apply_1(x_3, x_5);
 x_8 = lean_apply_1(x_4, x_5);
+lean_inc(x_6);
 x_9 = lean_apply_3(x_6, lean_box(0), x_7, x_8);
 return x_9;
 }
@@ -576,8 +666,17 @@ lean_object* l_StateT_orelse(lean_object* x_1, lean_object* x_2, lean_object* x_
 _start:
 {
 lean_object* x_4; 
-x_4 = lean_alloc_closure((void*)(l_StateT_orelse___rarg), 5, 0);
+x_4 = lean_alloc_closure((void*)(l_StateT_orelse___rarg___boxed), 5, 0);
 return x_4;
+}
+}
+lean_object* l_StateT_orelse___rarg___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3, lean_object* x_4, lean_object* x_5) {
+_start:
+{
+lean_object* x_6; 
+x_6 = l_StateT_orelse___rarg(x_1, x_2, x_3, x_4, x_5);
+lean_dec(x_1);
+return x_6;
 }
 }
 lean_object* l_StateT_orelse___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3) {
@@ -596,7 +695,6 @@ _start:
 lean_object* x_4; lean_object* x_5; 
 x_4 = lean_ctor_get(x_1, 1);
 lean_inc(x_4);
-lean_dec(x_1);
 x_5 = lean_apply_1(x_4, lean_box(0));
 return x_5;
 }
@@ -615,6 +713,7 @@ _start:
 lean_object* x_4; 
 x_4 = l_StateT_failure___rarg(x_1, x_2, x_3);
 lean_dec(x_3);
+lean_dec(x_1);
 return x_4;
 }
 }
@@ -639,7 +738,7 @@ lean_dec(x_3);
 lean_inc(x_2);
 x_5 = lean_alloc_closure((void*)(l_StateT_failure___rarg___boxed), 3, 1);
 lean_closure_set(x_5, 0, x_2);
-x_6 = lean_alloc_closure((void*)(l_StateT_orelse___rarg), 5, 1);
+x_6 = lean_alloc_closure((void*)(l_StateT_orelse___rarg___boxed), 5, 1);
 lean_closure_set(x_6, 0, x_2);
 x_7 = lean_alloc_ctor(0, 3, 0);
 lean_ctor_set(x_7, 0, x_4);
@@ -670,15 +769,12 @@ _start:
 {
 lean_object* x_3; lean_object* x_4; lean_object* x_5; lean_object* x_6; 
 x_3 = lean_ctor_get(x_1, 0);
-lean_inc(x_3);
-lean_dec(x_1);
 x_4 = lean_ctor_get(x_3, 1);
-lean_inc(x_4);
-lean_dec(x_3);
 lean_inc(x_2);
 x_5 = lean_alloc_ctor(0, 2, 0);
 lean_ctor_set(x_5, 0, x_2);
 lean_ctor_set(x_5, 1, x_2);
+lean_inc(x_4);
 x_6 = lean_apply_2(x_4, lean_box(0), x_5);
 return x_6;
 }
@@ -687,7 +783,16 @@ lean_object* l_StateT_get(lean_object* x_1, lean_object* x_2) {
 _start:
 {
 lean_object* x_3; 
-x_3 = lean_alloc_closure((void*)(l_StateT_get___rarg), 2, 0);
+x_3 = lean_alloc_closure((void*)(l_StateT_get___rarg___boxed), 2, 0);
+return x_3;
+}
+}
+lean_object* l_StateT_get___rarg___boxed(lean_object* x_1, lean_object* x_2) {
+_start:
+{
+lean_object* x_3; 
+x_3 = l_StateT_get___rarg(x_1, x_2);
+lean_dec(x_1);
 return x_3;
 }
 }
@@ -705,15 +810,12 @@ _start:
 {
 lean_object* x_4; lean_object* x_5; lean_object* x_6; lean_object* x_7; lean_object* x_8; 
 x_4 = lean_ctor_get(x_1, 0);
-lean_inc(x_4);
-lean_dec(x_1);
 x_5 = lean_ctor_get(x_4, 1);
-lean_inc(x_5);
-lean_dec(x_4);
 x_6 = lean_box(0);
 x_7 = lean_alloc_ctor(0, 2, 0);
 lean_ctor_set(x_7, 0, x_6);
 lean_ctor_set(x_7, 1, x_2);
+lean_inc(x_5);
 x_8 = lean_apply_2(x_5, lean_box(0), x_7);
 return x_8;
 }
@@ -732,6 +834,7 @@ _start:
 lean_object* x_4; 
 x_4 = l_StateT_set___rarg(x_1, x_2, x_3);
 lean_dec(x_3);
+lean_dec(x_1);
 return x_4;
 }
 }
@@ -749,12 +852,9 @@ _start:
 {
 lean_object* x_5; lean_object* x_6; lean_object* x_7; lean_object* x_8; 
 x_5 = lean_ctor_get(x_1, 0);
-lean_inc(x_5);
-lean_dec(x_1);
 x_6 = lean_ctor_get(x_5, 1);
-lean_inc(x_6);
-lean_dec(x_5);
 x_7 = lean_apply_1(x_3, x_4);
+lean_inc(x_6);
 x_8 = lean_apply_2(x_6, lean_box(0), x_7);
 return x_8;
 }
@@ -763,8 +863,17 @@ lean_object* l_StateT_modifyGet(lean_object* x_1, lean_object* x_2) {
 _start:
 {
 lean_object* x_3; 
-x_3 = lean_alloc_closure((void*)(l_StateT_modifyGet___rarg), 4, 0);
+x_3 = lean_alloc_closure((void*)(l_StateT_modifyGet___rarg___boxed), 4, 0);
 return x_3;
+}
+}
+lean_object* l_StateT_modifyGet___rarg___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3, lean_object* x_4) {
+_start:
+{
+lean_object* x_5; 
+x_5 = l_StateT_modifyGet___rarg(x_1, x_2, x_3, x_4);
+lean_dec(x_1);
+return x_5;
 }
 }
 lean_object* l_StateT_modifyGet___boxed(lean_object* x_1, lean_object* x_2) {
@@ -781,14 +890,11 @@ _start:
 {
 lean_object* x_4; lean_object* x_5; lean_object* x_6; lean_object* x_7; 
 x_4 = lean_ctor_get(x_1, 0);
-lean_inc(x_4);
-lean_dec(x_1);
 x_5 = lean_ctor_get(x_4, 1);
-lean_inc(x_5);
-lean_dec(x_4);
 x_6 = lean_alloc_ctor(0, 2, 0);
 lean_ctor_set(x_6, 0, x_3);
 lean_ctor_set(x_6, 1, x_2);
+lean_inc(x_5);
 x_7 = lean_apply_2(x_5, lean_box(0), x_6);
 return x_7;
 }
@@ -799,7 +905,7 @@ _start:
 lean_object* x_5; lean_object* x_6; lean_object* x_7; 
 x_5 = lean_ctor_get(x_1, 1);
 lean_inc(x_5);
-x_6 = lean_alloc_closure((void*)(l_StateT_lift___rarg___lambda__1), 3, 2);
+x_6 = lean_alloc_closure((void*)(l_StateT_lift___rarg___lambda__1___boxed), 3, 2);
 lean_closure_set(x_6, 0, x_1);
 lean_closure_set(x_6, 1, x_4);
 x_7 = lean_apply_4(x_5, lean_box(0), lean_box(0), x_3, x_6);
@@ -812,6 +918,15 @@ _start:
 lean_object* x_3; 
 x_3 = lean_alloc_closure((void*)(l_StateT_lift___rarg), 4, 0);
 return x_3;
+}
+}
+lean_object* l_StateT_lift___rarg___lambda__1___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3) {
+_start:
+{
+lean_object* x_4; 
+x_4 = l_StateT_lift___rarg___lambda__1(x_1, x_2, x_3);
+lean_dec(x_1);
+return x_4;
 }
 }
 lean_object* l_StateT_lift___boxed(lean_object* x_1, lean_object* x_2) {
@@ -888,13 +1003,10 @@ if (x_5 == 0)
 lean_object* x_6; lean_object* x_7; lean_object* x_8; lean_object* x_9; lean_object* x_10; 
 x_6 = lean_ctor_get(x_4, 1);
 x_7 = lean_ctor_get(x_1, 0);
-lean_inc(x_7);
-lean_dec(x_1);
 x_8 = lean_ctor_get(x_7, 1);
-lean_inc(x_8);
-lean_dec(x_7);
 x_9 = lean_apply_2(x_2, x_6, x_3);
 lean_ctor_set(x_4, 1, x_9);
+lean_inc(x_8);
 x_10 = lean_apply_2(x_8, lean_box(0), x_4);
 return x_10;
 }
@@ -907,15 +1019,12 @@ lean_inc(x_12);
 lean_inc(x_11);
 lean_dec(x_4);
 x_13 = lean_ctor_get(x_1, 0);
-lean_inc(x_13);
-lean_dec(x_1);
 x_14 = lean_ctor_get(x_13, 1);
-lean_inc(x_14);
-lean_dec(x_13);
 x_15 = lean_apply_2(x_2, x_12, x_3);
 x_16 = lean_alloc_ctor(0, 2, 0);
 lean_ctor_set(x_16, 0, x_11);
 lean_ctor_set(x_16, 1, x_15);
+lean_inc(x_14);
 x_17 = lean_apply_2(x_14, lean_box(0), x_16);
 return x_17;
 }
@@ -934,7 +1043,7 @@ lean_dec(x_6);
 x_9 = lean_ctor_get(x_1, 1);
 lean_inc(x_9);
 x_10 = lean_apply_1(x_4, x_7);
-x_11 = lean_alloc_closure((void*)(l_StateT_adapt___rarg___lambda__1), 4, 3);
+x_11 = lean_alloc_closure((void*)(l_StateT_adapt___rarg___lambda__1___boxed), 4, 3);
 lean_closure_set(x_11, 0, x_1);
 lean_closure_set(x_11, 1, x_3);
 lean_closure_set(x_11, 2, x_8);
@@ -948,6 +1057,15 @@ _start:
 lean_object* x_6; 
 x_6 = lean_alloc_closure((void*)(l_StateT_adapt___rarg), 5, 0);
 return x_6;
+}
+}
+lean_object* l_StateT_adapt___rarg___lambda__1___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3, lean_object* x_4) {
+_start:
+{
+lean_object* x_5; 
+x_5 = l_StateT_adapt___rarg___lambda__1(x_1, x_2, x_3, x_4);
+lean_dec(x_1);
+return x_5;
 }
 }
 lean_object* l_StateT_adapt___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3, lean_object* x_4, lean_object* x_5) {
@@ -965,11 +1083,10 @@ _start:
 lean_object* x_6; lean_object* x_7; lean_object* x_8; lean_object* x_9; lean_object* x_10; 
 x_6 = lean_ctor_get(x_1, 0);
 lean_inc(x_6);
-lean_dec(x_1);
 x_7 = lean_apply_2(x_6, lean_box(0), x_4);
 x_8 = lean_ctor_get(x_2, 1);
 lean_inc(x_8);
-x_9 = lean_alloc_closure((void*)(l_StateT_lift___rarg___lambda__1), 3, 2);
+x_9 = lean_alloc_closure((void*)(l_StateT_lift___rarg___lambda__1___boxed), 3, 2);
 lean_closure_set(x_9, 0, x_2);
 lean_closure_set(x_9, 1, x_5);
 x_10 = lean_apply_4(x_8, lean_box(0), lean_box(0), x_7, x_9);
@@ -989,13 +1106,12 @@ _start:
 {
 lean_object* x_6; lean_object* x_7; lean_object* x_8; lean_object* x_9; 
 x_6 = lean_ctor_get(x_1, 1);
-lean_inc(x_6);
-lean_dec(x_1);
 lean_inc(x_5);
 x_7 = lean_apply_1(x_3, x_5);
 x_8 = lean_alloc_closure((void*)(l_StateT_MonadExcept___rarg___lambda__2), 3, 2);
 lean_closure_set(x_8, 0, x_4);
 lean_closure_set(x_8, 1, x_5);
+lean_inc(x_6);
 x_9 = lean_apply_3(x_6, lean_box(0), x_7, x_8);
 return x_9;
 }
@@ -1005,10 +1121,10 @@ _start:
 {
 lean_object* x_4; lean_object* x_5; lean_object* x_6; 
 lean_inc(x_3);
-x_4 = lean_alloc_closure((void*)(l_StateT_MonadExcept___rarg___lambda__1), 5, 2);
+x_4 = lean_alloc_closure((void*)(l_StateT_MonadExcept___rarg___lambda__1___boxed), 5, 2);
 lean_closure_set(x_4, 0, x_3);
 lean_closure_set(x_4, 1, x_1);
-x_5 = lean_alloc_closure((void*)(l_StateT_MonadExcept___rarg___lambda__3), 5, 1);
+x_5 = lean_alloc_closure((void*)(l_StateT_MonadExcept___rarg___lambda__3___boxed), 5, 1);
 lean_closure_set(x_5, 0, x_3);
 x_6 = lean_alloc_ctor(0, 2, 0);
 lean_ctor_set(x_6, 0, x_4);
@@ -1022,6 +1138,24 @@ _start:
 lean_object* x_3; 
 x_3 = lean_alloc_closure((void*)(l_StateT_MonadExcept___rarg), 3, 0);
 return x_3;
+}
+}
+lean_object* l_StateT_MonadExcept___rarg___lambda__1___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3, lean_object* x_4, lean_object* x_5) {
+_start:
+{
+lean_object* x_6; 
+x_6 = l_StateT_MonadExcept___rarg___lambda__1(x_1, x_2, x_3, x_4, x_5);
+lean_dec(x_1);
+return x_6;
+}
+}
+lean_object* l_StateT_MonadExcept___rarg___lambda__3___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3, lean_object* x_4, lean_object* x_5) {
+_start:
+{
+lean_object* x_6; 
+x_6 = l_StateT_MonadExcept___rarg___lambda__3(x_1, x_2, x_3, x_4, x_5);
+lean_dec(x_1);
+return x_6;
 }
 }
 lean_object* l_StateT_MonadExcept___boxed(lean_object* x_1, lean_object* x_2) {
@@ -1050,10 +1184,9 @@ _start:
 {
 lean_object* x_3; lean_object* x_4; lean_object* x_5; 
 x_3 = lean_ctor_get(x_1, 2);
-lean_inc(x_3);
-lean_dec(x_1);
 x_4 = lean_alloc_closure((void*)(l_modify___rarg___lambda__1), 2, 1);
 lean_closure_set(x_4, 0, x_2);
+lean_inc(x_3);
 x_5 = lean_apply_2(x_3, lean_box(0), x_4);
 return x_5;
 }
@@ -1062,7 +1195,16 @@ lean_object* l_modify(lean_object* x_1, lean_object* x_2) {
 _start:
 {
 lean_object* x_3; 
-x_3 = lean_alloc_closure((void*)(l_modify___rarg), 2, 0);
+x_3 = lean_alloc_closure((void*)(l_modify___rarg___boxed), 2, 0);
+return x_3;
+}
+}
+lean_object* l_modify___rarg___boxed(lean_object* x_1, lean_object* x_2) {
+_start:
+{
+lean_object* x_3; 
+x_3 = l_modify___rarg(x_1, x_2);
+lean_dec(x_1);
 return x_3;
 }
 }
@@ -1080,10 +1222,9 @@ _start:
 {
 lean_object* x_6; lean_object* x_7; lean_object* x_8; lean_object* x_9; lean_object* x_10; 
 x_6 = lean_ctor_get(x_1, 2);
-lean_inc(x_6);
-lean_dec(x_1);
 x_7 = lean_alloc_closure((void*)(l_modify___rarg___lambda__1), 2, 1);
 lean_closure_set(x_7, 0, x_2);
+lean_inc(x_6);
 x_8 = lean_apply_2(x_6, lean_box(0), x_7);
 x_9 = lean_alloc_closure((void*)(l_finally___rarg___lambda__1___boxed), 3, 2);
 lean_closure_set(x_9, 0, x_3);
@@ -1101,7 +1242,7 @@ lean_inc(x_4);
 x_5 = lean_ctor_get(x_1, 0);
 lean_inc(x_5);
 lean_inc(x_4);
-x_6 = lean_alloc_closure((void*)(l_getModify___rarg___lambda__1), 5, 4);
+x_6 = lean_alloc_closure((void*)(l_getModify___rarg___lambda__1___boxed), 5, 4);
 lean_closure_set(x_6, 0, x_1);
 lean_closure_set(x_6, 1, x_3);
 lean_closure_set(x_6, 2, x_2);
@@ -1116,6 +1257,15 @@ _start:
 lean_object* x_3; 
 x_3 = lean_alloc_closure((void*)(l_getModify___rarg), 3, 0);
 return x_3;
+}
+}
+lean_object* l_getModify___rarg___lambda__1___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3, lean_object* x_4, lean_object* x_5) {
+_start:
+{
+lean_object* x_6; 
+x_6 = l_getModify___rarg___lambda__1(x_1, x_2, x_3, x_4, x_5);
+lean_dec(x_1);
+return x_6;
 }
 }
 lean_object* l_getModify___boxed(lean_object* x_1, lean_object* x_2) {
@@ -1133,7 +1283,6 @@ _start:
 lean_object* x_4; lean_object* x_5; lean_object* x_6; 
 x_4 = lean_ctor_get(x_1, 1);
 lean_inc(x_4);
-lean_dec(x_1);
 x_5 = lean_apply_1(x_4, x_3);
 x_6 = lean_apply_2(x_2, lean_box(0), x_5);
 return x_6;
@@ -1145,7 +1294,6 @@ _start:
 lean_object* x_5; lean_object* x_6; lean_object* x_7; 
 x_5 = lean_ctor_get(x_1, 2);
 lean_inc(x_5);
-lean_dec(x_1);
 x_6 = lean_apply_2(x_5, lean_box(0), x_4);
 x_7 = lean_apply_2(x_2, lean_box(0), x_6);
 return x_7;
@@ -1161,10 +1309,10 @@ lean_inc(x_2);
 x_4 = lean_apply_2(x_2, lean_box(0), x_3);
 lean_inc(x_2);
 lean_inc(x_1);
-x_5 = lean_alloc_closure((void*)(l_monadStateTrans___rarg___lambda__1), 3, 2);
+x_5 = lean_alloc_closure((void*)(l_monadStateTrans___rarg___lambda__1___boxed), 3, 2);
 lean_closure_set(x_5, 0, x_1);
 lean_closure_set(x_5, 1, x_2);
-x_6 = lean_alloc_closure((void*)(l_monadStateTrans___rarg___lambda__2), 4, 2);
+x_6 = lean_alloc_closure((void*)(l_monadStateTrans___rarg___lambda__2___boxed), 4, 2);
 lean_closure_set(x_6, 0, x_1);
 lean_closure_set(x_6, 1, x_2);
 x_7 = lean_alloc_ctor(0, 3, 0);
@@ -1182,6 +1330,24 @@ x_4 = lean_alloc_closure((void*)(l_monadStateTrans___rarg), 2, 0);
 return x_4;
 }
 }
+lean_object* l_monadStateTrans___rarg___lambda__1___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3) {
+_start:
+{
+lean_object* x_4; 
+x_4 = l_monadStateTrans___rarg___lambda__1(x_1, x_2, x_3);
+lean_dec(x_1);
+return x_4;
+}
+}
+lean_object* l_monadStateTrans___rarg___lambda__2___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3, lean_object* x_4) {
+_start:
+{
+lean_object* x_5; 
+x_5 = l_monadStateTrans___rarg___lambda__2(x_1, x_2, x_3, x_4);
+lean_dec(x_1);
+return x_5;
+}
+}
 lean_object* l_monadStateTrans___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3) {
 _start:
 {
@@ -1197,12 +1363,12 @@ _start:
 {
 lean_object* x_2; lean_object* x_3; lean_object* x_4; lean_object* x_5; 
 lean_inc(x_1);
-x_2 = lean_alloc_closure((void*)(l_StateT_get___rarg), 2, 1);
+x_2 = lean_alloc_closure((void*)(l_StateT_get___rarg___boxed), 2, 1);
 lean_closure_set(x_2, 0, x_1);
 lean_inc(x_1);
 x_3 = lean_alloc_closure((void*)(l_StateT_set___rarg___boxed), 3, 1);
 lean_closure_set(x_3, 0, x_1);
-x_4 = lean_alloc_closure((void*)(l_StateT_modifyGet___rarg), 4, 1);
+x_4 = lean_alloc_closure((void*)(l_StateT_modifyGet___rarg___boxed), 4, 1);
 lean_closure_set(x_4, 0, x_1);
 x_5 = lean_alloc_ctor(0, 3, 0);
 lean_ctor_set(x_5, 0, x_2);
@@ -1340,7 +1506,7 @@ lean_dec(x_8);
 x_11 = lean_ctor_get(x_1, 1);
 lean_inc(x_11);
 x_12 = lean_apply_1(x_6, x_9);
-x_13 = lean_alloc_closure((void*)(l_StateT_adapt___rarg___lambda__1), 4, 3);
+x_13 = lean_alloc_closure((void*)(l_StateT_adapt___rarg___lambda__1___boxed), 4, 3);
 lean_closure_set(x_13, 0, x_1);
 lean_closure_set(x_13, 1, x_5);
 lean_closure_set(x_13, 2, x_10);
@@ -1370,10 +1536,9 @@ _start:
 {
 lean_object* x_6; lean_object* x_7; lean_object* x_8; lean_object* x_9; lean_object* x_10; 
 x_6 = lean_ctor_get(x_2, 0);
-lean_inc(x_6);
-lean_dec(x_2);
 x_7 = lean_apply_1(x_4, x_5);
 x_8 = l_StateT_run_x27___rarg___closed__1;
+lean_inc(x_6);
 x_9 = lean_apply_4(x_6, lean_box(0), lean_box(0), x_8, x_7);
 x_10 = lean_apply_2(x_1, lean_box(0), x_9);
 return x_10;
@@ -1383,8 +1548,17 @@ lean_object* l_StateT_MonadRun(lean_object* x_1, lean_object* x_2, lean_object* 
 _start:
 {
 lean_object* x_4; 
-x_4 = lean_alloc_closure((void*)(l_StateT_MonadRun___rarg), 5, 0);
+x_4 = lean_alloc_closure((void*)(l_StateT_MonadRun___rarg___boxed), 5, 0);
 return x_4;
+}
+}
+lean_object* l_StateT_MonadRun___rarg___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3, lean_object* x_4, lean_object* x_5) {
+_start:
+{
+lean_object* x_6; 
+x_6 = l_StateT_MonadRun___rarg(x_1, x_2, x_3, x_4, x_5);
+lean_dec(x_2);
+return x_6;
 }
 }
 lean_object* l_StateT_MonadRun___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3) {
@@ -1441,16 +1615,11 @@ _start:
 {
 lean_object* x_5; lean_object* x_6; lean_object* x_7; lean_object* x_8; lean_object* x_9; lean_object* x_10; 
 x_5 = lean_ctor_get(x_1, 0);
-lean_inc(x_5);
-lean_dec(x_1);
 x_6 = lean_ctor_get(x_5, 0);
-lean_inc(x_6);
-lean_dec(x_5);
 x_7 = lean_ctor_get(x_6, 0);
-lean_inc(x_7);
-lean_dec(x_6);
 x_8 = lean_apply_1(x_3, x_4);
 x_9 = l_StateT_run_x27___rarg___closed__1;
+lean_inc(x_7);
 x_10 = lean_apply_4(x_7, lean_box(0), lean_box(0), x_9, x_8);
 return x_10;
 }
@@ -1459,8 +1628,17 @@ lean_object* l_StateT_MonadStateRunner(lean_object* x_1, lean_object* x_2) {
 _start:
 {
 lean_object* x_3; 
-x_3 = lean_alloc_closure((void*)(l_StateT_MonadStateRunner___rarg), 4, 0);
+x_3 = lean_alloc_closure((void*)(l_StateT_MonadStateRunner___rarg___boxed), 4, 0);
 return x_3;
+}
+}
+lean_object* l_StateT_MonadStateRunner___rarg___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3, lean_object* x_4) {
+_start:
+{
+lean_object* x_5; 
+x_5 = l_StateT_MonadStateRunner___rarg(x_1, x_2, x_3, x_4);
+lean_dec(x_1);
+return x_5;
 }
 }
 lean_object* l_StateT_MonadStateRunner___boxed(lean_object* x_1, lean_object* x_2) {

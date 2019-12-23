@@ -31,6 +31,7 @@ lean_object* l_Lean_Elab_processHeader(lean_object*, lean_object*, lean_object*,
 lean_object* l_Lean_Elab_parseImports___closed__1;
 lean_object* l_Lean_MessageLog_toList(lean_object*);
 lean_object* l_Lean_Elab_headerToImports___closed__3;
+lean_object* l_Lean_Elab_parseImports___boxed(lean_object*, lean_object*, lean_object*);
 lean_object* lean_array_get(lean_object*, lean_object*, lean_object*);
 lean_object* l_IO_println___at_Lean_HasRepr_HasEval___spec__1(lean_object*, lean_object*);
 lean_object* lean_name_mk_string(lean_object*, lean_object*);
@@ -38,6 +39,7 @@ lean_object* l_Lean_Elab_processHeader___boxed(lean_object*, lean_object*, lean_
 lean_object* lean_print_deps(lean_object*, lean_object*);
 lean_object* l_Lean_FileMap_toPosition(lean_object*, lean_object*);
 lean_object* l_Lean_FileMap_ofString(lean_object*);
+lean_object* l_List_forM___main___at_Lean_Elab_printDeps___spec__1___boxed(lean_object*, lean_object*);
 lean_object* lean_mk_empty_environment(uint32_t, lean_object*);
 lean_object* lean_import_modules(lean_object*, uint32_t, lean_object*);
 extern lean_object* l_Lean_normalizeModuleName___closed__1;
@@ -662,7 +664,6 @@ lean_object* x_58; lean_object* x_59; lean_object* x_60; lean_object* x_61; uint
 x_58 = lean_ctor_get(x_5, 0);
 x_59 = lean_ctor_get(x_2, 0);
 lean_inc(x_59);
-lean_dec(x_2);
 lean_inc(x_1);
 x_60 = l_Lean_Parser_mkParserContextCore(x_58, x_1, x_59);
 x_61 = l_Lean_Parser_parseHeader(x_58, x_60);
@@ -771,7 +772,6 @@ lean_inc(x_90);
 lean_dec(x_5);
 x_92 = lean_ctor_get(x_2, 0);
 lean_inc(x_92);
-lean_dec(x_2);
 lean_inc(x_1);
 x_93 = l_Lean_Parser_mkParserContextCore(x_90, x_1, x_92);
 x_94 = l_Lean_Parser_parseHeader(x_90, x_93);
@@ -832,7 +832,6 @@ return x_107;
 else
 {
 uint8_t x_108; 
-lean_dec(x_2);
 lean_dec(x_1);
 x_108 = !lean_is_exclusive(x_5);
 if (x_108 == 0)
@@ -855,11 +854,21 @@ return x_111;
 }
 }
 }
+lean_object* l_Lean_Elab_parseImports___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3) {
+_start:
+{
+lean_object* x_4; 
+x_4 = l_Lean_Elab_parseImports(x_1, x_2, x_3);
+lean_dec(x_2);
+return x_4;
+}
+}
 lean_object* lean_parse_imports(lean_object* x_1, lean_object* x_2, lean_object* x_3) {
 _start:
 {
 lean_object* x_4; 
 x_4 = l_Lean_Elab_parseImports(x_1, x_2, x_3);
+lean_dec(x_2);
 if (lean_obj_tag(x_4) == 0)
 {
 lean_object* x_5; lean_object* x_6; uint8_t x_7; 
@@ -1030,13 +1039,8 @@ else
 {
 lean_object* x_5; lean_object* x_6; lean_object* x_7; lean_object* x_8; 
 x_5 = lean_ctor_get(x_1, 0);
-lean_inc(x_5);
 x_6 = lean_ctor_get(x_1, 1);
-lean_inc(x_6);
-lean_dec(x_1);
 x_7 = lean_ctor_get(x_5, 0);
-lean_inc(x_7);
-lean_dec(x_5);
 x_8 = l_Lean_findOLean(x_7, x_2);
 if (lean_obj_tag(x_8) == 0)
 {
@@ -1061,7 +1065,6 @@ goto _start;
 else
 {
 uint8_t x_14; 
-lean_dec(x_6);
 x_14 = !lean_is_exclusive(x_11);
 if (x_14 == 0)
 {
@@ -1085,7 +1088,6 @@ return x_17;
 else
 {
 uint8_t x_18; 
-lean_dec(x_6);
 x_18 = !lean_is_exclusive(x_8);
 if (x_18 == 0)
 {
@@ -1113,6 +1115,16 @@ _start:
 {
 lean_object* x_3; 
 x_3 = l_List_forM___main___at_Lean_Elab_printDeps___spec__1(x_1, x_2);
+lean_dec(x_1);
+return x_3;
+}
+}
+lean_object* l_List_forM___main___at_Lean_Elab_printDeps___spec__1___boxed(lean_object* x_1, lean_object* x_2) {
+_start:
+{
+lean_object* x_3; 
+x_3 = l_List_forM___main___at_Lean_Elab_printDeps___spec__1(x_1, x_2);
+lean_dec(x_1);
 return x_3;
 }
 }

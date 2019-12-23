@@ -187,7 +187,6 @@ if (x_6 == 0)
 {
 lean_object* x_7; lean_object* x_8; 
 lean_dec(x_3);
-lean_dec(x_1);
 x_7 = l_Array_empty___closed__1;
 x_8 = x_4;
 return x_8;
@@ -219,7 +218,6 @@ else
 lean_object* x_19; lean_object* x_20; lean_object* x_21; 
 lean_dec(x_15);
 lean_inc(x_9);
-lean_inc(x_1);
 x_19 = l_Lean_IR_FnBody_collectFreeIndices(x_1, x_9);
 x_20 = x_19;
 lean_dec(x_9);
@@ -342,6 +340,7 @@ lean_dec(x_16);
 lean_inc(x_7);
 x_17 = lean_array_push(x_4, x_7);
 x_18 = l_Lean_IR_FnBody_collectFreeIndices(x_7, x_5);
+lean_dec(x_7);
 x_1 = x_8;
 x_4 = x_17;
 x_5 = x_18;
@@ -361,6 +360,7 @@ lean_inc(x_7);
 x_26 = l_Array_umapMAux___main___at_Lean_IR_pushProjs___main___spec__2(x_3, x_7, x_21, x_25, x_2);
 x_27 = l_Array_umapMAux___main___at_Lean_IR_pushProjs___main___spec__3(x_7, x_21, x_25, x_3);
 lean_dec(x_21);
+lean_dec(x_7);
 x_1 = x_8;
 x_2 = x_26;
 x_3 = x_27;
@@ -417,6 +417,7 @@ _start:
 lean_object* x_5; 
 x_5 = l_Array_umapMAux___main___at_Lean_IR_pushProjs___main___spec__3(x_1, x_2, x_3, x_4);
 lean_dec(x_2);
+lean_dec(x_1);
 return x_5;
 }
 }
@@ -516,6 +517,7 @@ x_9 = x_8;
 x_10 = lean_array_fset(x_2, x_1, x_9);
 x_11 = l_Lean_IR_AltCore_body(x_7);
 x_12 = l_Lean_IR_FnBody_freeIndices(x_11);
+lean_dec(x_11);
 x_13 = lean_unsigned_to_nat(1u);
 x_14 = lean_nat_add(x_1, x_13);
 x_15 = x_12;

@@ -4681,7 +4681,6 @@ case 1:
 {
 uint8_t x_117; lean_object* x_118; lean_object* x_119; lean_object* x_120; lean_object* x_121; 
 x_117 = 0;
-lean_inc(x_8);
 x_118 = l_Lean_Meta_mkFreshExprMVar(x_66, x_61, x_117, x_8, x_9);
 x_119 = lean_ctor_get(x_118, 0);
 lean_inc(x_119);
@@ -4698,7 +4697,6 @@ case 3:
 {
 uint8_t x_123; lean_object* x_124; lean_object* x_125; lean_object* x_126; lean_object* x_127; lean_object* x_128; lean_object* x_129; 
 x_123 = 1;
-lean_inc(x_8);
 x_124 = l_Lean_Meta_mkFreshExprMVar(x_66, x_61, x_123, x_8, x_9);
 x_125 = lean_ctor_get(x_124, 0);
 lean_inc(x_125);

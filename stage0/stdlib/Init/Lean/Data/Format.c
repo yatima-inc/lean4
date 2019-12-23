@@ -37,6 +37,7 @@ extern lean_object* l_Prod_HasRepr___rarg___closed__1;
 lean_object* l_Lean_usizeHasFormat___boxed(lean_object*);
 lean_object* l_Lean_arrayHasFormat___rarg___boxed(lean_object*, lean_object*);
 lean_object* l_Lean_dataValueHasFormat;
+lean_object* l_Lean_List_format___rarg___boxed(lean_object*, lean_object*);
 lean_object* l_Lean_Format_HasAppend;
 lean_object* l_Lean_Format_flatten___main___closed__1;
 lean_object* l_Lean_Format_joinSep___main(lean_object*);
@@ -44,9 +45,11 @@ lean_object* l_Nat_repeatAux___main___at_String_pushn___spec__1(uint32_t, lean_o
 lean_object* l_Lean_Format_indentOption___closed__2;
 lean_object* l_Lean_Format_flatten___main(lean_object*);
 lean_object* l_Lean_formatDataValue___closed__1;
+lean_object* l_Lean_formatDataValue___boxed(lean_object*);
 lean_object* l_Lean_Format_getIndent___boxed(lean_object*);
 lean_object* l_Lean_Format_getIndent___closed__1;
 lean_object* l_Lean_Format_prefixJoin___main(lean_object*);
+lean_object* l_Lean_formatKVMap___boxed(lean_object*);
 lean_object* l_Lean_HasRepr___closed__2;
 lean_object* lean_array_get_size(lean_object*);
 lean_object* l_Lean_Format_bracket(lean_object*, lean_object*, lean_object*);
@@ -79,6 +82,7 @@ lean_object* lean_format_pretty(lean_object*, lean_object*);
 lean_object* l_Lean_Format_defWidth;
 lean_object* l_Lean_Format_joinSuffix(lean_object*);
 lean_object* l_Int_repr(lean_object*);
+lean_object* l_Lean_Format_prefixJoin___main___rarg___boxed(lean_object*, lean_object*, lean_object*);
 lean_object* l_Lean_Format_repr___main___closed__13;
 lean_object* l_Lean_Format_pretty___boxed(lean_object*, lean_object*);
 lean_object* l_Lean_Option_format(lean_object*);
@@ -91,6 +95,7 @@ lean_object* l_Lean_Format_widthOption___closed__2;
 lean_object* l_Lean_Format_widthOption___closed__1;
 lean_object* l_Lean_formatHasToString(lean_object*);
 lean_object* l_Lean_Option_format___rarg___closed__1;
+lean_object* l_Lean_Option_format___rarg___boxed(lean_object*, lean_object*);
 lean_object* l_Lean_Format_widthOption___closed__3;
 lean_object* l_Lean_HasRepr___closed__3;
 lean_object* l_Lean_Format_be(lean_object*, lean_object*, lean_object*, lean_object*);
@@ -101,6 +106,7 @@ lean_object* l_Lean_entryHasFormat___closed__1;
 lean_object* l_Lean_List_format(lean_object*);
 lean_object* l_Lean_Format_repr___main___closed__2;
 uint8_t l_Lean_KVMap_getBool(lean_object*, lean_object*, uint8_t);
+lean_object* l_Lean_Format_joinSuffix___rarg___boxed(lean_object*, lean_object*, lean_object*);
 lean_object* l_Lean_Format_repr___main___closed__4;
 lean_object* l_Lean_Format_repr___main___closed__1;
 lean_object* l_Lean_toStringToFormat___rarg(lean_object*);
@@ -111,8 +117,10 @@ lean_object* l_Lean_Format_repr___main___closed__8;
 lean_object* l_Lean_Format_spaceUptoLine_x27(lean_object*, lean_object*);
 lean_object* l_Lean_Format_HasAppend___closed__1;
 lean_object* l_Lean_Format_join___closed__1;
+lean_object* l_Lean_Format_prefixJoin___rarg___boxed(lean_object*, lean_object*, lean_object*);
 lean_object* l_Nat_repr(lean_object*);
 lean_object* l_Lean_Format_repr___main___closed__19;
+lean_object* l_Lean_formatEntry___boxed(lean_object*);
 lean_object* l_Lean_optionHasFormat(lean_object*);
 lean_object* l_Lean_Format_joinArraySep___rarg___boxed(lean_object*, lean_object*, lean_object*);
 lean_object* l_Lean_Format_repr___main___closed__9;
@@ -136,6 +144,7 @@ extern lean_object* l_String_Iterator_HasRepr___closed__2;
 lean_object* l_Lean_Format_joinSep___main___rarg(lean_object*, lean_object*, lean_object*);
 lean_object* l_Lean_Format_repr___main___closed__7;
 lean_object* l_Lean_Format_Inhabited;
+lean_object* l_Lean_Format_joinSep___main___rarg___boxed(lean_object*, lean_object*, lean_object*);
 lean_object* l_Lean_Format_repr___main___closed__3;
 lean_object* l_Lean_formatEntry___closed__1;
 lean_object* l_Lean_Format_isNil___boxed(lean_object*);
@@ -176,6 +185,7 @@ lean_object* l_Lean_uint32HasFormat(uint32_t);
 extern lean_object* l_Bool_HasRepr___closed__2;
 lean_object* l_Lean_Format_be___boxed(lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_Lean_Format_flatten(lean_object*);
+lean_object* l_Lean_Format_joinSuffix___main___rarg___boxed(lean_object*, lean_object*, lean_object*);
 lean_object* l_Lean_Format_sbracket___closed__1;
 lean_object* l_Lean_optionHasFormat___rarg(lean_object*);
 lean_object* l_Lean_Format_paren___closed__2;
@@ -192,7 +202,9 @@ lean_object* l_Lean_prodHasFormat___rarg(lean_object*, lean_object*, lean_object
 lean_object* l_Lean_formatDataValue(lean_object*);
 lean_object* l_Lean_Option_format___rarg___closed__3;
 lean_object* l_Lean_entryHasFormat;
+lean_object* l_Lean_nameHasFormat___boxed(lean_object*);
 lean_object* l_Lean_toStringToFormat___rarg___lambda__1(lean_object*);
+lean_object* l_Lean_Format_joinSep___rarg___boxed(lean_object*, lean_object*, lean_object*);
 lean_object* l_Array_toList___rarg(lean_object*);
 lean_object* l_Lean_Format_joinSep___main___at_Lean_formatKVMap___spec__1(lean_object*, lean_object*);
 lean_object* l_Lean_uint16HasFormat(uint16_t);
@@ -209,10 +221,12 @@ lean_object* l_Lean_List_format___rarg___closed__3;
 lean_object* l_Lean_Format_joinSuffix___main(lean_object*);
 lean_object* l_Lean_Format_paren___closed__3;
 lean_object* l_Lean_Format_repr___main___closed__10;
+lean_object* l_Lean_fmt___at_Lean_arrayHasFormat___spec__1___rarg___boxed(lean_object*, lean_object*);
 lean_object* lean_uint16_to_nat(uint16_t);
 lean_object* l_Lean_Name_toStringWithSep___main(lean_object*, lean_object*);
 lean_object* l_Lean_Format_prefixJoin___rarg(lean_object*, lean_object*, lean_object*);
 lean_object* lean_usize_to_nat(size_t);
+lean_object* l_Lean_prodHasFormat___rarg___boxed(lean_object*, lean_object*, lean_object*);
 lean_object* l_Lean_listHasFormat___rarg(lean_object*);
 lean_object* l_Array_iterateMAux___main___at_Lean_Format_joinArraySep___spec__1(lean_object*);
 lean_object* l_Lean_Format_sbracket(lean_object*);
@@ -223,6 +237,7 @@ lean_object* l_Lean_Format_getIndent___closed__2;
 lean_object* l_Lean_stringHasFormat(lean_object*);
 lean_object* lean_uint32_to_nat(uint32_t);
 lean_object* l_Lean_Format_spaceUptoLine(lean_object*, lean_object*);
+lean_object* l_Lean_Format_joinSep___main___at_Lean_formatKVMap___spec__1___boxed(lean_object*, lean_object*);
 lean_object* l_Lean_Format_getWidth(lean_object*);
 lean_object* l_Lean_Format_paren(lean_object*);
 lean_object* l_Lean_Format_unicodeOption(lean_object*);
@@ -1780,14 +1795,12 @@ else
 {
 lean_object* x_5; 
 x_5 = lean_ctor_get(x_2, 1);
-lean_inc(x_5);
 if (lean_obj_tag(x_5) == 0)
 {
 lean_object* x_6; lean_object* x_7; 
 lean_dec(x_3);
 x_6 = lean_ctor_get(x_2, 0);
 lean_inc(x_6);
-lean_dec(x_2);
 x_7 = lean_apply_1(x_1, x_6);
 return x_7;
 }
@@ -1795,9 +1808,8 @@ else
 {
 lean_object* x_8; lean_object* x_9; uint8_t x_10; lean_object* x_11; lean_object* x_12; lean_object* x_13; 
 x_8 = lean_ctor_get(x_2, 0);
-lean_inc(x_8);
-lean_dec(x_2);
 lean_inc(x_1);
+lean_inc(x_8);
 x_9 = lean_apply_1(x_1, x_8);
 x_10 = 0;
 lean_inc(x_3);
@@ -1819,8 +1831,17 @@ lean_object* l_Lean_Format_joinSep___main(lean_object* x_1) {
 _start:
 {
 lean_object* x_2; 
-x_2 = lean_alloc_closure((void*)(l_Lean_Format_joinSep___main___rarg), 3, 0);
+x_2 = lean_alloc_closure((void*)(l_Lean_Format_joinSep___main___rarg___boxed), 3, 0);
 return x_2;
+}
+}
+lean_object* l_Lean_Format_joinSep___main___rarg___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3) {
+_start:
+{
+lean_object* x_4; 
+x_4 = l_Lean_Format_joinSep___main___rarg(x_1, x_2, x_3);
+lean_dec(x_2);
+return x_4;
 }
 }
 lean_object* l_Lean_Format_joinSep___rarg(lean_object* x_1, lean_object* x_2, lean_object* x_3) {
@@ -1835,8 +1856,17 @@ lean_object* l_Lean_Format_joinSep(lean_object* x_1) {
 _start:
 {
 lean_object* x_2; 
-x_2 = lean_alloc_closure((void*)(l_Lean_Format_joinSep___rarg), 3, 0);
+x_2 = lean_alloc_closure((void*)(l_Lean_Format_joinSep___rarg___boxed), 3, 0);
 return x_2;
+}
+}
+lean_object* l_Lean_Format_joinSep___rarg___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3) {
+_start:
+{
+lean_object* x_4; 
+x_4 = l_Lean_Format_joinSep___rarg(x_1, x_2, x_3);
+lean_dec(x_2);
+return x_4;
 }
 }
 lean_object* l_Lean_Format_prefixJoin___main___rarg(lean_object* x_1, lean_object* x_2, lean_object* x_3) {
@@ -1854,11 +1884,9 @@ else
 {
 lean_object* x_5; lean_object* x_6; lean_object* x_7; uint8_t x_8; lean_object* x_9; lean_object* x_10; lean_object* x_11; 
 x_5 = lean_ctor_get(x_3, 0);
-lean_inc(x_5);
 x_6 = lean_ctor_get(x_3, 1);
-lean_inc(x_6);
-lean_dec(x_3);
 lean_inc(x_1);
+lean_inc(x_5);
 x_7 = lean_apply_1(x_1, x_5);
 x_8 = 0;
 lean_inc(x_2);
@@ -1879,8 +1907,17 @@ lean_object* l_Lean_Format_prefixJoin___main(lean_object* x_1) {
 _start:
 {
 lean_object* x_2; 
-x_2 = lean_alloc_closure((void*)(l_Lean_Format_prefixJoin___main___rarg), 3, 0);
+x_2 = lean_alloc_closure((void*)(l_Lean_Format_prefixJoin___main___rarg___boxed), 3, 0);
 return x_2;
+}
+}
+lean_object* l_Lean_Format_prefixJoin___main___rarg___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3) {
+_start:
+{
+lean_object* x_4; 
+x_4 = l_Lean_Format_prefixJoin___main___rarg(x_1, x_2, x_3);
+lean_dec(x_3);
+return x_4;
 }
 }
 lean_object* l_Lean_Format_prefixJoin___rarg(lean_object* x_1, lean_object* x_2, lean_object* x_3) {
@@ -1895,8 +1932,17 @@ lean_object* l_Lean_Format_prefixJoin(lean_object* x_1) {
 _start:
 {
 lean_object* x_2; 
-x_2 = lean_alloc_closure((void*)(l_Lean_Format_prefixJoin___rarg), 3, 0);
+x_2 = lean_alloc_closure((void*)(l_Lean_Format_prefixJoin___rarg___boxed), 3, 0);
 return x_2;
+}
+}
+lean_object* l_Lean_Format_prefixJoin___rarg___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3) {
+_start:
+{
+lean_object* x_4; 
+x_4 = l_Lean_Format_prefixJoin___rarg(x_1, x_2, x_3);
+lean_dec(x_3);
+return x_4;
 }
 }
 lean_object* l_Lean_Format_joinSuffix___main___rarg(lean_object* x_1, lean_object* x_2, lean_object* x_3) {
@@ -1914,11 +1960,9 @@ else
 {
 lean_object* x_5; lean_object* x_6; lean_object* x_7; uint8_t x_8; lean_object* x_9; lean_object* x_10; lean_object* x_11; 
 x_5 = lean_ctor_get(x_2, 0);
-lean_inc(x_5);
 x_6 = lean_ctor_get(x_2, 1);
-lean_inc(x_6);
-lean_dec(x_2);
 lean_inc(x_1);
+lean_inc(x_5);
 x_7 = lean_apply_1(x_1, x_5);
 x_8 = 0;
 lean_inc(x_3);
@@ -1939,8 +1983,17 @@ lean_object* l_Lean_Format_joinSuffix___main(lean_object* x_1) {
 _start:
 {
 lean_object* x_2; 
-x_2 = lean_alloc_closure((void*)(l_Lean_Format_joinSuffix___main___rarg), 3, 0);
+x_2 = lean_alloc_closure((void*)(l_Lean_Format_joinSuffix___main___rarg___boxed), 3, 0);
 return x_2;
+}
+}
+lean_object* l_Lean_Format_joinSuffix___main___rarg___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3) {
+_start:
+{
+lean_object* x_4; 
+x_4 = l_Lean_Format_joinSuffix___main___rarg(x_1, x_2, x_3);
+lean_dec(x_2);
+return x_4;
 }
 }
 lean_object* l_Lean_Format_joinSuffix___rarg(lean_object* x_1, lean_object* x_2, lean_object* x_3) {
@@ -1955,8 +2008,17 @@ lean_object* l_Lean_Format_joinSuffix(lean_object* x_1) {
 _start:
 {
 lean_object* x_2; 
-x_2 = lean_alloc_closure((void*)(l_Lean_Format_joinSuffix___rarg), 3, 0);
+x_2 = lean_alloc_closure((void*)(l_Lean_Format_joinSuffix___rarg___boxed), 3, 0);
 return x_2;
+}
+}
+lean_object* l_Lean_Format_joinSuffix___rarg___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3) {
+_start:
+{
+lean_object* x_4; 
+x_4 = l_Lean_Format_joinSuffix___rarg(x_1, x_2, x_3);
+lean_dec(x_2);
+return x_4;
 }
 }
 lean_object* _init_l_Lean_List_format___rarg___closed__1() {
@@ -2040,15 +2102,24 @@ lean_object* l_Lean_List_format(lean_object* x_1) {
 _start:
 {
 lean_object* x_2; 
-x_2 = lean_alloc_closure((void*)(l_Lean_List_format___rarg), 2, 0);
+x_2 = lean_alloc_closure((void*)(l_Lean_List_format___rarg___boxed), 2, 0);
 return x_2;
+}
+}
+lean_object* l_Lean_List_format___rarg___boxed(lean_object* x_1, lean_object* x_2) {
+_start:
+{
+lean_object* x_3; 
+x_3 = l_Lean_List_format___rarg(x_1, x_2);
+lean_dec(x_2);
+return x_3;
 }
 }
 lean_object* l_Lean_listHasFormat___rarg(lean_object* x_1) {
 _start:
 {
 lean_object* x_2; 
-x_2 = lean_alloc_closure((void*)(l_Lean_List_format___rarg), 2, 1);
+x_2 = lean_alloc_closure((void*)(l_Lean_List_format___rarg___boxed), 2, 1);
 lean_closure_set(x_2, 0, x_1);
 return x_2;
 }
@@ -2073,7 +2144,7 @@ lean_object* l_Lean_fmt___at_Lean_arrayHasFormat___spec__1(lean_object* x_1) {
 _start:
 {
 lean_object* x_2; 
-x_2 = lean_alloc_closure((void*)(l_Lean_fmt___at_Lean_arrayHasFormat___spec__1___rarg), 2, 0);
+x_2 = lean_alloc_closure((void*)(l_Lean_fmt___at_Lean_arrayHasFormat___spec__1___rarg___boxed), 2, 0);
 return x_2;
 }
 }
@@ -2093,6 +2164,7 @@ _start:
 lean_object* x_3; lean_object* x_4; uint8_t x_5; lean_object* x_6; lean_object* x_7; 
 x_3 = l_Array_toList___rarg(x_2);
 x_4 = l_Lean_List_format___rarg(x_1, x_3);
+lean_dec(x_3);
 x_5 = 0;
 x_6 = l_Lean_arrayHasFormat___rarg___closed__1;
 x_7 = lean_alloc_ctor(4, 2, 1);
@@ -2108,6 +2180,15 @@ _start:
 lean_object* x_2; 
 x_2 = lean_alloc_closure((void*)(l_Lean_arrayHasFormat___rarg___boxed), 2, 0);
 return x_2;
+}
+}
+lean_object* l_Lean_fmt___at_Lean_arrayHasFormat___spec__1___rarg___boxed(lean_object* x_1, lean_object* x_2) {
+_start:
+{
+lean_object* x_3; 
+x_3 = l_Lean_fmt___at_Lean_arrayHasFormat___spec__1___rarg(x_1, x_2);
+lean_dec(x_2);
+return x_3;
 }
 }
 lean_object* l_Lean_arrayHasFormat___rarg___boxed(lean_object* x_1, lean_object* x_2) {
@@ -2162,7 +2243,6 @@ else
 lean_object* x_4; lean_object* x_5; uint8_t x_6; lean_object* x_7; lean_object* x_8; 
 x_4 = lean_ctor_get(x_2, 0);
 lean_inc(x_4);
-lean_dec(x_2);
 x_5 = lean_apply_1(x_1, x_4);
 x_6 = 0;
 x_7 = l_Lean_Option_format___rarg___closed__3;
@@ -2178,15 +2258,24 @@ lean_object* l_Lean_Option_format(lean_object* x_1) {
 _start:
 {
 lean_object* x_2; 
-x_2 = lean_alloc_closure((void*)(l_Lean_Option_format___rarg), 2, 0);
+x_2 = lean_alloc_closure((void*)(l_Lean_Option_format___rarg___boxed), 2, 0);
 return x_2;
+}
+}
+lean_object* l_Lean_Option_format___rarg___boxed(lean_object* x_1, lean_object* x_2) {
+_start:
+{
+lean_object* x_3; 
+x_3 = l_Lean_Option_format___rarg(x_1, x_2);
+lean_dec(x_2);
+return x_3;
 }
 }
 lean_object* l_Lean_optionHasFormat___rarg(lean_object* x_1) {
 _start:
 {
 lean_object* x_2; 
-x_2 = lean_alloc_closure((void*)(l_Lean_Option_format___rarg), 2, 1);
+x_2 = lean_alloc_closure((void*)(l_Lean_Option_format___rarg___boxed), 2, 1);
 lean_closure_set(x_2, 0, x_1);
 return x_2;
 }
@@ -2204,10 +2293,8 @@ _start:
 {
 lean_object* x_4; lean_object* x_5; lean_object* x_6; uint8_t x_7; lean_object* x_8; lean_object* x_9; lean_object* x_10; lean_object* x_11; lean_object* x_12; lean_object* x_13; lean_object* x_14; lean_object* x_15; lean_object* x_16; lean_object* x_17; lean_object* x_18; lean_object* x_19; lean_object* x_20; 
 x_4 = lean_ctor_get(x_3, 0);
-lean_inc(x_4);
 x_5 = lean_ctor_get(x_3, 1);
-lean_inc(x_5);
-lean_dec(x_3);
+lean_inc(x_4);
 x_6 = lean_apply_1(x_1, x_4);
 x_7 = 0;
 x_8 = l_Lean_List_format___rarg___closed__3;
@@ -2220,6 +2307,7 @@ x_11 = lean_alloc_ctor(4, 2, 1);
 lean_ctor_set(x_11, 0, x_9);
 lean_ctor_set(x_11, 1, x_10);
 lean_ctor_set_uint8(x_11, sizeof(void*)*2, x_7);
+lean_inc(x_5);
 x_12 = lean_apply_1(x_2, x_5);
 x_13 = lean_alloc_ctor(4, 2, 1);
 lean_ctor_set(x_13, 0, x_11);
@@ -2247,8 +2335,17 @@ lean_object* l_Lean_prodHasFormat(lean_object* x_1, lean_object* x_2) {
 _start:
 {
 lean_object* x_3; 
-x_3 = lean_alloc_closure((void*)(l_Lean_prodHasFormat___rarg), 3, 0);
+x_3 = lean_alloc_closure((void*)(l_Lean_prodHasFormat___rarg___boxed), 3, 0);
 return x_3;
+}
+}
+lean_object* l_Lean_prodHasFormat___rarg___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3) {
+_start:
+{
+lean_object* x_4; 
+x_4 = l_Lean_prodHasFormat___rarg(x_1, x_2, x_3);
+lean_dec(x_3);
+return x_4;
 }
 }
 lean_object* l_Array_iterateMAux___main___at_Lean_Format_joinArraySep___spec__1___rarg(lean_object* x_1, lean_object* x_2, lean_object* x_3, lean_object* x_4, lean_object* x_5, lean_object* x_6) {
@@ -2458,6 +2555,15 @@ x_3 = l_Lean_Name_toStringWithSep___main(x_2, x_1);
 x_4 = lean_alloc_ctor(2, 1, 0);
 lean_ctor_set(x_4, 0, x_3);
 return x_4;
+}
+}
+lean_object* l_Lean_nameHasFormat___boxed(lean_object* x_1) {
+_start:
+{
+lean_object* x_2; 
+x_2 = l_Lean_nameHasFormat(x_1);
+lean_dec(x_1);
+return x_2;
 }
 }
 lean_object* _init_l_Lean_Format_repr___main___closed__1() {
@@ -3199,7 +3305,6 @@ case 0:
 lean_object* x_2; lean_object* x_3; lean_object* x_4; 
 x_2 = lean_ctor_get(x_1, 0);
 lean_inc(x_2);
-lean_dec(x_1);
 x_3 = l_String_quote(x_2);
 x_4 = lean_alloc_ctor(2, 1, 0);
 lean_ctor_set(x_4, 0, x_3);
@@ -3209,7 +3314,6 @@ case 1:
 {
 uint8_t x_5; 
 x_5 = lean_ctor_get_uint8(x_1, 0);
-lean_dec(x_1);
 if (x_5 == 0)
 {
 lean_object* x_6; 
@@ -3227,8 +3331,6 @@ case 2:
 {
 lean_object* x_8; lean_object* x_9; lean_object* x_10; lean_object* x_11; uint8_t x_12; lean_object* x_13; lean_object* x_14; 
 x_8 = lean_ctor_get(x_1, 0);
-lean_inc(x_8);
-lean_dec(x_1);
 x_9 = l_Lean_Name_toString___closed__1;
 x_10 = l_Lean_Name_toStringWithSep___main(x_9, x_8);
 x_11 = lean_alloc_ctor(2, 1, 0);
@@ -3246,7 +3348,6 @@ case 3:
 lean_object* x_15; lean_object* x_16; lean_object* x_17; 
 x_15 = lean_ctor_get(x_1, 0);
 lean_inc(x_15);
-lean_dec(x_1);
 x_16 = l_Nat_repr(x_15);
 x_17 = lean_alloc_ctor(2, 1, 0);
 lean_ctor_set(x_17, 0, x_16);
@@ -3256,10 +3357,7 @@ default:
 {
 lean_object* x_18; lean_object* x_19; lean_object* x_20; 
 x_18 = lean_ctor_get(x_1, 0);
-lean_inc(x_18);
-lean_dec(x_1);
 x_19 = l_Int_repr(x_18);
-lean_dec(x_18);
 x_20 = lean_alloc_ctor(2, 1, 0);
 lean_ctor_set(x_20, 0, x_19);
 return x_20;
@@ -3267,11 +3365,20 @@ return x_20;
 }
 }
 }
+lean_object* l_Lean_formatDataValue___boxed(lean_object* x_1) {
+_start:
+{
+lean_object* x_2; 
+x_2 = l_Lean_formatDataValue(x_1);
+lean_dec(x_1);
+return x_2;
+}
+}
 lean_object* _init_l_Lean_dataValueHasFormat___closed__1() {
 _start:
 {
 lean_object* x_1; 
-x_1 = lean_alloc_closure((void*)(l_Lean_formatDataValue), 1, 0);
+x_1 = lean_alloc_closure((void*)(l_Lean_formatDataValue___boxed), 1, 0);
 return x_1;
 }
 }
@@ -3306,10 +3413,7 @@ _start:
 {
 lean_object* x_2; lean_object* x_3; lean_object* x_4; lean_object* x_5; lean_object* x_6; uint8_t x_7; lean_object* x_8; lean_object* x_9; lean_object* x_10; lean_object* x_11; 
 x_2 = lean_ctor_get(x_1, 0);
-lean_inc(x_2);
 x_3 = lean_ctor_get(x_1, 1);
-lean_inc(x_3);
-lean_dec(x_1);
 x_4 = l_Lean_Name_toString___closed__1;
 x_5 = l_Lean_Name_toStringWithSep___main(x_4, x_2);
 x_6 = lean_alloc_ctor(2, 1, 0);
@@ -3328,11 +3432,20 @@ lean_ctor_set_uint8(x_11, sizeof(void*)*2, x_7);
 return x_11;
 }
 }
+lean_object* l_Lean_formatEntry___boxed(lean_object* x_1) {
+_start:
+{
+lean_object* x_2; 
+x_2 = l_Lean_formatEntry(x_1);
+lean_dec(x_1);
+return x_2;
+}
+}
 lean_object* _init_l_Lean_entryHasFormat___closed__1() {
 _start:
 {
 lean_object* x_1; 
-x_1 = lean_alloc_closure((void*)(l_Lean_formatEntry), 1, 0);
+x_1 = lean_alloc_closure((void*)(l_Lean_formatEntry___boxed), 1, 0);
 return x_1;
 }
 }
@@ -3358,14 +3471,11 @@ else
 {
 lean_object* x_4; 
 x_4 = lean_ctor_get(x_1, 1);
-lean_inc(x_4);
 if (lean_obj_tag(x_4) == 0)
 {
 lean_object* x_5; lean_object* x_6; 
 lean_dec(x_2);
 x_5 = lean_ctor_get(x_1, 0);
-lean_inc(x_5);
-lean_dec(x_1);
 x_6 = l_Lean_formatEntry(x_5);
 return x_6;
 }
@@ -3373,8 +3483,6 @@ else
 {
 lean_object* x_7; lean_object* x_8; uint8_t x_9; lean_object* x_10; lean_object* x_11; lean_object* x_12; 
 x_7 = lean_ctor_get(x_1, 0);
-lean_inc(x_7);
-lean_dec(x_1);
 x_8 = l_Lean_formatEntry(x_7);
 x_9 = 0;
 lean_inc(x_2);
@@ -3427,11 +3535,29 @@ x_11 = lean_format_group(x_10);
 return x_11;
 }
 }
+lean_object* l_Lean_Format_joinSep___main___at_Lean_formatKVMap___spec__1___boxed(lean_object* x_1, lean_object* x_2) {
+_start:
+{
+lean_object* x_3; 
+x_3 = l_Lean_Format_joinSep___main___at_Lean_formatKVMap___spec__1(x_1, x_2);
+lean_dec(x_1);
+return x_3;
+}
+}
+lean_object* l_Lean_formatKVMap___boxed(lean_object* x_1) {
+_start:
+{
+lean_object* x_2; 
+x_2 = l_Lean_formatKVMap(x_1);
+lean_dec(x_1);
+return x_2;
+}
+}
 lean_object* _init_l_Lean_kvMapHasFormat___closed__1() {
 _start:
 {
 lean_object* x_1; 
-x_1 = lean_alloc_closure((void*)(l_Lean_formatKVMap), 1, 0);
+x_1 = lean_alloc_closure((void*)(l_Lean_formatKVMap___boxed), 1, 0);
 return x_1;
 }
 }
