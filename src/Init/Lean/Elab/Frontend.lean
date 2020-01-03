@@ -15,20 +15,17 @@ structure State :=
 (commandState : Command.State)
 (parserState  : Parser.ModuleParserState)
 
-abbrev FrontendM := ReaderT Parser.ParserContextCore (StateM State)
+abbrev FrontendM := ReaderT Parser.ParserContextCore (StateT State (EIO Unit))
 
 private def getCmdContext : FrontendM Command.Context := do
 c ← read;
 pure { fileName := c.fileName, fileMap := c.fileMap }
 
-@[inline] def runCommandElabM (x : Command.CommandElabM Unit) : FrontendM Unit := do
-fun ctx s =>
+@[inline] def runCommandElabM (x : Command.CommandElabM Unit) : FrontendM Unit :=
+fun ctx s => do
   let parserState := s.parserState;
-  match x { fileName := ctx.fileName, fileMap := ctx.fileMap } s.commandState with
-  | EStateM.Result.ok _ newCmdState     => ((), { commandState := newCmdState, parserState := parserState })
-  | EStateM.Result.error ex newCmdState =>
-    let newCmdState := { messages := newCmdState.messages.add ex, .. newCmdState };
-    ((), { commandState := newCmdState, parserState := parserState })
+  (_, newCmdState) ← Command.catchExceptions x { fileName := ctx.fileName, fileMap := ctx.fileMap } s.commandState;
+  pure ((), { commandState := newCmdState, parserState := parserState })
 
 def elabCommandAtFrontend (stx : Syntax) : FrontendM Unit :=
 runCommandElabM (Command.elabCommand stx)
@@ -64,12 +61,12 @@ end Frontend
 
 open Frontend
 
-def process (input : String) (env : Environment) (opts : Options) (fileName : Option String := none) : Environment × MessageLog :=
+def process (input : String) (env : Environment) (opts : Options) (fileName : Option String := none) : IO (Environment × MessageLog) := do
 let fileName        := fileName.getD "<input>";
 let ctx             := Parser.mkParserContextCore env input fileName;
 let cmdState        := Command.mkState env {} opts;
-match (processCommands ctx).run { commandState := cmdState, parserState := {} } with
-| (_, { commandState := { env := env, messages := messages, .. }, .. }) => (env, messages)
+(_, { commandState := { env := env, messages := messages, .. }, .. }) ← (processCommands ctx).run { commandState := cmdState, parserState := {} };
+pure (env, messages)
 
 def testFrontend (input : String) (opts : Options := {}) (fileName : Option String := none) : IO (Environment × MessageLog) := do
 env ← mkEmptyEnvironment;

@@ -40,7 +40,8 @@ instance State.inhabited : Inhabited State := ⟨{ env := arbitrary _ }⟩
 def mkState (env : Environment) (messages : MessageLog := {}) (opts : Options := {}) : State :=
 { env := env, messages := messages, scopes := [{ kind := "root", header := "", opts := opts }] }
 
-abbrev CommandElabM := ReaderT Context (EStateM Exception State)
+abbrev CommandElabCoreM (ε) := ReaderT Context (StateT State (EIO ε))
+abbrev CommandElabM := CommandElabCoreM Exception
 abbrev CommandElab  := SyntaxNode → CommandElabM Unit
 
 instance CommandElabM.monadLog : MonadLog CommandElabM :=
@@ -125,8 +126,34 @@ match result with
 | EStateM.Result.error (Term.Exception.error ex) newS => EStateM.Result.error ex { env := newS.env, messages := newS.messages, .. s }
 | EStateM.Result.error Term.Exception.postpone newS   => unreachable!
 
-@[inline] def runTermElabM {α} (x : TermElabM α) : CommandElabM α :=
-fun ctx s => toCommandResult ctx s $ (Term.elabBinders (getVarDecls s) (fun _ => x)) (mkTermContext ctx s) (mkTermState s)
+instance CommandElabM.inhabited {α} : Inhabited (CommandElabM α) :=
+⟨throw $ arbitrary _⟩
+
+@[inline] def runTermElabM {α} (x : TermElabM α) : CommandElabM α := do
+ctx ← read;
+s ← get;
+match ((Term.elabBinders (getVarDecls s) (fun _ => x)) (mkTermContext ctx s)).run (mkTermState s) with
+| EStateM.Result.ok a newS                            => do modify $ fun s => { env := newS.env, messages := newS.messages, .. s }; pure a
+| EStateM.Result.error (Term.Exception.error ex) newS => do modify $ fun s => { env := newS.env, messages := newS.messages, .. s }; throw ex
+| EStateM.Result.error Term.Exception.postpone newS   => unreachable!
+
+private def mkMessageAux (ctx : Context) (s : State) (ref : Syntax) (msgData : MessageData) (severity : MessageSeverity) : Message :=
+mkMessageCore ctx.fileName ctx.fileMap msgData severity (ref.getPos.getD s.cmdPos)
+
+private def ioErrorToMessage (ctx : Context) (s : State) (ref : Syntax) (err : IO.Error) : Message :=
+mkMessageAux ctx s ref ("IO error, " ++ toString err) MessageSeverity.error
+
+def liftIO {α} (ref : Syntax) (x : IO α) : CommandElabM α := do
+ctx ← read;
+s ← get;
+let x : EIO Exception α := EIO.adaptExcept (ioErrorToMessage ctx s ref) x;
+liftM x
+
+@[inline] private def withLogging (x : CommandElabM Unit) : CommandElabM Unit :=
+catch x (fun ex => do logMessage ex; pure ())
+
+@[inline] def catchExceptions (x : CommandElabM Unit) : CommandElabCoreM Unit Unit :=
+fun ctx s => EIO.adaptExcept (fun (ex : Exception) => ()) $ withLogging x ctx s
 
 def dbgTrace {α} [HasToString α] (a : α) : CommandElabM Unit :=
 _root_.dbgTrace (toString a) $ fun _ => pure ()
