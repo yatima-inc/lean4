@@ -1442,21 +1442,20 @@ builtinParserCategoriesRef.set categories;
 builtinSyntaxNodeKindSetRef.modify p.info.collectKinds;
 updateBuiltinTokens p.info declName
 
--- TODO DELETE --
-def addBuiltinLeadingParser (tablesRef : IO.Ref ParsingTables) (declName : Name) (p : Parser) : IO Unit := pure ()
-def addBuiltinTrailingParser (tablesRef : IO.Ref ParsingTables) (declName : Name) (p : TrailingParser) : IO Unit := pure ()
-def mkBuiltinParsingTablesRef : IO (IO.Ref ParsingTables) := IO.mkRef {}
-@[init mkBuiltinParsingTablesRef] constant builtinTermParsingTable : IO.Ref ParsingTables := arbitrary _
-@[init mkBuiltinParsingTablesRef] constant builtinLevelParsingTable : IO.Ref ParsingTables := arbitrary _
-@[init mkBuiltinParsingTablesRef] constant builtinCommandParsingTable : IO.Ref ParsingTables := arbitrary _
---- END TODO DELETE --
-
 def addBuiltinLeadingParserNew (catName : Name) (declName : Name) (p : Parser) : IO Unit :=
 addBuiltinParser catName declName p
 
 def addBuiltinTrailingParserNew (catName : Name) (declName : Name) (p : TrailingParser) : IO Unit :=
 addBuiltinParser catName declName p
 
+-- TODO DELETE --
+def mkBuiltinParsingTablesRef : IO (IO.Ref ParsingTables) := IO.mkRef {}
+@[init mkBuiltinParsingTablesRef] constant builtinTermParsingTable : IO.Ref ParsingTables := arbitrary _
+@[init mkBuiltinParsingTablesRef] constant builtinLevelParsingTable : IO.Ref ParsingTables := arbitrary _
+@[init mkBuiltinParsingTablesRef] constant builtinCommandParsingTable : IO.Ref ParsingTables := arbitrary _
+def addBuiltinLeadingParser (tablesRef : IO.Ref ParsingTables) (declName : Name) (p : Parser) : IO Unit := pure ()
+def addBuiltinTrailingParser (tablesRef : IO.Ref ParsingTables) (declName : Name) (p : TrailingParser) : IO Unit := pure ()
+--- END TODO DELETE --
 
 private def ParserExtension.addEntry (s : ParserExtensionState) (e : ParserExtensionEntry) : ParserExtensionState :=
 match e with
