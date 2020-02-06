@@ -38,8 +38,12 @@ panic (mkPanicMessage modName line col msg)
 @[neverExtract, noinline, nospecialize] def unreachable! {α : Type u} [Inhabited α] : α :=
 panic! "unreachable"
 
-@[extern "lean_ptr_addr"]
-unsafe def ptrAddrUnsafe {α : Type u} (a : @& α) : USize := 0
+@[extern "lean_ptr_addr", neverExtract]
+unsafe constant ptrAddrUnsafe {α : Type u} (a : @& α) : USize := 0
+
+/- Low level unsafe primitive for retrieving `a` reference counter. The result is 0 if `a` does not have a reference counter. -/
+@[extern "lean_rc", neverExtract]
+unsafe constant refCount {α : Type u} (a : @& α) : USize := 0
 
 @[inline] unsafe def withPtrEqUnsafe {α : Type u} (r : α → α → Bool) (h : ∀ a, r a a = true) : α → α → Bool :=
 fun a b => if ptrAddrUnsafe a == ptrAddrUnsafe b then true else r a b

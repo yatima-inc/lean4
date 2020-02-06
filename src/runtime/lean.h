@@ -1669,6 +1669,30 @@ lean_obj_res lean_io_ref_swap(b_lean_obj_arg, lean_obj_arg, lean_obj_arg);
 /* pointer address unsafe primitive  */
 static inline size_t lean_ptr_addr(b_lean_obj_arg a) { return (size_t)a; }
 
+/* RC unsafe primitive. It returns 0 if `o` does not have a RC */
+static inline size_t lean_rc(b_lean_obj_arg o) {
+    if (lean_is_scalar(o)) return 0;
+#if defined(LEAN_COMPRESSED_OBJECT_HEADER) || defined(LEAN_COMPRESSED_OBJECT_HEADER_SMALL_RC)
+    if (LEAN_LIKELY(lean_is_st(o))) {
+        return ((o->m_header) & ((1ull << LEAN_RC_NBITS) - 1));
+    } else if (lean_is_mt(o)) {
+        LEAN_USING_STD;
+        return (atomic_load_explicit(lean_get_rc_mt_addr(o), memory_order_acquire) & ((1ull << LEAN_RC_NBITS) - 1));
+    } else {
+        return 0;
+    }
+#else
+    if (LEAN_LIKELY(lean_is_st(o))) {
+        return o->m_rc;
+    } else if (lean_is_mt(o)) {
+        LEAN_USING_STD;
+        return atomic_load_explicit(lean_get_rc_mt_addr(o), memory_order_acquire);
+    } else {
+        return 0;
+    }
+#endif
+}
+
 /* MutQuot Ref primitives */
 lean_obj_res lean_mutquot_mk(lean_obj_arg);
 lean_obj_res lean_mutquot_get(lean_obj_arg);
