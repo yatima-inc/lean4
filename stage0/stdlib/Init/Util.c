@@ -30,9 +30,11 @@ lean_object* l_panicWithPos___rarg___boxed(lean_object*, lean_object*, lean_obje
 lean_object* lean_dbg_sleep(uint32_t, lean_object*);
 lean_object* l_Nat_repr(lean_object*);
 lean_object* l_withPtrAddr___boxed(lean_object*, lean_object*, lean_object*);
+lean_object* l_refCount___boxed(lean_object*, lean_object*);
 lean_object* l_withPtrEq(lean_object*);
 lean_object* l_withPtrAddrUnsafe___rarg___boxed(lean_object*, lean_object*, lean_object*);
 lean_object* l_withPtrAddrUnsafe(lean_object*, lean_object*);
+size_t lean_rc(lean_object*);
 lean_object* lean_dbg_trace_if_shared(lean_object*, lean_object*);
 size_t lean_ptr_addr(lean_object*);
 lean_object* l_withPtrEqUnsafe___rarg(lean_object*, lean_object*, lean_object*, lean_object*);
@@ -227,6 +229,16 @@ _start:
 {
 size_t x_3; lean_object* x_4; 
 x_3 = lean_ptr_addr(x_2);
+lean_dec(x_2);
+x_4 = lean_box_usize(x_3);
+return x_4;
+}
+}
+lean_object* l_refCount___boxed(lean_object* x_1, lean_object* x_2) {
+_start:
+{
+size_t x_3; lean_object* x_4; 
+x_3 = lean_rc(x_2);
 lean_dec(x_2);
 x_4 = lean_box_usize(x_3);
 return x_4;
