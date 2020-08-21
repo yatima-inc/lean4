@@ -981,6 +981,9 @@ adaptTheReader Meta.Context (fun ctx => { ctx with lctx := lctx, localInstances 
 def saveAndResetSynthInstanceCache : TermElabM Meta.SynthInstanceCache :=
 liftMetaMCore Meta.saveAndResetSynthInstanceCache
 
+def resetSynthInstanceCache : TermElabM Unit := do
+_ ← saveAndResetSynthInstanceCache; pure ()
+
 def restoreSynthInstanceCache (cache : Meta.SynthInstanceCache) : TermElabM Unit :=
 liftMetaMCore $ Meta.restoreSynthInstanceCache cache
 

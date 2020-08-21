@@ -170,9 +170,6 @@ ctx ← read; pure ctx.localInstances
 @[inline] def getConfig : MetaM Config := do
 ctx ← read; pure ctx.config
 
-@[inline] def liftIO {α} (x : IO α) : MetaM α :=
-liftM x
-
 @[inline] def getMCtx : MetaM MetavarContext := do
 s ← get; pure s.mctx
 

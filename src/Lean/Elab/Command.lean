@@ -152,6 +152,7 @@ private def elabCommandUsing (s : State) (stx : Syntax) : List CommandElab → C
 | (elabFn::elabFns) => catch (elabFn stx)
   (fun ex => match ex with
     | Exception.error _           => throw ex
+    | Exception.io _              => throw ex
     | Exception.unsupportedSyntax => do set s; elabCommandUsing elabFns)
 
 /- Elaborate `x` with `stx` on the macro stack -/
