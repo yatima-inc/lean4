@@ -14,27 +14,28 @@ namespace Lean
 namespace Meta
 namespace Closure
 
-inductive ToProcessElement
-| mvar (mvarId : MVarId) (newFVarId : FVarId)
-| fvar (fvarId : FVarId) (newFVarId : FVarId)
+structure ToProcessElement :=
+(fvarId : FVarId) (newFVarId : FVarId)
 
 instance ToProcessElement.inhabited : Inhabited ToProcessElement :=
-⟨ToProcessElement.mvar (arbitrary _) (arbitrary _)⟩
+⟨⟨arbitrary _, arbitrary _⟩⟩
 
 structure Context :=
 (zeta : Bool)
 
 structure State :=
-(visitedLevel  : LevelMap Level := {})
-(visitedExpr   : ExprStructMap Expr := {})
-(levelParams   : Array Name := #[])
-(nextLevelIdx  : Nat := 1)
-(levelArgs     : Array Level := #[])
-(newLocalDecls : Array LocalDecl := #[])
-(newLetDecls   : Array LocalDecl := #[])
-(nextExprIdx   : Nat := 1)
-(exprArgs      : Array Expr := #[])
-(toProcess     : Array ToProcessElement := #[])
+(visitedLevel          : LevelMap Level := {})
+(visitedExpr           : ExprStructMap Expr := {})
+(levelParams           : Array Name := #[])
+(nextLevelIdx          : Nat := 1)
+(levelArgs             : Array Level := #[])
+(newLocalDecls         : Array LocalDecl := #[])
+(newLocalDeclsForMVars : Array LocalDecl := #[])
+(newLetDecls           : Array LocalDecl := #[])
+(nextExprIdx           : Nat := 1)
+(exprMVarArgs          : Array Expr := #[])
+(exprFVarArgs          : Array Expr := #[])
+(toProcess             : Array ToProcessElement := #[])
 
 abbrev ClosureM := ReaderT Context $ StateRefT State MetaM
 
@@ -109,7 +110,10 @@ partial def collectExprAux : Expr → ClosureM Expr
     type ← collect type;
     newFVarId ← mkFreshFVarId;
     userName ← mkNextUserName;
-    modify fun s => { s with newLocalDecls := s.newLocalDecls.push $ LocalDecl.cdecl (arbitrary _) newFVarId userName type BinderInfo.default };
+    modify fun s => { s with
+      newLocalDeclsForMVars := s.newLocalDeclsForMVars.push $ LocalDecl.cdecl (arbitrary _) newFVarId userName type BinderInfo.default,
+      exprMVarArgs          := s.exprMVarArgs.push e
+    };
     pure $ mkFVar newFVarId
   | Expr.fvar fvarId _ => do
     ctx ← read;
@@ -118,7 +122,7 @@ partial def collectExprAux : Expr → ClosureM Expr
     | true, some value => collect value
     | _,    _          => do
       newFVarId ← mkFreshFVarId;
-      pushToProcess $ ToProcessElement.fvar fvarId newFVarId;
+      pushToProcess ⟨fvarId, newFVarId⟩;
       pure $ mkFVar newFVarId
   | e => pure e
 
@@ -135,14 +139,10 @@ partial def pickNextToProcessAux (lctx : LocalContext)
 | i, toProcess, elem =>
   if h : i < toProcess.size then
     let elem' := toProcess.get ⟨i, h⟩;
-    match elem, elem' with
-    | ToProcessElement.mvar _ _, _                                    => (elem,  toProcess)
-    | _, ToProcessElement.mvar _ _                                    => (elem', toProcess.set ⟨i, h⟩ elem)
-    | ToProcessElement.fvar fvarId _, ToProcessElement.fvar fvarId' _ =>
-      if (lctx.get! fvarId).index < (lctx.get! fvarId').index then
-        pickNextToProcessAux (i+1) (toProcess.set ⟨i, h⟩ elem) elem'
-      else
-        pickNextToProcessAux (i+1) toProcess elem
+    if (lctx.get! elem.fvarId).index < (lctx.get! elem'.fvarId).index then
+      pickNextToProcessAux (i+1) (toProcess.set ⟨i, h⟩ elem) elem'
+    else
+      pickNextToProcessAux (i+1) toProcess elem
   else
     (elem, toProcess)
 
@@ -157,8 +157,8 @@ else
     let (elem, toProcess) := pickNextToProcessAux lctx 0 toProcess elem;
     (some elem, { s with toProcess := toProcess })
 
-def pushArg (e : Expr) : ClosureM Unit :=
-modify fun s => { s with exprArgs := s.exprArgs.push e }
+def pushFVarArg (e : Expr) : ClosureM Unit :=
+modify fun s => { s with exprFVarArgs := s.exprFVarArgs.push e }
 
 def pushLocalDecl (newFVarId : FVarId) (userName : Name) (type : Expr) (bi := BinderInfo.default) : ClosureM Unit := do
 type ← collectExpr type;
@@ -169,18 +169,12 @@ partial def process : Unit → ClosureM Unit
   elem? ← pickNextToProcess?;
   match elem? with
   | none => pure ()
-  | some (ToProcessElement.mvar mvarId newFVarId) => do
-    mvarDecl ← getMVarDecl mvarId;
-    userName ← mkNextUserName;
-    pushLocalDecl newFVarId userName mvarDecl.type;
-    pushArg (mkMVar mvarId);
-    process ()
-  | some (ToProcessElement.fvar fvarId newFVarId) => do
+  | some ⟨fvarId, newFVarId⟩ => do
     localDecl ← getLocalDecl fvarId;
     match localDecl with
     | LocalDecl.cdecl _ _ userName type bi => do
       pushLocalDecl newFVarId userName type bi;
-      pushArg (mkFVar fvarId);
+      pushFVarArg (mkFVar fvarId);
       process ()
     | LocalDecl.ldecl _ _ userName type val _ => do
       zetaFVarIds ← getZetaFVarIds;
@@ -193,7 +187,7 @@ partial def process : Unit → ClosureM Unit
            Our type checker may zeta-expand declarations that are not needed, but this
            check is conservative, and seems to work well in practice. -/
         pushLocalDecl newFVarId userName type;
-        pushArg (mkFVar fvarId);
+        pushFVarArg (mkFVar fvarId);
         process ()
       else do
         /- Dependent let-decl -/
@@ -250,18 +244,16 @@ withTrackingZeta do
 
 def mkValueTypeClosure (type : Expr) (value : Expr) (zeta : Bool) : MetaM MkValueTypeClosureResult := do
 ((type, value), s) ← ((mkValueTypeClosureAux type value).run { zeta := zeta }).run {};
-let newLetDecls := s.newLetDecls.reverse;
-let newLocalDecls := s.newLocalDecls.reverse;
+let newLocalDecls := s.newLocalDecls.reverse ++ s.newLocalDeclsForMVars;
+let newLetDecls   := s.newLetDecls.reverse;
 let type  := mkForall newLocalDecls (mkForall newLetDecls type);
 let value := mkLambda newLocalDecls (mkLambda newLetDecls value);
-IO.println ("type:  " ++ toString type);
-IO.println ("value: " ++ toString value);
 pure {
   type        := type,
   value       := value,
   levelParams := s.levelParams,
   levelArgs   := s.levelArgs,
-  exprArgs    := s.exprArgs.reverse
+  exprArgs    := s.exprFVarArgs.reverse ++ s.exprMVarArgs
 }
 
 end Closure
@@ -279,6 +271,7 @@ let decl := Declaration.defnDecl {
   hints    := ReducibilityHints.regular (getMaxHeight env result.value + 1),
   isUnsafe := env.hasUnsafe result.type || env.hasUnsafe result.value
 };
+trace! `Meta.debug (name ++ " : " ++ result.type ++ " := " ++ result.value);
 addAndCompile decl;
 pure $ mkAppN (mkConst name result.levelArgs.toList) result.exprArgs
 
@@ -289,6 +282,7 @@ pure $ mkAppN (mkConst name result.levelArgs.toList) result.exprArgs
   returned where `u_i`s are universe parameters and metavariables `type` and `value` depend on,
   and `t_j`s are free and meta variables `type` and `value` depend on. -/
 def mkAuxDefinition (name : Name) (type : Expr) (value : Expr) (zeta := false) : m Expr := liftMetaM do
+trace! `Meta.debug (name ++ " : " ++ type ++ " := " ++ value);
 mkAuxDefinitionImp name type value zeta
 
 /-- Similar to `mkAuxDefinition`, but infers the type of `value`. -/

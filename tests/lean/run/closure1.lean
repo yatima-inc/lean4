@@ -34,8 +34,6 @@ pure ()
 
 #eval tst1
 
-#exit
-
 def tst2 : MetaM Unit := do
 let u := mkLevelParam `u;
 withLocalDeclD `α (mkSort (mkLevelSucc u)) $ fun α => do
