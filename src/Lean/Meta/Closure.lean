@@ -75,8 +75,17 @@ partial def collectLevelAux : Level → ClosureM Level
 | u@(Level.param _ _)     => mkNewLevelParam u
 | u@(Level.zero _)        => pure u
 
-def collectLevel (u : Level) : ClosureM Level :=
+def collectLevel (u : Level) : ClosureM Level := do
+-- u ← instantiateLevelMVars u;
 visitLevel collectLevelAux u
+
+def preprocess (e : Expr) : ClosureM Expr := do
+e ← instantiateMVars e;
+ctx ← read;
+-- If we are not zeta-expanding let-decls, then we use `check` to find
+-- which let-decls are dependent. We say a let-decl is dependent if its lambda abstraction is type incorrect.
+when (!ctx.zeta) $ liftM $ check e;
+pure e
 
 /--
   Remark: This method does not guarantee unique user names.
@@ -105,8 +114,7 @@ partial def collectExprAux : Expr → ClosureM Expr
   | Expr.const c us _    => do us ← us.mapM collectLevel; pure (e.updateConst! us)
   | Expr.mvar mvarId _   => do
     mvarDecl ← getMVarDecl mvarId;
-    type ← instantiateMVars mvarDecl.type;
-    liftM $ check type;
+    type ← preprocess mvarDecl.type;
     type ← collect type;
     newFVarId ← mkFreshFVarId;
     userName ← mkNextUserName;
@@ -119,7 +127,7 @@ partial def collectExprAux : Expr → ClosureM Expr
     ctx ← read;
     decl ← getLocalDecl fvarId;
     match ctx.zeta, decl.value? with
-    | true, some value => collect value
+    | true, some value => do value ← preprocess value; collect value
     | _,    _          => do
       newFVarId ← mkFreshFVarId;
       pushToProcess ⟨fvarId, newFVarId⟩;
@@ -127,11 +135,7 @@ partial def collectExprAux : Expr → ClosureM Expr
   | e => pure e
 
 def collectExpr (e : Expr) : ClosureM Expr := do
-e ← instantiateMVars e;
-ctx ← read;
--- If we are not zeta-expanding let-decls, then we use `check` to find
--- which let-decls are dependent. We say a let-decl is dependent if its lambda abstraction is type incorrect.
-when (!ctx.zeta) $ liftM $ check e;
+e ← preprocess e;
 visitExpr collectExprAux e
 
 partial def pickNextToProcessAux (lctx : LocalContext)
