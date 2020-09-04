@@ -166,7 +166,7 @@ modify fun s => { s with exprFVarArgs := s.exprFVarArgs.push e }
 
 def pushLocalDecl (newFVarId : FVarId) (userName : Name) (type : Expr) (bi := BinderInfo.default) : ClosureM Unit := do
 type ← collectExpr type;
-modify fun s => { s with newLocalDecls := s.newLocalDecls.push $ LocalDecl.cdecl (arbitrary _) newFVarId userName type BinderInfo.default }
+modify fun s => { s with newLocalDecls := s.newLocalDecls.push $ LocalDecl.cdecl (arbitrary _) newFVarId userName type bi }
 
 partial def process : Unit → ClosureM Unit
 | _ => do
