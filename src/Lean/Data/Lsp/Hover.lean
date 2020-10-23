@@ -21,7 +21,7 @@ structure Hover :=
   (contents : MarkupContent)
   (range? : Option Range := none)
 
-instance : HasFromJson Hover := ⟨fun j => do
+instance : HasFromJson Hover := ⟨fun j => OptionM.run do
   let contents ← j.getObjValAs? MarkupContent "contents"
   let range? := j.getObjValAs? Range "range"
   pure ⟨contents, range?⟩⟩
@@ -32,7 +32,7 @@ instance : HasToJson Hover := ⟨fun o => mkObj $
 
 structure HoverParams extends TextDocumentPositionParams
 
-instance : HasFromJson HoverParams := ⟨fun j => do
+instance : HasFromJson HoverParams := ⟨fun j => OptionM.run do
   let tdpp ← @fromJson? TextDocumentPositionParams _ j
   pure ⟨tdpp⟩⟩
 

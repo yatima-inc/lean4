@@ -189,7 +189,7 @@ partial def updateTrailing (trailing : Option Substring) : Syntax → Syntax
    Syntax.node k args
 | s => s
 
-def getPos (stx : Syntax) : Option String.Pos :=
+def getPos (stx : Syntax) : Option String.Pos := OptionM.run $
 stx.getHeadInfo >>= SourceInfo.pos
 
 partial def getTailWithPos : Syntax → Option Syntax
@@ -276,12 +276,14 @@ private def reprintLeaf (info : SourceInfo) (val : String) : String :=
 -- Note that the proper pretty printer does not use this function.
 -- The parser as well always produces source info, so round-tripping is still
 -- guaranteed.
-(Substring.toString <$> info.leading).getD " " ++ val ++ (Substring.toString <$> info.trailing).getD " "
+let leading?  := OptionM.run (Substring.toString <$> info.leading)
+let trailing? := OptionM.run (Substring.toString <$> info.trailing)
+leading?.getD " " ++ val ++  trailing?.getD " "
 
 partial def reprint : Syntax → Option String
 | atom info val           => reprintLeaf info val
 | ident info rawVal _ _   => reprintLeaf info rawVal.toString
-| node kind args          =>
+| node kind args          => OptionM.run $
   if kind == choiceKind then
     if args.size == 0 then failure
     else do

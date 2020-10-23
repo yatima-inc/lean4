@@ -63,3 +63,8 @@ instance : MonadExceptOf Unit (OptionT m) := {
 }
 
 end OptionT
+
+abbrev OptionM := OptionT Id
+
+@[inline] def OptionM.run {α : Type u} (x : OptionM α) : Option α :=
+x

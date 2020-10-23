@@ -17,7 +17,7 @@ structure WorkspaceFolder :=
   (uri : DocumentUri)
   (name : String)
 
-instance : HasFromJson WorkspaceFolder := ⟨fun j => do
+instance : HasFromJson WorkspaceFolder := ⟨fun j => OptionM.run do
   let uri ← j.getObjValAs? DocumentUri "uri"
   let name ← j.getObjValAs? String "name"
   pure ⟨uri, name⟩⟩

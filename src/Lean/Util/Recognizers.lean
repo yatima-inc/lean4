@@ -82,7 +82,7 @@ match e with
     | none   => none
   | _ => none
 
-def constructorApp? (env : Environment) (e : Expr) : Option (ConstructorVal × Array Expr) :=
+def constructorApp? (env : Environment) (e : Expr) : Option (ConstructorVal × Array Expr) := OptionM.run $
 match e with
 | Expr.lit (Literal.natVal n) _ =>
   if n == 0 then do

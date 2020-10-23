@@ -10,6 +10,7 @@ import Init.Data.Nat.Basic
 import Init.Data.List
 import Init.Data.Repr
 import Init.Data.ToString.Basic
+import Init.Control.Option
 open Nat
 
 /- the Type, coercions, and notation -/
@@ -159,7 +160,7 @@ end Int
 
 namespace String
 
-def toInt? (s : String) : Option Int :=
+def toInt? (s : String) : Option Int := OptionM.run $
 if s.get 0 = '-' then do
   v ← (s.toSubstring.drop 1).toNat?;
   pure $ - Int.ofNat v

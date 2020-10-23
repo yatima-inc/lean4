@@ -71,7 +71,7 @@ structure DiagnosticRelatedInformation :=
   (location : Location)
   (message : String)
 
-instance : HasFromJson DiagnosticRelatedInformation := ⟨fun j => do
+instance : HasFromJson DiagnosticRelatedInformation := ⟨fun j => OptionM.run do
   let location ← j.getObjValAs? Location "location"
   let message ← j.getObjValAs? String "message"
   pure ⟨location, message⟩⟩
@@ -90,7 +90,7 @@ structure Diagnostic :=
   (tags? : Option (Array DiagnosticTag) := none)
   (relatedInformation? : Option (Array DiagnosticRelatedInformation) := none)
 
-instance : HasFromJson Diagnostic := ⟨fun j => do
+instance : HasFromJson Diagnostic := ⟨fun j => OptionM.run do
   let range ← j.getObjValAs? Range "range"
   let severity? := j.getObjValAs? DiagnosticSeverity "severity"
   let code? := j.getObjValAs? DiagnosticCode "code"
@@ -114,7 +114,7 @@ structure PublishDiagnosticsParams :=
   (version? : Option Int := none)
   (diagnostics: Array Diagnostic)
 
-instance : HasFromJson PublishDiagnosticsParams := ⟨fun j => do
+instance : HasFromJson PublishDiagnosticsParams := ⟨fun j => OptionM.run do
   let uri ← j.getObjValAs? DocumentUri "uri"
   let version? := j.getObjValAs? Int "version"
   let diagnostics ← j.getObjValAs? (Array Diagnostic) "diagnostics"

@@ -36,7 +36,7 @@ instance : HasToJson TextDocumentSyncKind := ⟨fun o =>
 structure DidOpenTextDocumentParams :=
   (textDocument : TextDocumentItem)
 
-instance : HasFromJson DidOpenTextDocumentParams := ⟨fun j =>
+instance : HasFromJson DidOpenTextDocumentParams := ⟨fun j => OptionM.run $
   DidOpenTextDocumentParams.mk <$> j.getObjValAs? TextDocumentItem "textDocument"⟩
 
 instance : HasToJson DidOpenTextDocumentParams := ⟨fun o =>
@@ -46,7 +46,7 @@ structure TextDocumentChangeRegistrationOptions :=
   (documentSelector? : Option DocumentSelector := none)
   (syncKind : TextDocumentSyncKind)
 
-instance : HasFromJson TextDocumentChangeRegistrationOptions := ⟨fun j => do
+instance : HasFromJson TextDocumentChangeRegistrationOptions := ⟨fun j => OptionM.run do
   let documentSelector? := j.getObjValAs? DocumentSelector "documentSelector";
   let syncKind ← j.getObjValAs? TextDocumentSyncKind "syncKind";
   pure ⟨documentSelector?, syncKind⟩⟩
@@ -56,7 +56,7 @@ inductive TextDocumentContentChangeEvent
   | rangeChange (range : Range) (text : String)
   | fullChange (text : String)
 
-instance : HasFromJson TextDocumentContentChangeEvent := ⟨fun j =>
+instance : HasFromJson TextDocumentContentChangeEvent := ⟨fun j => OptionM.run $
   (do
     let range ← j.getObjValAs? Range "range"
     let text ← j.getObjValAs? String "text"
@@ -67,7 +67,7 @@ structure DidChangeTextDocumentParams :=
   (textDocument : VersionedTextDocumentIdentifier)
   (contentChanges : Array TextDocumentContentChangeEvent)
 
-instance : HasFromJson DidChangeTextDocumentParams := ⟨fun j => do
+instance : HasFromJson DidChangeTextDocumentParams := ⟨fun j => OptionM.run do
   let textDocument ← j.getObjValAs? VersionedTextDocumentIdentifier "textDocument"
   let contentChanges ← j.getObjValAs? (Array TextDocumentContentChangeEvent) "contentChanges"
   pure ⟨textDocument, contentChanges⟩⟩
@@ -83,7 +83,7 @@ instance : HasToJson SaveOptions := ⟨fun o =>
 
 structure DidCloseTextDocumentParams := (textDocument : TextDocumentIdentifier)
 
-instance : HasFromJson DidCloseTextDocumentParams := ⟨fun j =>
+instance : HasFromJson DidCloseTextDocumentParams := ⟨fun j => OptionM.run $
   DidCloseTextDocumentParams.mk <$> j.getObjValAs? TextDocumentIdentifier "textDocument"⟩
 
 -- TODO: TextDocumentSyncClientCapabilities

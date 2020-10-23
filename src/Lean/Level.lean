@@ -352,10 +352,10 @@ def dec : Level → Option Level
 | param _ _    => none
 | mvar _ _     => none
 | succ l _     => l
-| max l₁ l₂ _  => mkLevelMax <$> dec l₁ <*> dec l₂
+| max l₁ l₂ _  => OptionM.run do return mkLevelMax (← dec l₁) (← dec l₂)
 /- Remark: `mkLevelMax` in the following line is not a typo.
    If `dec l₂` succeeds, then `imax l₁ l₂` is equivalent to `max l₁ l₂`. -/
-| imax l₁ l₂ _ => mkLevelMax <$> dec l₁ <*> dec l₂
+| imax l₁ l₂ _ => OptionM.run do return mkLevelMax (← dec l₁) (← dec l₂)
 
 
 /- Level to Format -/

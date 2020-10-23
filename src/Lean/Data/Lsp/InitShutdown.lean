@@ -21,7 +21,7 @@ structure ClientInfo :=
   (name : String)
   (version? : Option String := none)
 
-instance : HasFromJson ClientInfo := ⟨fun j => do
+instance : HasFromJson ClientInfo := ⟨fun j => OptionM.run do
   let name ← j.getObjValAs? String "name"
   let version? := j.getObjValAs? String "version"
   pure ⟨name, version?⟩⟩
@@ -50,7 +50,7 @@ structure InitializeParams :=
   (trace : Trace := Trace.off)
   (workspaceFolders? : Option (Array WorkspaceFolder) := none)
 
-instance : HasFromJson InitializeParams := ⟨fun j => do
+instance : HasFromJson InitializeParams := ⟨fun j => OptionM.run do
   /- Many of these params can be null instead of not present.
   For ease of implementation, we're liberal:
   missing params, wrong json types and null all map to none,

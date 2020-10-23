@@ -54,7 +54,7 @@ Id.run $ (findM? p cacheSize e).run' initCache
 end FindImpl
 
 @[implementedBy FindImpl.findUnsafe?]
-partial def find? (p : Expr → Bool) (e : Expr) : Option Expr :=
+partial def find? (p : Expr → Bool) (e : Expr) : Option Expr := OptionM.run $
 /- This is a reference implementation for the unsafe one above -/
 if p e then some e
 else match e with

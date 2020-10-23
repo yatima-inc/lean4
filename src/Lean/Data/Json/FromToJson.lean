@@ -39,7 +39,7 @@ instance : HasToJson String := ⟨fun s => s⟩
 
 instance {α : Type u} [HasFromJson α] : HasFromJson (Array α) := ⟨fun j =>
   match j with
-  | Json.arr a => a.mapM fromJson?
+  | Json.arr a => OptionM.run $ a.mapM fromJson?
   | _ => none⟩
 
 instance {α : Type u} [HasToJson α] : HasToJson (Array α) :=

@@ -685,7 +685,7 @@ def toNat (stx : Syntax) : Nat :=
   | some val => val
   | none     => 0
 
-def decodeQuotedChar (s : String) (i : String.Pos) : Option (Char × String.Pos) := do
+def decodeQuotedChar (s : String) (i : String.Pos) : OptionM (Char × String.Pos) := do
   let c := s.get i
   let i := s.next i
   if c == '\\' then pure ('\\', i)
@@ -707,7 +707,7 @@ def decodeQuotedChar (s : String) (i : String.Pos) : Option (Char × String.Pos)
   else
     none
 
-partial def decodeStrLitAux (s : String) (i : String.Pos) (acc : String) : Option String := do
+partial def decodeStrLitAux (s : String) (i : String.Pos) (acc : String) : OptionM String := do
   let c := s.get i
   let i := s.next i
   if c == '\"' then
@@ -720,7 +720,7 @@ partial def decodeStrLitAux (s : String) (i : String.Pos) (acc : String) : Optio
   else
     decodeStrLitAux s i (acc.push c)
 
-def decodeStrLit (s : String) : Option String :=
+def decodeStrLit (s : String) : OptionM String :=
   decodeStrLitAux s 1 ""
 
 def isStrLit? (stx : Syntax) : Option String :=
@@ -728,9 +728,9 @@ def isStrLit? (stx : Syntax) : Option String :=
   | some val => decodeStrLit val
   | _        => none
 
-def decodeCharLit (s : String) : Option Char :=
+def decodeCharLit (s : String) : OptionM Char := do
   let c := s.get 1
-  if c == '\\' then do
+  if c == '\\' then
     (c, _) ← decodeQuotedChar s 2
     pure c
   else
@@ -741,8 +741,8 @@ def isCharLit? (stx : Syntax) : Option Char :=
   | some val => decodeCharLit val
   | _        => none
 
-private partial def decodeNameLitAux (s : String) (i : Nat) (r : Name) : Option Name := do
-  let continue? (i : Nat) (r : Name) : Option Name :=
+private partial def decodeNameLitAux (s : String) (i : Nat) (r : Name) : OptionM Name := do
+  let continue? (i : Nat) (r : Name) : OptionM Name :=
     if s.get i == '.' then
        decodeNameLitAux s (s.next i) r
     else if s.atEnd i then
@@ -923,7 +923,7 @@ abbrev autoParam.{u} (α : Sort u) (tactic : Lean.Syntax) : Sort u := α
 /- Helper functions for manipulating interpolated strings -/
 namespace Lean.Syntax
 
-private def decodeInterpStrQuotedChar (s : String) (i : String.Pos) : Option (Char × String.Pos) :=
+private def decodeInterpStrQuotedChar (s : String) (i : String.Pos) : OptionM (Char × String.Pos) :=
   match decodeQuotedChar s i with
   | some r => some r
   | none   =>
@@ -932,15 +932,15 @@ private def decodeInterpStrQuotedChar (s : String) (i : String.Pos) : Option (Ch
     if c == '{' then pure ('{', i)
     else none
 
-private partial def decodeInterpStrLit (s : String) : Option String :=
-  let rec loop (i : String.Pos) (acc : String) :=
+private partial def decodeInterpStrLit (s : String) : OptionM String :=
+  let rec loop (i : String.Pos) (acc : String) : OptionM String := do
     let c := s.get i
     let i := s.next i
     if c == '\"' || c == '{' then
       pure acc
     else if s.atEnd i then
       none
-    else if c == '\\' then do
+    else if c == '\\' then
       let (c, i) ← decodeInterpStrQuotedChar s i
       loop i (acc.push c)
     else

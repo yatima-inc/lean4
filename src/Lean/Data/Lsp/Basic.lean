@@ -28,7 +28,7 @@ structure Position := (line : Nat) (character : Nat)
 
 instance : Inhabited Position := ⟨⟨0, 0⟩⟩
 
-instance : HasFromJson Position := ⟨fun j => do
+instance : HasFromJson Position := ⟨fun j => OptionM.run do
   let line ← j.getObjValAs? Nat "line"
   let character ← j.getObjValAs? Nat "character"
   pure ⟨line, character⟩⟩
@@ -43,7 +43,7 @@ instance : HasToString Position := ⟨fun p =>
 
 structure Range := (start : Position) («end» : Position)
 
-instance : HasFromJson Range := ⟨fun j => do
+instance : HasFromJson Range := ⟨fun j => OptionM.run do
   let start ← j.getObjValAs? Position "start"
   let «end» ← j.getObjValAs? Position "end"
   pure ⟨start, «end»⟩⟩
@@ -55,7 +55,7 @@ instance : HasToJson Range := ⟨fun o =>
 
 structure Location := (uri : DocumentUri) (range : Range)
 
-instance : HasFromJson Location := ⟨fun j => do
+instance : HasFromJson Location := ⟨fun j => OptionM.run do
   let uri ← j.getObjValAs? DocumentUri "uri"
   let range ← j.getObjValAs? Range "range"
   pure ⟨uri, range⟩⟩
@@ -71,7 +71,7 @@ structure LocationLink :=
   (targetRange : Range)
   (targetSelectionRange : Range)
 
-instance : HasFromJson LocationLink := ⟨fun j => do
+instance : HasFromJson LocationLink := ⟨fun j => OptionM.run do
   let originSelectionRange? := j.getObjValAs? Range "originSelectionRange"
   let targetUri ← j.getObjValAs? DocumentUri "targetUri"
   let targetRange ← j.getObjValAs? Range "targetRange"
@@ -93,7 +93,7 @@ structure Command :=
   (command : String)
   (arguments? : Option (Array Json) := none)
 
-instance : HasFromJson Command := ⟨fun j => do
+instance : HasFromJson Command := ⟨fun j => OptionM.run do
   let title ← j.getObjValAs? String "title"
   let command ← j.getObjValAs? String "command"
   let arguments? := j.getObjValAs? (Array Json) "arguments"
@@ -108,7 +108,7 @@ structure TextEdit :=
   (range : Range)
   (newText : String)
 
-instance : HasFromJson TextEdit := ⟨fun j => do
+instance : HasFromJson TextEdit := ⟨fun j => OptionM.run do
   let range ← j.getObjValAs? Range "range"
   let newText ← j.getObjValAs? String "newText"
   pure ⟨range, newText⟩⟩
@@ -128,7 +128,7 @@ instance  : HasToJson TextEditBatch :=
 
 structure TextDocumentIdentifier := (uri : DocumentUri)
 
-instance : HasFromJson TextDocumentIdentifier := ⟨fun j =>
+instance : HasFromJson TextDocumentIdentifier := ⟨fun j => OptionM.run $
   TextDocumentIdentifier.mk <$> j.getObjValAs? DocumentUri "uri"⟩
 
 instance : HasToJson TextDocumentIdentifier :=
@@ -138,7 +138,7 @@ structure VersionedTextDocumentIdentifier :=
   (uri : DocumentUri)
   (version? : Option Nat := none)
 
-instance : HasFromJson VersionedTextDocumentIdentifier := ⟨fun j => do
+instance : HasFromJson VersionedTextDocumentIdentifier := ⟨fun j => OptionM.run do
   let uri ← j.getObjValAs? DocumentUri "uri"
   let version? := j.getObjValAs? Nat "version"
   pure ⟨uri, version?⟩⟩
@@ -151,7 +151,7 @@ structure TextDocumentEdit :=
   (textDocument : VersionedTextDocumentIdentifier)
   (edits : TextEditBatch)
 
-instance : HasFromJson TextDocumentEdit := ⟨fun j => do
+instance : HasFromJson TextDocumentEdit := ⟨fun j => OptionM.run do
   let textDocument ← j.getObjValAs? VersionedTextDocumentIdentifier "textDocument"
   let edits ← j.getObjValAs? TextEditBatch "edits"
   pure ⟨textDocument, edits⟩⟩
@@ -172,7 +172,7 @@ structure TextDocumentItem :=
   (version : Nat)
   (text : String)
 
-instance : HasFromJson TextDocumentItem := ⟨fun j => do
+instance : HasFromJson TextDocumentItem := ⟨fun j => OptionM.run do
   let uri ← j.getObjValAs? DocumentUri "uri"
   let languageId ← j.getObjValAs? String "languageId"
   let version ← j.getObjValAs? Nat "version"
@@ -190,7 +190,7 @@ structure TextDocumentPositionParams :=
   (textDocument : TextDocumentIdentifier)
   (position : Position)
 
-instance : HasFromJson TextDocumentPositionParams := ⟨fun j => do
+instance : HasFromJson TextDocumentPositionParams := ⟨fun j => OptionM.run do
   let textDocument ← j.getObjValAs? TextDocumentIdentifier "textDocument"
   let position ← j.getObjValAs? Position "position"
   pure ⟨textDocument, position⟩⟩
@@ -205,7 +205,7 @@ structure DocumentFilter :=
   (scheme? : Option String := none)
   (pattern? : Option String := none)
 
-instance : HasFromJson DocumentFilter := ⟨fun j => do
+instance : HasFromJson DocumentFilter := ⟨fun j => OptionM.run do
   let language? := j.getObjValAs? String "language"
   let scheme? := j.getObjValAs? String "scheme"
   let pattern? := j.getObjValAs? String "pattern"
@@ -255,7 +255,7 @@ instance : HasToJson MarkupKind := ⟨fun k =>
 
 structure MarkupContent := (kind : MarkupKind) (value : String)
 
-instance : HasFromJson MarkupContent := ⟨fun j => do
+instance : HasFromJson MarkupContent := ⟨fun j => OptionM.run do
   let kind ← j.getObjValAs? MarkupKind "kind"
   let value ← j.getObjValAs? String "value"
   pure ⟨kind, value⟩⟩
