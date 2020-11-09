@@ -269,7 +269,7 @@ def Sum.str : Option Nat → String :=
 <ul>
 <li>Implicit lambdas</li>
 </ul>
-<p>In Lean 3 stdlib, we find many <a href="https://github.com/leanprover/lean/blob/master/library/init/category/reader.lean#L39">instances</a> of the dreaful <code>@</code>+<code>_</code> idiom.
+<p>In Lean 3 stdlib, we find many <a href="https://github.com/leanprover/lean/blob/master/library/init/category/reader.lean#L39">instances</a> of the dreadful <code>@</code>+<code>_</code> idiom.
 It is often used when we the expected type is a function type with implicit arguments,
 and we have a constant (<code>reader_t.pure</code> in the example) which also takes implicit arguments. In Lean 4, the elaborator automatically introduces lambda's
 for consuming implicit arguments. We are still exploring this feature and analyzing its impact, but the experience so far has been very positive. As an example,
