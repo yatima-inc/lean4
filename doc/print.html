@@ -97,7 +97,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="tour.html"><strong aria-hidden="true">1.</strong> Tour of Lean</a></li><li class="chapter-item expanded "><a href="faq.html"><strong aria-hidden="true">2.</strong> Frequently Asked Questions</a></li><li class="chapter-item expanded affix "><li class="part-title">Language Manual</li><li class="chapter-item expanded "><a href="lean3changes.html"><strong aria-hidden="true">3.</strong> Significant Changes from Lean 3</a></li><li class="chapter-item expanded "><a href="stringinterp.html"><strong aria-hidden="true">4.</strong> String interpolation</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">5.</strong> The do Notation</div></li><li class="chapter-item expanded affix "><li class="part-title">Tools</li><li class="chapter-item expanded "><a href="syntax_highlight_in_latex.html"><strong aria-hidden="true">6.</strong> Syntax Highlighting Lean in LaTeX</a></li><li class="chapter-item expanded affix "><li class="part-title">Development</li><li class="chapter-item expanded "><a href="commit_convention.html"><strong aria-hidden="true">7.</strong> Commit Convention</a></li><li class="chapter-item expanded "><a href="make/index.html"><strong aria-hidden="true">8.</strong> Building Lean</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="make/ubuntu-16.04.html"><strong aria-hidden="true">8.1.</strong> Ubuntu Setup</a></li><li class="chapter-item expanded "><a href="make/osx-10.9.html"><strong aria-hidden="true">8.2.</strong> macOS Setup</a></li><li class="chapter-item expanded "><a href="make/msys2.html"><strong aria-hidden="true">8.3.</strong> Windows Setup</a></li></ol></li><li class="chapter-item expanded "><a href="mdbook.html"><strong aria-hidden="true">9.</strong> Building This Manual</a></li><li class="chapter-item expanded "><a href="fixing_tests.html"><strong aria-hidden="true">10.</strong> Fixing Tests</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="whatIsLean.html"><strong aria-hidden="true">1.</strong> What is Lean</a></li><li class="chapter-item expanded "><a href="tour.html"><strong aria-hidden="true">2.</strong> Tour of Lean</a></li><li class="chapter-item expanded affix "><li class="part-title">Language Manual</li><li class="chapter-item expanded "><a href="lean3changes.html"><strong aria-hidden="true">3.</strong> Significant Changes from Lean 3</a></li><li class="chapter-item expanded "><a href="functions.html"><strong aria-hidden="true">4.</strong> Functions</a></li><li class="chapter-item expanded "><a href="stringinterp.html"><strong aria-hidden="true">5.</strong> String interpolation</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">6.</strong> The do Notation</div></li><li class="chapter-item expanded affix "><li class="part-title">Tools</li><li class="chapter-item expanded "><a href="syntax_highlight_in_latex.html"><strong aria-hidden="true">7.</strong> Syntax Highlighting Lean in LaTeX</a></li><li class="chapter-item expanded affix "><li class="part-title">Development</li><li class="chapter-item expanded "><a href="commit_convention.html"><strong aria-hidden="true">8.</strong> Commit Convention</a></li><li class="chapter-item expanded "><a href="make/index.html"><strong aria-hidden="true">9.</strong> Building Lean</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="make/ubuntu-16.04.html"><strong aria-hidden="true">9.1.</strong> Ubuntu Setup</a></li><li class="chapter-item expanded "><a href="make/osx-10.9.html"><strong aria-hidden="true">9.2.</strong> macOS Setup</a></li><li class="chapter-item expanded "><a href="make/msys2.html"><strong aria-hidden="true">9.3.</strong> Windows Setup</a></li></ol></li><li class="chapter-item expanded "><a href="mdbook.html"><strong aria-hidden="true">10.</strong> Building This Manual</a></li><li class="chapter-item expanded "><a href="fixing_tests.html"><strong aria-hidden="true">11.</strong> Fixing Tests</a></li><li class="chapter-item expanded affix "><li class="part-title">Other</li><li class="chapter-item expanded "><a href="faq.html"><strong aria-hidden="true">12.</strong> Frequently Asked Questions</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -169,7 +169,176 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#tour-of-lean" id="tour-of-lean">Tour of Lean</a></h1>
+                        <h1><a class="header" href="#what-is-lean" id="what-is-lean">What is Lean</a></h1>
+<p>Lean is a functional programming language that makes it easy to
+write correct and maintainable code.</p>
+<p>Lean programming primarily involves defining types and functions.
+This allows your focus to remain on the problem domain and manipulating its data,
+rather than the details of programming.</p>
+<pre><code class="language-lean">-- Defines a function that takes a name and produces a greeting.
+def getGreeting (name : String) := &quot;Hello, {name}! Isn't Lean great?&quot;
+
+-- The `main` function is the entry point of your program.
+-- Its type is `IO Unit` because it can perform `IO` operations.
+def main : IO Unit :=
+  -- Defines a list of names
+  let names := [&quot;Sebastian&quot;, &quot;Leo&quot;, &quot;Daniel&quot;]
+
+  -- Print the list of greetings `names.map getGreeting`
+  for greeting in names.map getGreeting do
+    IO.println greeting
+</code></pre>
+<p>Lean has numerous features, including:</p>
+<ul>
+<li>Type inference</li>
+<li>First-class functions</li>
+<li>Powerful data types</li>
+<li>Pattern matching</li>
+<li>Type classes</li>
+<li>Extensible syntax</li>
+<li>Hygienic macros</li>
+<li>Dependent types</li>
+<li>Metaprogramming framework</li>
+<li>Async programming</li>
+<li>Verification, you can prove properties of your functions using Lean itself</li>
+</ul>
+<pre><code class="language-lean">-- Lean has first class functions
+-- `twice` takes two argumes `f` and `a` where
+-- `f` is a function from natural numbers to natural numbers, and
+-- `a` is a natural number
+def twice (f : Nat → Nat) (a : Nat) :=
+  f (f a)
+
+-- `fun` is to declare anonymous functions
+#eval twice (fun x =&gt; x + 2) 10
+
+-- You prove theorems about your functions.
+-- The following theorem states that for any natural number `a`,
+-- adding 2 twice produces a value equal to `a + 4`.
+theorem twiceAdd2 (a : Nat) : twice (fun x =&gt; x + 2) a = a + 4 :=
+  -- The proof is by reflexivity. Lean &quot;symbolic&quot; reduces both sides of the equality
+  -- and obtain the same result
+  rfl
+
+-- `(. + 2)` is syntax sugar for `(fun x =&gt; x + 2)`. The parentheses + `.` notation
+-- is useful for defining simple functions
+#eval twice (. + 2) 10
+
+-- An enumerated type is a special case of inductive type in Lean
+-- The following command creates a new type `Weekday`
+inductive Weekday :=
+  | sunday    : Weekday
+  | monday    : Weekday
+  | tuesday   : Weekday
+  | wednesday : Weekday
+  | thursday  : Weekday
+  | friday    : Weekday
+  | saturday  : Weekday
+
+-- `Weekday` has 7 constructors/elements.
+-- The constructors live in the `Weekday` namespace
+-- Think of `sunday`, `monday`, …, saturday as being distinct elements of `Weekday`,
+-- with no other distinguishing properties.
+-- The command `#check` return the type of a term in Lean
+#check Weekday.sunday
+#check Weekday.monday
+
+-- The `open` command opens a namespace
+open Weekday
+#check sunday
+#check tuesday
+
+-- You can define functions by pattern matching.
+-- The following function converts a `Weekday` into a natural number.
+def natOfWeekday (d : Weekday) : Nat :=
+  match d with
+  | sunday    =&gt; 1
+  | monday    =&gt; 2
+  | tuesday   =&gt; 3
+  | wednesday =&gt; 4
+  | thursday  =&gt; 5
+  | friday    =&gt; 6
+  | saturday  =&gt; 7
+
+-- The `#eval` command evaluates an expression and prints the result.
+#eval natOfWeekday tuesday
+
+def isMonday : Weekday → Bool :=
+  -- `fun` + `match`  is a common idiom.
+  -- The the following expression is syntax sugar for
+  -- fun d =&gt; match d with | monday =&gt; true | _ =&gt; false
+  fun | monday =&gt; true | _ =&gt; false
+
+#eval isMonday monday
+#eval isMonday sunday
+
+-- Lean has support for type classes and polymorphic methods.
+-- The `toString` method converts a value into a `String`.
+#eval toString 10
+#eval toString (10, 20)
+
+-- The method `toString` converts values of any type that implements
+-- the class `ToString`.
+-- You can implement instances of `ToString` for your own types.
+instance : ToString Weekday := {
+  toString := fun
+    | sunday    =&gt; &quot;Sunday&quot;
+    | monday    =&gt; &quot;Monday&quot;
+    | tuesday   =&gt; &quot;Tuesday&quot;
+    | wednesday =&gt; &quot;Wednesday&quot;
+    | thursday  =&gt; &quot;Thursday&quot;
+    | friday    =&gt; &quot;Friday&quot;
+    | saturday  =&gt; &quot;Saturday&quot;
+}
+
+#eval toString (sunday, 10)
+
+def Weekday.next : Weekday -&gt; Weekday :=
+  fun d =&gt; match d with
+    | sunday    =&gt; monday
+    | monday    =&gt; tuesday
+    | tuesday   =&gt; wednesday
+    | wednesday =&gt; thursday
+    | thursday  =&gt; friday
+    | friday    =&gt; saturday
+    | saturday  =&gt; sunday
+
+#eval Weekday.next Weekday.wednesday
+-- Since `Weekday` namespace has already been opened, you can write.
+#eval next wednesday
+
+-- The idiom `fun d =&gt; match d with ...` used in the previous definition
+-- is so common that Lean provides a syntax sugar for it. The foolowing
+-- function uses it.
+def Weekday.previous : Weekday -&gt; Weekday
+  | sunday    =&gt; saturday
+  | monday    =&gt; sunday
+  | tuesday   =&gt; monday
+  | wednesday =&gt; tuesday
+  | thursday  =&gt; wednesday
+  | friday    =&gt; thursday
+  | saturday  =&gt; friday
+
+#eval next (previous wednesday)
+
+-- We can prove that for any `Weekday` `d`, `next (previous d) = d`
+theorem Weekday.nextOfPrevious (d : Weekday) : next (previous d) = d :=
+  match d with
+  | sunday    =&gt; rfl
+  | monday    =&gt; rfl
+  | tuesday   =&gt; rfl
+  | wednesday =&gt; rfl
+  | thursday  =&gt; rfl
+  | friday    =&gt; rfl
+  | saturday  =&gt; rfl
+
+-- You can automate definitions such  as `Weekday.nextOfPrevious`
+-- using metaprogramming
+theorem Weekday.nextOfPrevious' (d : Weekday) : next (previous d) = d := by
+  cases d -- A proof by cases
+  repeat rfl -- Each case is solved using `rfl`
+</code></pre>
+<h1><a class="header" href="#tour-of-lean" id="tour-of-lean">Tour of Lean</a></h1>
 <p>The best way to learn about Lean is to read and write Lean code.
 This article will act as a tour through some of the key features of the Lean
 language and give you some code snippets that you can execute on your machine.
@@ -220,70 +389,6 @@ def sampleFunction3 (x : Int) :=
 
 end BasicFunctions
 </code></pre>
-<h1><a class="header" href="#frequently-asked-questions" id="frequently-asked-questions">Frequently Asked Questions</a></h1>
-<ul>
-<li>What is Lean?</li>
-</ul>
-<p>Lean is a new open source theorem prover being developed at Microsoft Research.
-It is a research project that aims to bridge the gap between interactive and automated theorem proving.
-Lean can be also used as a programming language. Actually, some Lean features are implemented in Lean itself.</p>
-<ul>
-<li>Are pull requests welcome?</li>
-</ul>
-<p>In the past, we accepted most pull requests. This practice produced hard to maintain code, performance problems, and bugs.
-It takes time to review a pull request and make sure it is correct, useful and is not in conflict with our plans.
-Small bug fixes (few lines of code) are always welcome. Any other kind of unrequested pull request is not.
-Thus, before implementing a feature or modifying the system, please ask whether the change is welcome or not.</p>
-<ul>
-<li>Should I use Lean?</li>
-</ul>
-<p>Lean is under heavy development, and we are constantly trying new
-ideas and tweaking the system.  It is a research project and not a product.
-Things change rapidly, and we constantly break backward compatibility.
-Lean comes &quot;as is&quot;, you should not expect we will fix bugs and/or add new features for your project.
-We have our own priorities, and will not change them to accommodate your needs.
-Even if you implement a new feature or fix a bug, we may not want to merge it because
-it may conflict with our plans for Lean, it may not be performant, we may not want to maintain it,
-we may be busy, etc. If you really need this new feature or bug fix, we suggest you create your own fork and maintain it yourself.</p>
-<ul>
-<li>Where is the documentation?</li>
-</ul>
-<p>The <a href="https://leanprover.github.io/theorem_proving_in_lean">Lean tutorial</a> is a good introduction to the system.
-It may contain a few inconsistencies due to recent changes, but we try to keep it in sync.
-The reference manual is work in progress, and we don't know when it will be ready.
-The core and math libraries contain many definitions and proofs, they demonstrate how we expect the system to be used.
-If the lack of documentation is an issue, then Lean is not a good match for you.
-Documentation is not the main priority right now. Recall that Lean is a research project and not a product.
-A public and very active chat room dedicated to Lean is open on <a href="https://leanprover.zulipchat.com">Zulip</a>.
-It is a good place to interact with other Lean users.
-You may also join the <a href="https://groups.google.com/forum/#!forum/lean-user">Lean user forum</a> on Google Groups.</p>
-<ul>
-<li>Should I use Lean to teach a course?</li>
-</ul>
-<p>Lean has been used to teach courses on logic, type theory and programming languages at CMU and the University of Washington.
-The lecture notes for the CMU course <a href="https://leanprover.github.io/logic_and_proof">Logic and Proof</a> are available online.
-If you decide to teach a course using Lean, we suggest you prepare all material before the beginning of the course, and
-make sure that Lean attends all your needs. You should not expect we will fix bugs and/or add features needed for your course.</p>
-<ul>
-<li>Are there IDEs for Lean?</li>
-</ul>
-<p>Yes, the two main ones are for <a href="https://github.com/leanprover/lean-mode">Emacs</a> and <a href="https://github.com/leanprover/vscode-lean">VS Code</a>.
-The Emacs Lean mode is available via <a href="https://melpa.org/">MELPA</a>. The VS Code Lean extension is available on its marketplace.</p>
-<ul>
-<li>Is Lean sound? How big is the kernel? Should I trust it?</li>
-</ul>
-<p>Lean has a relatively small kernel. The <a href="https://github.com/leanprover/lean/tree/master/src/checker">leanchecker</a> is a bare-bones version of the Lean kernel.
-There are also two independent checkers: <a href="https://github.com/leanprover/tc">tc</a> and <a href="https://github.com/gebner/trepplein">trepplein</a>.
-We have implemented several kernel extensions to improve performance and make sure the system is reasonably responsive for interactive use.
-We strongly recommend you frequently check your project without these extensions. The command line option <code>-t0</code> disables all of them.
-As far as we know, no proof of <code>false</code> has ever been accepted by Lean when using <code>-t0</code>.
-If you are really concerned about soundness, we recommend you often export your project and recheck it using the independent checkers above.</p>
-<ul>
-<li>Should I open a new issue?</li>
-</ul>
-<p>We use <a href="https://github.com/leanprover/lean/issues">github</a> to track bugs and new features.
-Bug reports are always welcome, but nitpicking issues are not (e.g., the error message is confusing).
-RFC issues are created by developers only.</p>
 <h1><a class="header" href="#significant-changes-from-lean-3" id="significant-changes-from-lean-3">Significant changes from Lean 3</a></h1>
 <p>Lean 4 is not backward compatible with Lean 3.
 We have rewritten most of the system, and took the opportunity to cleanup the syntax,
@@ -360,7 +465,7 @@ def id5 : {α : Type} → α → α :=
 <ul>
 <li>Sugar for simple functions</li>
 </ul>
-<p>In Lean 3, we can creating simple functions from infix operators by using parentheses. For example, <code>(+1)</code> is sugar for <code>fun x, x + 1</code>. In Lean 4, we generalize this notation using <code>·</code> as a placeholder. Here are a few examples:</p>
+<p>In Lean 3, we can creating simple functions from infix operators by using parentheses. For example, <code>(+1)</code> is sugar for <code>fun x, x + 1</code>. In Lean 4, we generalize this notation using <code>·</code> As a placeholder. Here are a few examples:</p>
 <pre><code class="language-lean"><span class="boring">namespace ex3
 </span>#check (· + 1)
 -- fun a =&gt; a + 1
@@ -578,6 +683,123 @@ the auxiliary unsafe definition generated by Lean, and produces a safe one using
 #eval f 98
 <span class="boring">end partial1
 </span></code></pre>
+<h1><a class="header" href="#functions" id="functions">Functions</a></h1>
+<p>Functions are the fundamental unit of program execution in any programming language.
+As in other languages, a Lean function has a name, can have parameters and take arguments, and has a body.
+Lean also supports functional programming constructs such as treating functions as values,
+using unnamed functions in expressions, composition of functions to form new functions,
+curried functions, and the implicit definition of functions by way of
+the partial application of function arguments.</p>
+<p>You define functions by using the <code>def</code> keyword followed by its name, a parameter list, return type and its body.
+The parameter list consists of successive parameters that are separated by spaces.
+You can specify an explicit type for each parameter.
+If you do not specify a specific argument type, the compiler tries to infer the type from the function body.
+An error is returned when it cannot be inferred.
+The expression that makes up the function body is typically a compound expression consisting of a number of expressions
+that culminate in a final expression that is the return value.
+The return type is a colon followed by a type and is optional.
+If you do not specify the type of the return value explicitly,
+the compiler tries to determine the return type from the final expression.</p>
+<pre><code class="language-lean">def f x := x + 1
+</code></pre>
+<p>In the previous example, the function name is <code>f</code>, the argument is <code>x</code>, which has type <code>Nat</code>,
+the function body is <code>x + 1</code>, and the return value is of type <code>Nat</code>.
+The following example defines the factorial recursive function using pattern matching.</p>
+<pre><code class="language-lean">def fact x :=
+ match x with
+ | 0   =&gt; 1
+ | n+1 =&gt; (n+1) * fact n
+
+#eval fact 100
+</code></pre>
+<p>By default, Lean only accepts total functions. The <code>partial</code> keyword should be used when Lean cannot
+establish that a function always terminates.</p>
+<pre><code class="language-lean">partial def g (x : Nat) (p : Nat -&gt; Bool) : Nat :=
+  if p x then
+    x
+  else
+    g (x+1) p
+
+#eval g 0 (fun x =&gt; x &gt; 10)
+</code></pre>
+<p>In the previous example, <code>g x p</code> only terminates if there is a <code>y &gt;= x</code> such that <code>p y</code> returns <code>true</code>.
+Of course, <code>g 0 (fun x =&gt; false)</code> never terminates.</p>
+<h1><a class="header" href="#lambda-expressions-1" id="lambda-expressions-1">Lambda expressions</a></h1>
+<p>A lambda expression is an unnamed function.
+You define lambda expressions by using the <code>fun</code> keyword. A lambda expression resembles a function definition, except that instead of the <code>:=</code> token,
+the <code>=&gt;</code> token is used to separate the argument list from the function body. As in a regular function definition,
+the argument types can be inferred or specified explicitly, and the return type of the lambda expression is inferred from the type of the
+last expression in the body.</p>
+<pre><code class="language-lean">def twice (f : Nat -&gt; Nat) (x : Nat) : Nat :=
+  f (f x)
+
+#eval twice (fun x =&gt; x + 1) 3
+#eval twice (fun (x : Nat) =&gt; x * 2) 3
+
+#eval List.map (fun x =&gt; x + 1) [1, 2, 3]
+-- [2, 3, 4]
+
+#eval List.map (fun (x, y) =&gt; x + y) [(1, 2), (3, 4)]
+-- [3, 7]
+</code></pre>
+<h1><a class="header" href="#syntax-sugar-for-simple-lambda-expressions" id="syntax-sugar-for-simple-lambda-expressions">Syntax sugar for simple lambda expressions</a></h1>
+<p>Simple functions can be defined using parentheses and <code>.</code> (or <code>·</code>) as a placeholder.</p>
+<pre><code class="language-lean">#check (. + 1)
+-- fun a =&gt; a + 1
+#check (· + 1)
+-- fun a =&gt; a + 1
+#check (2 - .)
+-- fun a =&gt; 2 - a
+#eval [1, 2, 3, 4, 5].foldl (. * .) 1
+-- 120
+
+def h (x y z : Nat) :=
+  x + y + z
+
+#check (h . 1 .)
+-- fun a b =&gt; h a 1 b
+
+#eval [(1, 2), (3, 4), (5, 6)].map (·.1)
+-- [1, 3, 5]
+</code></pre>
+<p>In the previous example, the term <code>(·.1)</code> is syntax sugar for <code>fun x =&gt; x.1</code>. Note that, the ASCII version <code>(..1)</code>
+is not supported because <code>..</code> is a reserved symbol.</p>
+<h1><a class="header" href="#pipelining" id="pipelining">Pipelining</a></h1>
+<p>Pipelining enables function calls to be chained together as successive operations. Pipelining works as follows:</p>
+<pre><code class="language-lean">def add1 x := x + 1
+def times2 x := x * 2
+
+#eval times2 (add1 100)
+#eval 100 |&gt; add1 |&gt; times2
+#eval times2 &lt;| add1 &lt;| 100
+</code></pre>
+<p>The result of the previous <code>#eval</code> commands is 202.
+The forward pipeline <code>|&gt;</code> operatior takes a function and an argument and return a value.
+In constrat, the backward pipeline <code>&lt;|</code> operator takes an argument and a function and returns a value.
+These operators are useful for minimizing the number of parentheses.</p>
+<pre><code class="language-lean">def add1Times3FilterEven (xs : List Nat) :=
+  List.filter (. % 2 == 0) (List.map (. * 3) (List.map (. + 1) xs))
+
+#eval add1Times3FilterEven [1, 2, 3, 4]
+-- [6, 12]
+
+-- Define the same function using pipes
+def add1Times3FilterEven' (xs : List Nat) :=
+  xs |&gt; List.map (. + 1) |&gt; List.map (. * 3) |&gt; List.filter (. % 2 == 0)
+
+#eval add1Times3FilterEven' [1, 2, 3, 4]
+-- [6, 12]
+</code></pre>
+<p>Lean also supports the operator <code>|&gt;.</code> which combines forward pipeline <code>|&gt;</code> operator with the <code>.</code> field notation.</p>
+<pre><code class="language-lean">-- Define the same function using pipes
+def add1Times3FilterEven'' (xs : List Nat) :=
+  xs.map (. + 1) |&gt;.map (. * 3) |&gt;.filter (. % 2 == 0)
+
+#eval add1Times3FilterEven'' [1, 2, 3, 4]
+-- [6, 12]
+</code></pre>
+<p>For users familiar with the Haskell programming language,
+Lean also supports the notation <code>f $ a</code> for the backward pipeline <code>f &lt;| a</code>.</p>
 <h1><a class="header" href="#string-interpolation" id="string-interpolation">String interpolation</a></h1>
 <p>The <code>s!</code> prefix identifies a string literal as an interpolated string.
 An interpolated string is a string literal that might contain interpolation expressions.
@@ -1000,6 +1222,70 @@ the expected output (stored in a <code>*.expected.out</code> file).</p>
 <p>Remark: in the directory <code>tests/lean/interactive</code>, the input test files have extension <code>.input</code>.
 They simulate commands sent from editors to Lean.
 The <code>.lean</code> files in this directory are used to simulate files opened by the user.</p>
+<h1><a class="header" href="#frequently-asked-questions" id="frequently-asked-questions">Frequently Asked Questions</a></h1>
+<ul>
+<li>What is Lean?</li>
+</ul>
+<p>Lean is a new open source theorem prover being developed at Microsoft Research.
+It is a research project that aims to bridge the gap between interactive and automated theorem proving.
+Lean can be also used as a programming language. Actually, some Lean features are implemented in Lean itself.</p>
+<ul>
+<li>Are pull requests welcome?</li>
+</ul>
+<p>In the past, we accepted most pull requests. This practice produced hard to maintain code, performance problems, and bugs.
+It takes time to review a pull request and make sure it is correct, useful and is not in conflict with our plans.
+Small bug fixes (few lines of code) are always welcome. Any other kind of unrequested pull request is not.
+Thus, before implementing a feature or modifying the system, please ask whether the change is welcome or not.</p>
+<ul>
+<li>Should I use Lean?</li>
+</ul>
+<p>Lean is under heavy development, and we are constantly trying new
+ideas and tweaking the system.  It is a research project and not a product.
+Things change rapidly, and we constantly break backward compatibility.
+Lean comes &quot;as is&quot;, you should not expect we will fix bugs and/or add new features for your project.
+We have our own priorities, and will not change them to accommodate your needs.
+Even if you implement a new feature or fix a bug, we may not want to merge it because
+it may conflict with our plans for Lean, it may not be performant, we may not want to maintain it,
+we may be busy, etc. If you really need this new feature or bug fix, we suggest you create your own fork and maintain it yourself.</p>
+<ul>
+<li>Where is the documentation?</li>
+</ul>
+<p>The <a href="https://leanprover.github.io/theorem_proving_in_lean">Lean tutorial</a> is a good introduction to the system.
+It may contain a few inconsistencies due to recent changes, but we try to keep it in sync.
+The reference manual is work in progress, and we don't know when it will be ready.
+The core and math libraries contain many definitions and proofs, they demonstrate how we expect the system to be used.
+If the lack of documentation is an issue, then Lean is not a good match for you.
+Documentation is not the main priority right now. Recall that Lean is a research project and not a product.
+A public and very active chat room dedicated to Lean is open on <a href="https://leanprover.zulipchat.com">Zulip</a>.
+It is a good place to interact with other Lean users.
+You may also join the <a href="https://groups.google.com/forum/#!forum/lean-user">Lean user forum</a> on Google Groups.</p>
+<ul>
+<li>Should I use Lean to teach a course?</li>
+</ul>
+<p>Lean has been used to teach courses on logic, type theory and programming languages at CMU and the University of Washington.
+The lecture notes for the CMU course <a href="https://leanprover.github.io/logic_and_proof">Logic and Proof</a> are available online.
+If you decide to teach a course using Lean, we suggest you prepare all material before the beginning of the course, and
+make sure that Lean attends all your needs. You should not expect we will fix bugs and/or add features needed for your course.</p>
+<ul>
+<li>Are there IDEs for Lean?</li>
+</ul>
+<p>Yes, the two main ones are for <a href="https://github.com/leanprover/lean-mode">Emacs</a> and <a href="https://github.com/leanprover/vscode-lean">VS Code</a>.
+The Emacs Lean mode is available via <a href="https://melpa.org/">MELPA</a>. The VS Code Lean extension is available on its marketplace.</p>
+<ul>
+<li>Is Lean sound? How big is the kernel? Should I trust it?</li>
+</ul>
+<p>Lean has a relatively small kernel. The <a href="https://github.com/leanprover/lean/tree/master/src/checker">leanchecker</a> is a bare-bones version of the Lean kernel.
+There are also two independent checkers: <a href="https://github.com/leanprover/tc">tc</a> and <a href="https://github.com/gebner/trepplein">trepplein</a>.
+We have implemented several kernel extensions to improve performance and make sure the system is reasonably responsive for interactive use.
+We strongly recommend you frequently check your project without these extensions. The command line option <code>-t0</code> disables all of them.
+As far as we know, no proof of <code>false</code> has ever been accepted by Lean when using <code>-t0</code>.
+If you are really concerned about soundness, we recommend you often export your project and recheck it using the independent checkers above.</p>
+<ul>
+<li>Should I open a new issue?</li>
+</ul>
+<p>We use <a href="https://github.com/leanprover/lean/issues">github</a> to track bugs and new features.
+Bug reports are always welcome, but nitpicking issues are not (e.g., the error message is confusing).
+RFC issues are created by developers only.</p>
 
                     </main>
 

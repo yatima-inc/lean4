@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Building This Manual - Lean Manual</title>
+        <title>What is Lean - Lean Manual</title>
         
         
 
@@ -95,7 +95,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="whatIsLean.html"><strong aria-hidden="true">1.</strong> What is Lean</a></li><li class="chapter-item expanded "><a href="tour.html"><strong aria-hidden="true">2.</strong> Tour of Lean</a></li><li class="chapter-item expanded affix "><li class="part-title">Language Manual</li><li class="chapter-item expanded "><a href="lean3changes.html"><strong aria-hidden="true">3.</strong> Significant Changes from Lean 3</a></li><li class="chapter-item expanded "><a href="functions.html"><strong aria-hidden="true">4.</strong> Functions</a></li><li class="chapter-item expanded "><a href="stringinterp.html"><strong aria-hidden="true">5.</strong> String interpolation</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">6.</strong> The do Notation</div></li><li class="chapter-item expanded affix "><li class="part-title">Tools</li><li class="chapter-item expanded "><a href="syntax_highlight_in_latex.html"><strong aria-hidden="true">7.</strong> Syntax Highlighting Lean in LaTeX</a></li><li class="chapter-item expanded affix "><li class="part-title">Development</li><li class="chapter-item expanded "><a href="commit_convention.html"><strong aria-hidden="true">8.</strong> Commit Convention</a></li><li class="chapter-item expanded "><a href="make/index.html"><strong aria-hidden="true">9.</strong> Building Lean</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="make/ubuntu-16.04.html"><strong aria-hidden="true">9.1.</strong> Ubuntu Setup</a></li><li class="chapter-item expanded "><a href="make/osx-10.9.html"><strong aria-hidden="true">9.2.</strong> macOS Setup</a></li><li class="chapter-item expanded "><a href="make/msys2.html"><strong aria-hidden="true">9.3.</strong> Windows Setup</a></li></ol></li><li class="chapter-item expanded "><a href="mdbook.html" class="active"><strong aria-hidden="true">10.</strong> Building This Manual</a></li><li class="chapter-item expanded "><a href="fixing_tests.html"><strong aria-hidden="true">11.</strong> Fixing Tests</a></li><li class="chapter-item expanded affix "><li class="part-title">Other</li><li class="chapter-item expanded "><a href="faq.html"><strong aria-hidden="true">12.</strong> Frequently Asked Questions</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="whatIsLean.html" class="active"><strong aria-hidden="true">1.</strong> What is Lean</a></li><li class="chapter-item expanded "><a href="tour.html"><strong aria-hidden="true">2.</strong> Tour of Lean</a></li><li class="chapter-item expanded affix "><li class="part-title">Language Manual</li><li class="chapter-item expanded "><a href="lean3changes.html"><strong aria-hidden="true">3.</strong> Significant Changes from Lean 3</a></li><li class="chapter-item expanded "><a href="functions.html"><strong aria-hidden="true">4.</strong> Functions</a></li><li class="chapter-item expanded "><a href="stringinterp.html"><strong aria-hidden="true">5.</strong> String interpolation</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">6.</strong> The do Notation</div></li><li class="chapter-item expanded affix "><li class="part-title">Tools</li><li class="chapter-item expanded "><a href="syntax_highlight_in_latex.html"><strong aria-hidden="true">7.</strong> Syntax Highlighting Lean in LaTeX</a></li><li class="chapter-item expanded affix "><li class="part-title">Development</li><li class="chapter-item expanded "><a href="commit_convention.html"><strong aria-hidden="true">8.</strong> Commit Convention</a></li><li class="chapter-item expanded "><a href="make/index.html"><strong aria-hidden="true">9.</strong> Building Lean</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="make/ubuntu-16.04.html"><strong aria-hidden="true">9.1.</strong> Ubuntu Setup</a></li><li class="chapter-item expanded "><a href="make/osx-10.9.html"><strong aria-hidden="true">9.2.</strong> macOS Setup</a></li><li class="chapter-item expanded "><a href="make/msys2.html"><strong aria-hidden="true">9.3.</strong> Windows Setup</a></li></ol></li><li class="chapter-item expanded "><a href="mdbook.html"><strong aria-hidden="true">10.</strong> Building This Manual</a></li><li class="chapter-item expanded "><a href="fixing_tests.html"><strong aria-hidden="true">11.</strong> Fixing Tests</a></li><li class="chapter-item expanded affix "><li class="part-title">Other</li><li class="chapter-item expanded "><a href="faq.html"><strong aria-hidden="true">12.</strong> Frequently Asked Questions</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -167,33 +167,184 @@
 
                 <div id="content" class="content">
                     <main>
-                        <p>This manual is generated by <a href="https://github.com/rust-lang/mdBook">mdBook</a>. We are currently using a
-<a href="https://github.com/leanprover/mdBook">fork</a> of it for the following additional features:</p>
+                        <h1><a class="header" href="#what-is-lean" id="what-is-lean">What is Lean</a></h1>
+<p>Lean is a functional programming language that makes it easy to
+write correct and maintainable code.</p>
+<p>Lean programming primarily involves defining types and functions.
+This allows your focus to remain on the problem domain and manipulating its data,
+rather than the details of programming.</p>
+<pre><code class="language-lean">-- Defines a function that takes a name and produces a greeting.
+def getGreeting (name : String) := &quot;Hello, {name}! Isn't Lean great?&quot;
+
+-- The `main` function is the entry point of your program.
+-- Its type is `IO Unit` because it can perform `IO` operations.
+def main : IO Unit :=
+  -- Defines a list of names
+  let names := [&quot;Sebastian&quot;, &quot;Leo&quot;, &quot;Daniel&quot;]
+
+  -- Print the list of greetings `names.map getGreeting`
+  for greeting in names.map getGreeting do
+    IO.println greeting
+</code></pre>
+<p>Lean has numerous features, including:</p>
 <ul>
-<li>Add support for hiding lines in other languages <a href="https://github.com/rust-lang/mdBook/pull/1339">#1339</a></li>
-<li>Replace calling <code>rustdoc --test</code> from <code>mdbook test</code> with <code>./test</code></li>
+<li>Type inference</li>
+<li>First-class functions</li>
+<li>Powerful data types</li>
+<li>Pattern matching</li>
+<li>Type classes</li>
+<li>Extensible syntax</li>
+<li>Hygienic macros</li>
+<li>Dependent types</li>
+<li>Metaprogramming framework</li>
+<li>Async programming</li>
+<li>Verification, you can prove properties of your functions using Lean itself</li>
 </ul>
-<p>To build this manual, first install the fork via</p>
-<pre><code>cargo install --git https://github.com/leanprover/mdBook mdbook
+<pre><code class="language-lean">-- Lean has first class functions
+-- `twice` takes two argumes `f` and `a` where
+-- `f` is a function from natural numbers to natural numbers, and
+-- `a` is a natural number
+def twice (f : Nat → Nat) (a : Nat) :=
+  f (f a)
+
+-- `fun` is to declare anonymous functions
+#eval twice (fun x =&gt; x + 2) 10
+
+-- You prove theorems about your functions.
+-- The following theorem states that for any natural number `a`,
+-- adding 2 twice produces a value equal to `a + 4`.
+theorem twiceAdd2 (a : Nat) : twice (fun x =&gt; x + 2) a = a + 4 :=
+  -- The proof is by reflexivity. Lean &quot;symbolic&quot; reduces both sides of the equality
+  -- and obtain the same result
+  rfl
+
+-- `(. + 2)` is syntax sugar for `(fun x =&gt; x + 2)`. The parentheses + `.` notation
+-- is useful for defining simple functions
+#eval twice (. + 2) 10
+
+-- An enumerated type is a special case of inductive type in Lean
+-- The following command creates a new type `Weekday`
+inductive Weekday :=
+  | sunday    : Weekday
+  | monday    : Weekday
+  | tuesday   : Weekday
+  | wednesday : Weekday
+  | thursday  : Weekday
+  | friday    : Weekday
+  | saturday  : Weekday
+
+-- `Weekday` has 7 constructors/elements.
+-- The constructors live in the `Weekday` namespace
+-- Think of `sunday`, `monday`, …, saturday as being distinct elements of `Weekday`,
+-- with no other distinguishing properties.
+-- The command `#check` return the type of a term in Lean
+#check Weekday.sunday
+#check Weekday.monday
+
+-- The `open` command opens a namespace
+open Weekday
+#check sunday
+#check tuesday
+
+-- You can define functions by pattern matching.
+-- The following function converts a `Weekday` into a natural number.
+def natOfWeekday (d : Weekday) : Nat :=
+  match d with
+  | sunday    =&gt; 1
+  | monday    =&gt; 2
+  | tuesday   =&gt; 3
+  | wednesday =&gt; 4
+  | thursday  =&gt; 5
+  | friday    =&gt; 6
+  | saturday  =&gt; 7
+
+-- The `#eval` command evaluates an expression and prints the result.
+#eval natOfWeekday tuesday
+
+def isMonday : Weekday → Bool :=
+  -- `fun` + `match`  is a common idiom.
+  -- The the following expression is syntax sugar for
+  -- fun d =&gt; match d with | monday =&gt; true | _ =&gt; false
+  fun | monday =&gt; true | _ =&gt; false
+
+#eval isMonday monday
+#eval isMonday sunday
+
+-- Lean has support for type classes and polymorphic methods.
+-- The `toString` method converts a value into a `String`.
+#eval toString 10
+#eval toString (10, 20)
+
+-- The method `toString` converts values of any type that implements
+-- the class `ToString`.
+-- You can implement instances of `ToString` for your own types.
+instance : ToString Weekday := {
+  toString := fun
+    | sunday    =&gt; &quot;Sunday&quot;
+    | monday    =&gt; &quot;Monday&quot;
+    | tuesday   =&gt; &quot;Tuesday&quot;
+    | wednesday =&gt; &quot;Wednesday&quot;
+    | thursday  =&gt; &quot;Thursday&quot;
+    | friday    =&gt; &quot;Friday&quot;
+    | saturday  =&gt; &quot;Saturday&quot;
+}
+
+#eval toString (sunday, 10)
+
+def Weekday.next : Weekday -&gt; Weekday :=
+  fun d =&gt; match d with
+    | sunday    =&gt; monday
+    | monday    =&gt; tuesday
+    | tuesday   =&gt; wednesday
+    | wednesday =&gt; thursday
+    | thursday  =&gt; friday
+    | friday    =&gt; saturday
+    | saturday  =&gt; sunday
+
+#eval Weekday.next Weekday.wednesday
+-- Since `Weekday` namespace has already been opened, you can write.
+#eval next wednesday
+
+-- The idiom `fun d =&gt; match d with ...` used in the previous definition
+-- is so common that Lean provides a syntax sugar for it. The foolowing
+-- function uses it.
+def Weekday.previous : Weekday -&gt; Weekday
+  | sunday    =&gt; saturday
+  | monday    =&gt; sunday
+  | tuesday   =&gt; monday
+  | wednesday =&gt; tuesday
+  | thursday  =&gt; wednesday
+  | friday    =&gt; thursday
+  | saturday  =&gt; friday
+
+#eval next (previous wednesday)
+
+-- We can prove that for any `Weekday` `d`, `next (previous d) = d`
+theorem Weekday.nextOfPrevious (d : Weekday) : next (previous d) = d :=
+  match d with
+  | sunday    =&gt; rfl
+  | monday    =&gt; rfl
+  | tuesday   =&gt; rfl
+  | wednesday =&gt; rfl
+  | thursday  =&gt; rfl
+  | friday    =&gt; rfl
+  | saturday  =&gt; rfl
+
+-- You can automate definitions such  as `Weekday.nextOfPrevious`
+-- using metaprogramming
+theorem Weekday.nextOfPrevious' (d : Weekday) : next (previous d) = d := by
+  cases d -- A proof by cases
+  repeat rfl -- Each case is solved using `rfl`
 </code></pre>
-<p>Then use e.g. <a href="https://rust-lang.github.io/mdBook/cli/watch.html"><code>mdbook watch</code></a> in the <code>doc/</code> folder:</p>
-<pre><code>cd doc
-mdbook watch --open  # opens the output in `out/` in your default browser
-</code></pre>
-<p>Run <code>mdbook test</code> to test all <code>lean</code> code blocks.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
-                            <a rel="prev" href="make/msys2.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
-                                <i class="fa fa-angle-left"></i>
-                            </a>
-                        
 
                         
-                            <a rel="next" href="fixing_tests.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="tour.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         
@@ -205,13 +356,9 @@ mdbook watch --open  # opens the output in `out/` in your default browser
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-                    <a rel="prev" href="make/msys2.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
-                        <i class="fa fa-angle-left"></i>
-                    </a>
-                
 
                 
-                    <a rel="next" href="fixing_tests.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="tour.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 

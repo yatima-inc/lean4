@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Building This Manual - Lean Manual</title>
+        <title>Functions - Lean Manual</title>
         
         
 
@@ -95,7 +95,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="whatIsLean.html"><strong aria-hidden="true">1.</strong> What is Lean</a></li><li class="chapter-item expanded "><a href="tour.html"><strong aria-hidden="true">2.</strong> Tour of Lean</a></li><li class="chapter-item expanded affix "><li class="part-title">Language Manual</li><li class="chapter-item expanded "><a href="lean3changes.html"><strong aria-hidden="true">3.</strong> Significant Changes from Lean 3</a></li><li class="chapter-item expanded "><a href="functions.html"><strong aria-hidden="true">4.</strong> Functions</a></li><li class="chapter-item expanded "><a href="stringinterp.html"><strong aria-hidden="true">5.</strong> String interpolation</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">6.</strong> The do Notation</div></li><li class="chapter-item expanded affix "><li class="part-title">Tools</li><li class="chapter-item expanded "><a href="syntax_highlight_in_latex.html"><strong aria-hidden="true">7.</strong> Syntax Highlighting Lean in LaTeX</a></li><li class="chapter-item expanded affix "><li class="part-title">Development</li><li class="chapter-item expanded "><a href="commit_convention.html"><strong aria-hidden="true">8.</strong> Commit Convention</a></li><li class="chapter-item expanded "><a href="make/index.html"><strong aria-hidden="true">9.</strong> Building Lean</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="make/ubuntu-16.04.html"><strong aria-hidden="true">9.1.</strong> Ubuntu Setup</a></li><li class="chapter-item expanded "><a href="make/osx-10.9.html"><strong aria-hidden="true">9.2.</strong> macOS Setup</a></li><li class="chapter-item expanded "><a href="make/msys2.html"><strong aria-hidden="true">9.3.</strong> Windows Setup</a></li></ol></li><li class="chapter-item expanded "><a href="mdbook.html" class="active"><strong aria-hidden="true">10.</strong> Building This Manual</a></li><li class="chapter-item expanded "><a href="fixing_tests.html"><strong aria-hidden="true">11.</strong> Fixing Tests</a></li><li class="chapter-item expanded affix "><li class="part-title">Other</li><li class="chapter-item expanded "><a href="faq.html"><strong aria-hidden="true">12.</strong> Frequently Asked Questions</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="whatIsLean.html"><strong aria-hidden="true">1.</strong> What is Lean</a></li><li class="chapter-item expanded "><a href="tour.html"><strong aria-hidden="true">2.</strong> Tour of Lean</a></li><li class="chapter-item expanded affix "><li class="part-title">Language Manual</li><li class="chapter-item expanded "><a href="lean3changes.html"><strong aria-hidden="true">3.</strong> Significant Changes from Lean 3</a></li><li class="chapter-item expanded "><a href="functions.html" class="active"><strong aria-hidden="true">4.</strong> Functions</a></li><li class="chapter-item expanded "><a href="stringinterp.html"><strong aria-hidden="true">5.</strong> String interpolation</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">6.</strong> The do Notation</div></li><li class="chapter-item expanded affix "><li class="part-title">Tools</li><li class="chapter-item expanded "><a href="syntax_highlight_in_latex.html"><strong aria-hidden="true">7.</strong> Syntax Highlighting Lean in LaTeX</a></li><li class="chapter-item expanded affix "><li class="part-title">Development</li><li class="chapter-item expanded "><a href="commit_convention.html"><strong aria-hidden="true">8.</strong> Commit Convention</a></li><li class="chapter-item expanded "><a href="make/index.html"><strong aria-hidden="true">9.</strong> Building Lean</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="make/ubuntu-16.04.html"><strong aria-hidden="true">9.1.</strong> Ubuntu Setup</a></li><li class="chapter-item expanded "><a href="make/osx-10.9.html"><strong aria-hidden="true">9.2.</strong> macOS Setup</a></li><li class="chapter-item expanded "><a href="make/msys2.html"><strong aria-hidden="true">9.3.</strong> Windows Setup</a></li></ol></li><li class="chapter-item expanded "><a href="mdbook.html"><strong aria-hidden="true">10.</strong> Building This Manual</a></li><li class="chapter-item expanded "><a href="fixing_tests.html"><strong aria-hidden="true">11.</strong> Fixing Tests</a></li><li class="chapter-item expanded affix "><li class="part-title">Other</li><li class="chapter-item expanded "><a href="faq.html"><strong aria-hidden="true">12.</strong> Frequently Asked Questions</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -167,33 +167,136 @@
 
                 <div id="content" class="content">
                     <main>
-                        <p>This manual is generated by <a href="https://github.com/rust-lang/mdBook">mdBook</a>. We are currently using a
-<a href="https://github.com/leanprover/mdBook">fork</a> of it for the following additional features:</p>
-<ul>
-<li>Add support for hiding lines in other languages <a href="https://github.com/rust-lang/mdBook/pull/1339">#1339</a></li>
-<li>Replace calling <code>rustdoc --test</code> from <code>mdbook test</code> with <code>./test</code></li>
-</ul>
-<p>To build this manual, first install the fork via</p>
-<pre><code>cargo install --git https://github.com/leanprover/mdBook mdbook
+                        <h1><a class="header" href="#functions" id="functions">Functions</a></h1>
+<p>Functions are the fundamental unit of program execution in any programming language.
+As in other languages, a Lean function has a name, can have parameters and take arguments, and has a body.
+Lean also supports functional programming constructs such as treating functions as values,
+using unnamed functions in expressions, composition of functions to form new functions,
+curried functions, and the implicit definition of functions by way of
+the partial application of function arguments.</p>
+<p>You define functions by using the <code>def</code> keyword followed by its name, a parameter list, return type and its body.
+The parameter list consists of successive parameters that are separated by spaces.
+You can specify an explicit type for each parameter.
+If you do not specify a specific argument type, the compiler tries to infer the type from the function body.
+An error is returned when it cannot be inferred.
+The expression that makes up the function body is typically a compound expression consisting of a number of expressions
+that culminate in a final expression that is the return value.
+The return type is a colon followed by a type and is optional.
+If you do not specify the type of the return value explicitly,
+the compiler tries to determine the return type from the final expression.</p>
+<pre><code class="language-lean">def f x := x + 1
 </code></pre>
-<p>Then use e.g. <a href="https://rust-lang.github.io/mdBook/cli/watch.html"><code>mdbook watch</code></a> in the <code>doc/</code> folder:</p>
-<pre><code>cd doc
-mdbook watch --open  # opens the output in `out/` in your default browser
+<p>In the previous example, the function name is <code>f</code>, the argument is <code>x</code>, which has type <code>Nat</code>,
+the function body is <code>x + 1</code>, and the return value is of type <code>Nat</code>.
+The following example defines the factorial recursive function using pattern matching.</p>
+<pre><code class="language-lean">def fact x :=
+ match x with
+ | 0   =&gt; 1
+ | n+1 =&gt; (n+1) * fact n
+
+#eval fact 100
 </code></pre>
-<p>Run <code>mdbook test</code> to test all <code>lean</code> code blocks.</p>
+<p>By default, Lean only accepts total functions. The <code>partial</code> keyword should be used when Lean cannot
+establish that a function always terminates.</p>
+<pre><code class="language-lean">partial def g (x : Nat) (p : Nat -&gt; Bool) : Nat :=
+  if p x then
+    x
+  else
+    g (x+1) p
+
+#eval g 0 (fun x =&gt; x &gt; 10)
+</code></pre>
+<p>In the previous example, <code>g x p</code> only terminates if there is a <code>y &gt;= x</code> such that <code>p y</code> returns <code>true</code>.
+Of course, <code>g 0 (fun x =&gt; false)</code> never terminates.</p>
+<h1><a class="header" href="#lambda-expressions" id="lambda-expressions">Lambda expressions</a></h1>
+<p>A lambda expression is an unnamed function.
+You define lambda expressions by using the <code>fun</code> keyword. A lambda expression resembles a function definition, except that instead of the <code>:=</code> token,
+the <code>=&gt;</code> token is used to separate the argument list from the function body. As in a regular function definition,
+the argument types can be inferred or specified explicitly, and the return type of the lambda expression is inferred from the type of the
+last expression in the body.</p>
+<pre><code class="language-lean">def twice (f : Nat -&gt; Nat) (x : Nat) : Nat :=
+  f (f x)
+
+#eval twice (fun x =&gt; x + 1) 3
+#eval twice (fun (x : Nat) =&gt; x * 2) 3
+
+#eval List.map (fun x =&gt; x + 1) [1, 2, 3]
+-- [2, 3, 4]
+
+#eval List.map (fun (x, y) =&gt; x + y) [(1, 2), (3, 4)]
+-- [3, 7]
+</code></pre>
+<h1><a class="header" href="#syntax-sugar-for-simple-lambda-expressions" id="syntax-sugar-for-simple-lambda-expressions">Syntax sugar for simple lambda expressions</a></h1>
+<p>Simple functions can be defined using parentheses and <code>.</code> (or <code>·</code>) as a placeholder.</p>
+<pre><code class="language-lean">#check (. + 1)
+-- fun a =&gt; a + 1
+#check (· + 1)
+-- fun a =&gt; a + 1
+#check (2 - .)
+-- fun a =&gt; 2 - a
+#eval [1, 2, 3, 4, 5].foldl (. * .) 1
+-- 120
+
+def h (x y z : Nat) :=
+  x + y + z
+
+#check (h . 1 .)
+-- fun a b =&gt; h a 1 b
+
+#eval [(1, 2), (3, 4), (5, 6)].map (·.1)
+-- [1, 3, 5]
+</code></pre>
+<p>In the previous example, the term <code>(·.1)</code> is syntax sugar for <code>fun x =&gt; x.1</code>. Note that, the ASCII version <code>(..1)</code>
+is not supported because <code>..</code> is a reserved symbol.</p>
+<h1><a class="header" href="#pipelining" id="pipelining">Pipelining</a></h1>
+<p>Pipelining enables function calls to be chained together as successive operations. Pipelining works as follows:</p>
+<pre><code class="language-lean">def add1 x := x + 1
+def times2 x := x * 2
+
+#eval times2 (add1 100)
+#eval 100 |&gt; add1 |&gt; times2
+#eval times2 &lt;| add1 &lt;| 100
+</code></pre>
+<p>The result of the previous <code>#eval</code> commands is 202.
+The forward pipeline <code>|&gt;</code> operatior takes a function and an argument and return a value.
+In constrat, the backward pipeline <code>&lt;|</code> operator takes an argument and a function and returns a value.
+These operators are useful for minimizing the number of parentheses.</p>
+<pre><code class="language-lean">def add1Times3FilterEven (xs : List Nat) :=
+  List.filter (. % 2 == 0) (List.map (. * 3) (List.map (. + 1) xs))
+
+#eval add1Times3FilterEven [1, 2, 3, 4]
+-- [6, 12]
+
+-- Define the same function using pipes
+def add1Times3FilterEven' (xs : List Nat) :=
+  xs |&gt; List.map (. + 1) |&gt; List.map (. * 3) |&gt; List.filter (. % 2 == 0)
+
+#eval add1Times3FilterEven' [1, 2, 3, 4]
+-- [6, 12]
+</code></pre>
+<p>Lean also supports the operator <code>|&gt;.</code> which combines forward pipeline <code>|&gt;</code> operator with the <code>.</code> field notation.</p>
+<pre><code class="language-lean">-- Define the same function using pipes
+def add1Times3FilterEven'' (xs : List Nat) :=
+  xs.map (. + 1) |&gt;.map (. * 3) |&gt;.filter (. % 2 == 0)
+
+#eval add1Times3FilterEven'' [1, 2, 3, 4]
+-- [6, 12]
+</code></pre>
+<p>For users familiar with the Haskell programming language,
+Lean also supports the notation <code>f $ a</code> for the backward pipeline <code>f &lt;| a</code>.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
-                            <a rel="prev" href="make/msys2.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="lean3changes.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         
 
                         
-                            <a rel="next" href="fixing_tests.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="stringinterp.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         
@@ -205,13 +308,13 @@ mdbook watch --open  # opens the output in `out/` in your default browser
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-                    <a rel="prev" href="make/msys2.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="lean3changes.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
 
                 
-                    <a rel="next" href="fixing_tests.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="stringinterp.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 
