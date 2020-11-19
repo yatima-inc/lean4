@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Commit Convention - Lean Manual</title>
+        <title>Tour of Lean - Lean Manual</title>
         
         
 
@@ -95,7 +95,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="tour.html"><strong aria-hidden="true">1.</strong> Tour of Lean</a></li><li class="chapter-item expanded "><a href="faq.html"><strong aria-hidden="true">2.</strong> Frequently Asked Questions</a></li><li class="chapter-item expanded affix "><li class="part-title">Language Manual</li><li class="chapter-item expanded "><a href="lean3changes.html"><strong aria-hidden="true">3.</strong> Significant Changes from Lean 3</a></li><li class="chapter-item expanded "><a href="stringinterp.html"><strong aria-hidden="true">4.</strong> String interpolation</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">5.</strong> The do Notation</div></li><li class="chapter-item expanded affix "><li class="part-title">Tools</li><li class="chapter-item expanded "><a href="syntax_highlight_in_latex.html"><strong aria-hidden="true">6.</strong> Syntax Highlighting Lean in LaTeX</a></li><li class="chapter-item expanded affix "><li class="part-title">Development</li><li class="chapter-item expanded "><a href="commit_convention.html" class="active"><strong aria-hidden="true">7.</strong> Commit Convention</a></li><li class="chapter-item expanded "><a href="make/index.html"><strong aria-hidden="true">8.</strong> Building Lean</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="make/ubuntu-16.04.html"><strong aria-hidden="true">8.1.</strong> Ubuntu Setup</a></li><li class="chapter-item expanded "><a href="make/osx-10.9.html"><strong aria-hidden="true">8.2.</strong> macOS Setup</a></li><li class="chapter-item expanded "><a href="make/msys2.html"><strong aria-hidden="true">8.3.</strong> Windows Setup</a></li></ol></li><li class="chapter-item expanded "><a href="mdbook.html"><strong aria-hidden="true">9.</strong> Building This Manual</a></li><li class="chapter-item expanded "><a href="fixing_tests.html"><strong aria-hidden="true">10.</strong> Fixing Tests</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="tour.html" class="active"><strong aria-hidden="true">1.</strong> Tour of Lean</a></li><li class="chapter-item expanded "><a href="faq.html"><strong aria-hidden="true">2.</strong> Frequently Asked Questions</a></li><li class="chapter-item expanded affix "><li class="part-title">Language Manual</li><li class="chapter-item expanded "><a href="lean3changes.html"><strong aria-hidden="true">3.</strong> Significant Changes from Lean 3</a></li><li class="chapter-item expanded "><a href="stringinterp.html"><strong aria-hidden="true">4.</strong> String interpolation</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">5.</strong> The do Notation</div></li><li class="chapter-item expanded affix "><li class="part-title">Tools</li><li class="chapter-item expanded "><a href="syntax_highlight_in_latex.html"><strong aria-hidden="true">6.</strong> Syntax Highlighting Lean in LaTeX</a></li><li class="chapter-item expanded affix "><li class="part-title">Development</li><li class="chapter-item expanded "><a href="commit_convention.html"><strong aria-hidden="true">7.</strong> Commit Convention</a></li><li class="chapter-item expanded "><a href="make/index.html"><strong aria-hidden="true">8.</strong> Building Lean</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="make/ubuntu-16.04.html"><strong aria-hidden="true">8.1.</strong> Ubuntu Setup</a></li><li class="chapter-item expanded "><a href="make/osx-10.9.html"><strong aria-hidden="true">8.2.</strong> macOS Setup</a></li><li class="chapter-item expanded "><a href="make/msys2.html"><strong aria-hidden="true">8.3.</strong> Windows Setup</a></li></ol></li><li class="chapter-item expanded "><a href="mdbook.html"><strong aria-hidden="true">9.</strong> Building This Manual</a></li><li class="chapter-item expanded "><a href="fixing_tests.html"><strong aria-hidden="true">10.</strong> Fixing Tests</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -167,81 +167,16 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#git-commit-convention" id="git-commit-convention">Git Commit Convention</a></h1>
-<p>We are using the following convention for writing git-commit messages.
-It is based on the one from AngularJS project(<a href="https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit#">doc</a>,
-<a href="https://github.com/angular/angular.js/commits/master">commits</a>).</p>
-<h2><a class="header" href="#format-of-the-commit-message" id="format-of-the-commit-message">Format of the commit message</a></h2>
-<pre><code>&lt;type&gt;: &lt;subject&gt;
-&lt;NEWLINE&gt;
-&lt;body&gt;
-&lt;NEWLINE&gt;
-&lt;footer&gt;
-</code></pre>
-<p><code>&lt;type&gt;</code> is:</p>
-<ul>
-<li>feat (feature)</li>
-<li>fix (bug fix)</li>
-<li>doc (documentation)</li>
-<li>style (formatting, missing semicolons, ...)</li>
-<li>refactor</li>
-<li>test (when adding missing tests)</li>
-<li>chore (maintain, ex: travis-ci)</li>
-<li>perf (performance improvement, optimization, ...)</li>
-</ul>
-<p><code>&lt;subject&gt;</code> has the following constraints:</p>
-<ul>
-<li>use imperative, present tense: &quot;change&quot; not &quot;changed&quot; nor &quot;changes&quot;</li>
-<li>do not capitalize the first letter</li>
-<li>no dot(.) at the end</li>
-</ul>
-<p><code>&lt;body&gt;</code> has the following constraints:</p>
-<ul>
-<li>just as in <code>&lt;subject&gt;</code>, use imperative, present tense</li>
-<li>includes motivation for the change and contrasts with previous
-behavior</li>
-</ul>
-<p><code>&lt;footer&gt;</code> is optional and may contain two items:</p>
-<ul>
-<li>
-<p>Breaking changes: All breaking changes have to be mentioned in
-footer with the description of the change, justification and
-migration notes</p>
-</li>
-<li>
-<p>Referencing issues: Closed bugs should be listed on a separate line
-in the footer prefixed with &quot;Closes&quot; keyword like this:</p>
-<p>Closes #123, #456</p>
-</li>
-</ul>
-<h2><a class="header" href="#examples" id="examples">Examples</a></h2>
-<p>fix: add declarations for operator&lt;&lt;(std::ostream&amp;, expr const&amp;) and operator&lt;&lt;(std::ostream&amp;, context const&amp;) in the kernel</p>
-<p>The actual implementation of these two operators is outside of the
-kernel. They are implemented in the file 'library/printer.cpp'. We
-declare them in the kernel to prevent the following problem. Suppose
-there is a file 'foo.cpp' that does not include 'library/printer.h',
-but contains</p>
-<pre><code>expr a;
-...
-std::cout &lt;&lt; a &lt;&lt; &quot;\n&quot;;
-...
-</code></pre>
-<p>The compiler does not generate an error message. It silently uses the
-operator bool() to coerce the expression into a Boolean. This produces
-counter-intuitive behavior, and may confuse developers.</p>
+                        <h1><a class="header" href="#tour-of-lean" id="tour-of-lean">Tour of Lean</a></h1>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
-                            <a rel="prev" href="syntax_highlight_in_latex.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
-                                <i class="fa fa-angle-left"></i>
-                            </a>
-                        
 
                         
-                            <a rel="next" href="make/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="faq.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         
@@ -253,13 +188,9 @@ counter-intuitive behavior, and may confuse developers.</p>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-                    <a rel="prev" href="syntax_highlight_in_latex.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
-                        <i class="fa fa-angle-left"></i>
-                    </a>
-                
 
                 
-                    <a rel="next" href="make/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="faq.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 
