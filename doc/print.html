@@ -170,6 +170,56 @@
                 <div id="content" class="content">
                     <main>
                         <h1><a class="header" href="#tour-of-lean" id="tour-of-lean">Tour of Lean</a></h1>
+<p>The best way to learn about Lean is to read and write Lean code.
+This article will act as a tour through some of the key features of the Lean
+language and give you some code snippets that you can execute on your machine.
+To learn about setting up a development environment, check out <a href="./gettingStarted.html">Getting Started</a>.</p>
+<p>There are two primary concepts in Lean: functions and types.
+This tour will emphasize features of the language which fall into
+these two concepts.</p>
+<h1><a class="header" href="#functions-and-namespaces" id="functions-and-namespaces">Functions and Namespaces</a></h1>
+<p>The most fundamental pieces of any Lean program are functions organized into namespaces.
+<a href="./functions.html">Functions</a> perform work on inputs to produce outputs,
+and they are organized under <a href="./namespaces.html">namespaces</a>,
+which are the primary way you group things in Lean.
+They are defined using the <a href="./definitions.html"><code>def</code></a> command,
+which give the function a name and define its arguments.</p>
+<pre><code class="language-lean">namespace BasicFunctions
+
+-- The `#eval` command is used to evaluate expressions
+#eval 2+2
+
+-- You use 'def' to define a function. This one accepts a natural number and returns a natural number.
+-- Parentheses are optional for function arguments, except for when you use an explicit type annotation.
+-- Lean can often infer the type of the functions arguments
+def sampleFunction1 x := x*x + 3
+
+-- Apply the function, naming the function return result using 'def'.
+-- The variable type is inferred from the function return type.
+def result1 := sampleFunction1 4573
+
+-- This line uses an interpolated string to print the result. Expressions inside
+-- braces `{}` are converted into string using the polymorphic method `toString`
+#eval println! &quot;The result of squaring the integer 4573 and adding 3 is {result1}&quot;
+
+-- When needed, annotate the type of a parameter name using '(argument:type)'.  Parentheses are required.
+def sampleFunction2 (x : Nat) := 2*x*x - x + 3
+
+def result2 := sampleFunction2 (7 + 4)
+
+#eval println! &quot;The result of applying the 2nd sample function to (7 + 4) is {result2}&quot;
+
+-- Conditionals use if/then/else
+def sampleFunction3 (x : Int) :=
+  if x &gt; 100 then
+    2*x*x - x + 3
+  else
+    2*x*x + x - 37
+
+#eval println! &quot;The result of applying the 3rd sample function to 2 is {sampleFunction3 2}&quot;
+
+end BasicFunctions
+</code></pre>
 <h1><a class="header" href="#frequently-asked-questions" id="frequently-asked-questions">Frequently Asked Questions</a></h1>
 <ul>
 <li>What is Lean?</li>
