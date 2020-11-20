@@ -95,7 +95,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="whatIsLean.html"><strong aria-hidden="true">1.</strong> What is Lean</a></li><li class="chapter-item expanded "><a href="tour.html" class="active"><strong aria-hidden="true">2.</strong> Tour of Lean</a></li><li class="chapter-item expanded affix "><li class="part-title">Language Manual</li><li class="chapter-item expanded "><a href="functions.html"><strong aria-hidden="true">3.</strong> Functions</a></li><li class="chapter-item expanded "><a href="stringinterp.html"><strong aria-hidden="true">4.</strong> String interpolation</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">5.</strong> The do Notation</div></li><li class="chapter-item expanded affix "><li class="part-title">Tools</li><li class="chapter-item expanded "><a href="syntax_highlight_in_latex.html"><strong aria-hidden="true">6.</strong> Syntax Highlighting Lean in LaTeX</a></li><li class="chapter-item expanded affix "><li class="part-title">Development</li><li class="chapter-item expanded "><a href="commit_convention.html"><strong aria-hidden="true">7.</strong> Commit Convention</a></li><li class="chapter-item expanded "><a href="make/index.html"><strong aria-hidden="true">8.</strong> Building Lean</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="make/ubuntu-16.04.html"><strong aria-hidden="true">8.1.</strong> Ubuntu Setup</a></li><li class="chapter-item expanded "><a href="make/osx-10.9.html"><strong aria-hidden="true">8.2.</strong> macOS Setup</a></li><li class="chapter-item expanded "><a href="make/msys2.html"><strong aria-hidden="true">8.3.</strong> Windows Setup</a></li></ol></li><li class="chapter-item expanded "><a href="mdbook.html"><strong aria-hidden="true">9.</strong> Building This Manual</a></li><li class="chapter-item expanded "><a href="fixing_tests.html"><strong aria-hidden="true">10.</strong> Fixing Tests</a></li><li class="chapter-item expanded affix "><li class="part-title">Other</li><li class="chapter-item expanded "><a href="faq.html"><strong aria-hidden="true">11.</strong> Frequently Asked Questions</a></li><li class="chapter-item expanded "><a href="lean3changes.html"><strong aria-hidden="true">12.</strong> Significant Changes from Lean 3</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="whatIsLean.html"><strong aria-hidden="true">1.</strong> What is Lean</a></li><li class="chapter-item expanded "><a href="tour.html" class="active"><strong aria-hidden="true">2.</strong> Tour of Lean</a></li><li class="chapter-item expanded affix "><li class="part-title">Language Manual</li><li class="chapter-item expanded "><a href="functions.html"><strong aria-hidden="true">3.</strong> Functions</a></li><li class="chapter-item expanded "><a href="sections.html"><strong aria-hidden="true">4.</strong> Sections</a></li><li class="chapter-item expanded "><a href="namespaces.html"><strong aria-hidden="true">5.</strong> Namespaces</a></li><li class="chapter-item expanded "><a href="stringinterp.html"><strong aria-hidden="true">6.</strong> String interpolation</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">7.</strong> The do Notation</div></li><li class="chapter-item expanded affix "><li class="part-title">Tools</li><li class="chapter-item expanded "><a href="syntax_highlight_in_latex.html"><strong aria-hidden="true">8.</strong> Syntax Highlighting Lean in LaTeX</a></li><li class="chapter-item expanded affix "><li class="part-title">Development</li><li class="chapter-item expanded "><a href="commit_convention.html"><strong aria-hidden="true">9.</strong> Commit Convention</a></li><li class="chapter-item expanded "><a href="make/index.html"><strong aria-hidden="true">10.</strong> Building Lean</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="make/ubuntu-16.04.html"><strong aria-hidden="true">10.1.</strong> Ubuntu Setup</a></li><li class="chapter-item expanded "><a href="make/osx-10.9.html"><strong aria-hidden="true">10.2.</strong> macOS Setup</a></li><li class="chapter-item expanded "><a href="make/msys2.html"><strong aria-hidden="true">10.3.</strong> Windows Setup</a></li></ol></li><li class="chapter-item expanded "><a href="mdbook.html"><strong aria-hidden="true">11.</strong> Building This Manual</a></li><li class="chapter-item expanded "><a href="fixing_tests.html"><strong aria-hidden="true">12.</strong> Fixing Tests</a></li><li class="chapter-item expanded affix "><li class="part-title">Other</li><li class="chapter-item expanded "><a href="faq.html"><strong aria-hidden="true">13.</strong> Frequently Asked Questions</a></li><li class="chapter-item expanded "><a href="lean3changes.html"><strong aria-hidden="true">14.</strong> Significant Changes from Lean 3</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -187,8 +187,10 @@ which give the function a name and define its arguments.</p>
 -- The `#eval` command is used to evaluate expressions
 #eval 2+2
 
--- You use 'def' to define a function. This one accepts a natural number and returns a natural number.
--- Parentheses are optional for function arguments, except for when you use an explicit type annotation.
+-- You use 'def' to define a function. This one accepts a natural number
+-- and returns a natural number.
+-- Parentheses are optional for function arguments, except for when
+-- you use an explicit type annotation.
 -- Lean can often infer the type of the functions arguments
 def sampleFunction1 x := x*x + 3
 
@@ -200,7 +202,8 @@ def result1 := sampleFunction1 4573
 -- braces `{}` are converted into string using the polymorphic method `toString`
 #eval println! &quot;The result of squaring the integer 4573 and adding 3 is {result1}&quot;
 
--- When needed, annotate the type of a parameter name using '(argument:type)'.  Parentheses are required.
+-- When needed, annotate the type of a parameter name using '(argument:type)'.
+-- Parentheses are required.
 def sampleFunction2 (x : Nat) := 2*x*x - x + 3
 
 def result2 := sampleFunction2 (7 + 4)
@@ -214,9 +217,145 @@ def sampleFunction3 (x : Int) :=
   else
     2*x*x + x - 37
 
-#eval println! &quot;The result of applying the 3rd sample function to 2 is {sampleFunction3 2}&quot;
+#eval println! &quot;The result of applying sampleFunction3 to 2 is {sampleFunction3 2}&quot;
 
 end BasicFunctions
+</code></pre>
+<pre><code class="language-lean">-- Lean has first class functions
+-- `twice` takes two argumes `f` and `a` where
+-- `f` is a function from natural numbers to natural numbers, and
+-- `a` is a natural number
+def twice (f : Nat → Nat) (a : Nat) :=
+  f (f a)
+
+-- `fun` is to declare anonymous functions
+#eval twice (fun x =&gt; x + 2) 10
+
+-- You prove theorems about your functions.
+-- The following theorem states that for any natural number `a`,
+-- adding 2 twice produces a value equal to `a + 4`.
+theorem twiceAdd2 (a : Nat) : twice (fun x =&gt; x + 2) a = a + 4 :=
+  -- The proof is by reflexivity. Lean &quot;symbolic&quot; reduces both sides of the equality
+  -- and obtain the same result
+  rfl
+
+-- `(. + 2)` is syntax sugar for `(fun x =&gt; x + 2)`. The parentheses + `.` notation
+-- is useful for defining simple functions
+#eval twice (. + 2) 10
+
+-- An enumerated type is a special case of inductive type in Lean
+-- The following command creates a new type `Weekday`
+inductive Weekday :=
+  | sunday    : Weekday
+  | monday    : Weekday
+  | tuesday   : Weekday
+  | wednesday : Weekday
+  | thursday  : Weekday
+  | friday    : Weekday
+  | saturday  : Weekday
+
+-- `Weekday` has 7 constructors/elements.
+-- The constructors live in the `Weekday` namespace
+-- Think of `sunday`, `monday`, …, saturday as being distinct elements of `Weekday`,
+-- with no other distinguishing properties.
+-- The command `#check` return the type of a term in Lean
+#check Weekday.sunday
+#check Weekday.monday
+
+-- The `open` command opens a namespace
+open Weekday
+#check sunday
+#check tuesday
+
+-- You can define functions by pattern matching.
+-- The following function converts a `Weekday` into a natural number.
+def natOfWeekday (d : Weekday) : Nat :=
+  match d with
+  | sunday    =&gt; 1
+  | monday    =&gt; 2
+  | tuesday   =&gt; 3
+  | wednesday =&gt; 4
+  | thursday  =&gt; 5
+  | friday    =&gt; 6
+  | saturday  =&gt; 7
+
+-- The `#eval` command evaluates an expression and prints the result.
+#eval natOfWeekday tuesday
+
+def isMonday : Weekday → Bool :=
+  -- `fun` + `match`  is a common idiom.
+  -- The the following expression is syntax sugar for
+  -- fun d =&gt; match d with | monday =&gt; true | _ =&gt; false
+  fun | monday =&gt; true | _ =&gt; false
+
+#eval isMonday monday
+#eval isMonday sunday
+
+-- Lean has support for type classes and polymorphic methods.
+-- The `toString` method converts a value into a `String`.
+#eval toString 10
+#eval toString (10, 20)
+
+-- The method `toString` converts values of any type that implements
+-- the class `ToString`.
+-- You can implement instances of `ToString` for your own types.
+instance : ToString Weekday := {
+  toString := fun
+    | sunday    =&gt; &quot;Sunday&quot;
+    | monday    =&gt; &quot;Monday&quot;
+    | tuesday   =&gt; &quot;Tuesday&quot;
+    | wednesday =&gt; &quot;Wednesday&quot;
+    | thursday  =&gt; &quot;Thursday&quot;
+    | friday    =&gt; &quot;Friday&quot;
+    | saturday  =&gt; &quot;Saturday&quot;
+}
+
+#eval toString (sunday, 10)
+
+def Weekday.next : Weekday -&gt; Weekday :=
+  fun d =&gt; match d with
+    | sunday    =&gt; monday
+    | monday    =&gt; tuesday
+    | tuesday   =&gt; wednesday
+    | wednesday =&gt; thursday
+    | thursday  =&gt; friday
+    | friday    =&gt; saturday
+    | saturday  =&gt; sunday
+
+#eval Weekday.next Weekday.wednesday
+-- Since `Weekday` namespace has already been opened, you can write.
+#eval next wednesday
+
+-- The idiom `fun d =&gt; match d with ...` used in the previous definition
+-- is so common that Lean provides a syntax sugar for it. The foolowing
+-- function uses it.
+def Weekday.previous : Weekday -&gt; Weekday
+  | sunday    =&gt; saturday
+  | monday    =&gt; sunday
+  | tuesday   =&gt; monday
+  | wednesday =&gt; tuesday
+  | thursday  =&gt; wednesday
+  | friday    =&gt; thursday
+  | saturday  =&gt; friday
+
+#eval next (previous wednesday)
+
+-- We can prove that for any `Weekday` `d`, `next (previous d) = d`
+theorem Weekday.nextOfPrevious (d : Weekday) : next (previous d) = d :=
+  match d with
+  | sunday    =&gt; rfl
+  | monday    =&gt; rfl
+  | tuesday   =&gt; rfl
+  | wednesday =&gt; rfl
+  | thursday  =&gt; rfl
+  | friday    =&gt; rfl
+  | saturday  =&gt; rfl
+
+-- You can automate definitions such  as `Weekday.nextOfPrevious`
+-- using metaprogramming
+theorem Weekday.nextOfPrevious' (d : Weekday) : next (previous d) = d := by
+  cases d -- A proof by cases
+  repeat rfl -- Each case is solved using `rfl`
 </code></pre>
 
                     </main>

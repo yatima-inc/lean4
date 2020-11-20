@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Fixing Tests - Lean Manual</title>
+        <title>Sections - Lean Manual</title>
         
         
 
@@ -95,7 +95,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="whatIsLean.html"><strong aria-hidden="true">1.</strong> What is Lean</a></li><li class="chapter-item expanded "><a href="tour.html"><strong aria-hidden="true">2.</strong> Tour of Lean</a></li><li class="chapter-item expanded affix "><li class="part-title">Language Manual</li><li class="chapter-item expanded "><a href="functions.html"><strong aria-hidden="true">3.</strong> Functions</a></li><li class="chapter-item expanded "><a href="sections.html"><strong aria-hidden="true">4.</strong> Sections</a></li><li class="chapter-item expanded "><a href="namespaces.html"><strong aria-hidden="true">5.</strong> Namespaces</a></li><li class="chapter-item expanded "><a href="stringinterp.html"><strong aria-hidden="true">6.</strong> String interpolation</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">7.</strong> The do Notation</div></li><li class="chapter-item expanded affix "><li class="part-title">Tools</li><li class="chapter-item expanded "><a href="syntax_highlight_in_latex.html"><strong aria-hidden="true">8.</strong> Syntax Highlighting Lean in LaTeX</a></li><li class="chapter-item expanded affix "><li class="part-title">Development</li><li class="chapter-item expanded "><a href="commit_convention.html"><strong aria-hidden="true">9.</strong> Commit Convention</a></li><li class="chapter-item expanded "><a href="make/index.html"><strong aria-hidden="true">10.</strong> Building Lean</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="make/ubuntu-16.04.html"><strong aria-hidden="true">10.1.</strong> Ubuntu Setup</a></li><li class="chapter-item expanded "><a href="make/osx-10.9.html"><strong aria-hidden="true">10.2.</strong> macOS Setup</a></li><li class="chapter-item expanded "><a href="make/msys2.html"><strong aria-hidden="true">10.3.</strong> Windows Setup</a></li></ol></li><li class="chapter-item expanded "><a href="mdbook.html"><strong aria-hidden="true">11.</strong> Building This Manual</a></li><li class="chapter-item expanded "><a href="fixing_tests.html" class="active"><strong aria-hidden="true">12.</strong> Fixing Tests</a></li><li class="chapter-item expanded affix "><li class="part-title">Other</li><li class="chapter-item expanded "><a href="faq.html"><strong aria-hidden="true">13.</strong> Frequently Asked Questions</a></li><li class="chapter-item expanded "><a href="lean3changes.html"><strong aria-hidden="true">14.</strong> Significant Changes from Lean 3</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="whatIsLean.html"><strong aria-hidden="true">1.</strong> What is Lean</a></li><li class="chapter-item expanded "><a href="tour.html"><strong aria-hidden="true">2.</strong> Tour of Lean</a></li><li class="chapter-item expanded affix "><li class="part-title">Language Manual</li><li class="chapter-item expanded "><a href="functions.html"><strong aria-hidden="true">3.</strong> Functions</a></li><li class="chapter-item expanded "><a href="sections.html" class="active"><strong aria-hidden="true">4.</strong> Sections</a></li><li class="chapter-item expanded "><a href="namespaces.html"><strong aria-hidden="true">5.</strong> Namespaces</a></li><li class="chapter-item expanded "><a href="stringinterp.html"><strong aria-hidden="true">6.</strong> String interpolation</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">7.</strong> The do Notation</div></li><li class="chapter-item expanded affix "><li class="part-title">Tools</li><li class="chapter-item expanded "><a href="syntax_highlight_in_latex.html"><strong aria-hidden="true">8.</strong> Syntax Highlighting Lean in LaTeX</a></li><li class="chapter-item expanded affix "><li class="part-title">Development</li><li class="chapter-item expanded "><a href="commit_convention.html"><strong aria-hidden="true">9.</strong> Commit Convention</a></li><li class="chapter-item expanded "><a href="make/index.html"><strong aria-hidden="true">10.</strong> Building Lean</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="make/ubuntu-16.04.html"><strong aria-hidden="true">10.1.</strong> Ubuntu Setup</a></li><li class="chapter-item expanded "><a href="make/osx-10.9.html"><strong aria-hidden="true">10.2.</strong> macOS Setup</a></li><li class="chapter-item expanded "><a href="make/msys2.html"><strong aria-hidden="true">10.3.</strong> Windows Setup</a></li></ol></li><li class="chapter-item expanded "><a href="mdbook.html"><strong aria-hidden="true">11.</strong> Building This Manual</a></li><li class="chapter-item expanded "><a href="fixing_tests.html"><strong aria-hidden="true">12.</strong> Fixing Tests</a></li><li class="chapter-item expanded affix "><li class="part-title">Other</li><li class="chapter-item expanded "><a href="faq.html"><strong aria-hidden="true">13.</strong> Frequently Asked Questions</a></li><li class="chapter-item expanded "><a href="lean3changes.html"><strong aria-hidden="true">14.</strong> Significant Changes from Lean 3</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -167,51 +167,77 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#fixing-tests" id="fixing-tests">Fixing Tests</a></h1>
-<p>The test suite contains some tests that compare the produced output
-with the expected output. For example, the directory <code>tests/lean</code>
-contains files such as <a href="../tests/lean/bad_class.lean"><code>bad_class.lean</code></a> and
-<a href="../tests/lean/bad_class.lean.expected.out"><code>bad_class.lean.expected.out</code></a>.
-The later contains the expected output for the test file <code>bad_class.lean</code>.</p>
-<p>When the Lean source code or the standard library are modified, some of these
-tests break because the produced output is slightly different, and we have
-to reflect the changes int the <code>.lean.expected.out</code> files.
-We should not blindly copy the new produced output since we may accidentally
-miss a bug introduced by recent changes.
-The test suite contains commands that allow us to see what changed in a convenient way.
-First, we must install <a href="http://meldmerge.org/">meld</a>. On Ubuntu, we can do it by simply executing</p>
-<pre><code>sudo apt-get install meld
+                        <h1><a class="header" href="#variables-and-sections" id="variables-and-sections">Variables and Sections</a></h1>
+<p>Consider the following three function definitions:</p>
+<pre><code class="language-lean">def compose (α β γ : Type) (g : β → γ) (f : α → β) (x : α) : γ :=
+  g (f x)
+
+def doTwice (α : Type) (h : α → α) (x : α) : α :=
+  h (h x)
+
+def doThrice (α : Type) (h : α → α) (x : α) : α :=
+  h (h (h x))
 </code></pre>
-<p>Now, suppose <code>bad_class.lean</code> test is broken. We can see the problem by going to <code>test/lean</code> directory and
-executing</p>
-<pre><code>./test_single.sh -i bad_class.lean
+<p>Lean provides us with the <code>variable</code> and <code>variables</code> commands to make such declarations look more compact:</p>
+<pre><code class="language-lean">variables (α β γ : Type)
+
+def compose (g : β → γ) (f : α → β) (x : α) : γ :=
+  g (f x)
+
+def doTwice (h : α → α) (x : α) : α :=
+  h (h x)
+
+def doThrice (h : α → α) (x : α) : α :=
+  h (h (h x))
 </code></pre>
-<p>When the <code>-i</code> option is provided, <code>meld</code> is automatically invoked
-whenever there is discrepancy between the produced and expected
-outputs. <code>meld</code> can also be used to repair the problems.</p>
-<p>In Emacs, we can also execute <code>M-x lean-diff-test-file</code> to check/diff the file of the current buffer.</p>
-<p>Here is the list of directories where produced output is compared with
-the expected output (stored in a <code>*.expected.out</code> file).</p>
-<ul>
-<li><a href="../tests/lean"><code>tests/lean</code></a></li>
-<li><a href="../tests/lean/interactive"><code>tests/lean/interactive</code></a></li>
-</ul>
-<p>Remark: in the directory <code>tests/lean/interactive</code>, the input test files have extension <code>.input</code>.
-They simulate commands sent from editors to Lean.
-The <code>.lean</code> files in this directory are used to simulate files opened by the user.</p>
+<p>We can declare variables of any type, not just <code>Type</code> itself:</p>
+<pre><code class="language-lean">variables (α β γ : Type)
+variables (g : β → γ) (f : α → β) (h : α → α)
+variable (x : α)
+
+def compose := g (f x)
+def do_twice := h (h x)
+def do_thrice := h (h (h x))
+
+#print compose
+#print do_twice
+#print do_thrice
+</code></pre>
+<p>Printing them out shows that all three groups of definitions have exactly the same effect.</p>
+<p>The <code>variable</code> and <code>variables</code> commands instruct Lean to insert the declared variables as bound variables in definitions that refer to them.
+Lean is smart enough to figure out which variables are used explicitly or implicitly in a definition. We can therefore proceed as
+though <code>α</code>, <code>β</code>, <code>γ</code>, <code>g</code>, <code>f</code>, <code>h</code>, and <code>x</code> are fixed objects when we write our definitions, and let Lean abstract
+the definitions for us automatically.</p>
+<p>When declared in this way, a variable stays in scope until the end of the file we are working on.
+Sometimes, however, it is useful to limit the scope of a variable. For that purpose, Lean provides the notion of a <code>section</code>:</p>
+<pre><code class="language-lean">section useful
+  variables (α β γ : Type)
+  variables (g : β → γ) (f : α → β) (h : α → α)
+  variable (x : α)
+
+  def compose := g (f x)
+  def do_twice := h (h x)
+  def do_thrice := h (h (h x))
+end useful
+</code></pre>
+<p>When the section is closed, the variables go out of scope, and become nothing more than a distant memory.</p>
+<p>You do not have to indent the lines within a section. Nor do you have to name a section, which is to say,
+you can use an anonymous <code>section</code> / <code>end</code> pair.
+If you do name a section, however, you have to close it using the same name.
+Sections can also be nested, which allows you to declare new variables incrementally.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
-                            <a rel="prev" href="mdbook.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="functions.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         
 
                         
-                            <a rel="next" href="faq.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="namespaces.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         
@@ -223,13 +249,13 @@ The <code>.lean</code> files in this directory are used to simulate files opened
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-                    <a rel="prev" href="mdbook.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="functions.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
 
                 
-                    <a rel="next" href="faq.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="namespaces.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 

@@ -97,7 +97,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="whatIsLean.html"><strong aria-hidden="true">1.</strong> What is Lean</a></li><li class="chapter-item expanded "><a href="tour.html"><strong aria-hidden="true">2.</strong> Tour of Lean</a></li><li class="chapter-item expanded affix "><li class="part-title">Language Manual</li><li class="chapter-item expanded "><a href="functions.html"><strong aria-hidden="true">3.</strong> Functions</a></li><li class="chapter-item expanded "><a href="stringinterp.html"><strong aria-hidden="true">4.</strong> String interpolation</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">5.</strong> The do Notation</div></li><li class="chapter-item expanded affix "><li class="part-title">Tools</li><li class="chapter-item expanded "><a href="syntax_highlight_in_latex.html"><strong aria-hidden="true">6.</strong> Syntax Highlighting Lean in LaTeX</a></li><li class="chapter-item expanded affix "><li class="part-title">Development</li><li class="chapter-item expanded "><a href="commit_convention.html"><strong aria-hidden="true">7.</strong> Commit Convention</a></li><li class="chapter-item expanded "><a href="make/index.html"><strong aria-hidden="true">8.</strong> Building Lean</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="make/ubuntu-16.04.html"><strong aria-hidden="true">8.1.</strong> Ubuntu Setup</a></li><li class="chapter-item expanded "><a href="make/osx-10.9.html"><strong aria-hidden="true">8.2.</strong> macOS Setup</a></li><li class="chapter-item expanded "><a href="make/msys2.html"><strong aria-hidden="true">8.3.</strong> Windows Setup</a></li></ol></li><li class="chapter-item expanded "><a href="mdbook.html"><strong aria-hidden="true">9.</strong> Building This Manual</a></li><li class="chapter-item expanded "><a href="fixing_tests.html"><strong aria-hidden="true">10.</strong> Fixing Tests</a></li><li class="chapter-item expanded affix "><li class="part-title">Other</li><li class="chapter-item expanded "><a href="faq.html"><strong aria-hidden="true">11.</strong> Frequently Asked Questions</a></li><li class="chapter-item expanded "><a href="lean3changes.html"><strong aria-hidden="true">12.</strong> Significant Changes from Lean 3</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="whatIsLean.html"><strong aria-hidden="true">1.</strong> What is Lean</a></li><li class="chapter-item expanded "><a href="tour.html"><strong aria-hidden="true">2.</strong> Tour of Lean</a></li><li class="chapter-item expanded affix "><li class="part-title">Language Manual</li><li class="chapter-item expanded "><a href="functions.html"><strong aria-hidden="true">3.</strong> Functions</a></li><li class="chapter-item expanded "><a href="sections.html"><strong aria-hidden="true">4.</strong> Sections</a></li><li class="chapter-item expanded "><a href="namespaces.html"><strong aria-hidden="true">5.</strong> Namespaces</a></li><li class="chapter-item expanded "><a href="stringinterp.html"><strong aria-hidden="true">6.</strong> String interpolation</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">7.</strong> The do Notation</div></li><li class="chapter-item expanded affix "><li class="part-title">Tools</li><li class="chapter-item expanded "><a href="syntax_highlight_in_latex.html"><strong aria-hidden="true">8.</strong> Syntax Highlighting Lean in LaTeX</a></li><li class="chapter-item expanded affix "><li class="part-title">Development</li><li class="chapter-item expanded "><a href="commit_convention.html"><strong aria-hidden="true">9.</strong> Commit Convention</a></li><li class="chapter-item expanded "><a href="make/index.html"><strong aria-hidden="true">10.</strong> Building Lean</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="make/ubuntu-16.04.html"><strong aria-hidden="true">10.1.</strong> Ubuntu Setup</a></li><li class="chapter-item expanded "><a href="make/osx-10.9.html"><strong aria-hidden="true">10.2.</strong> macOS Setup</a></li><li class="chapter-item expanded "><a href="make/msys2.html"><strong aria-hidden="true">10.3.</strong> Windows Setup</a></li></ol></li><li class="chapter-item expanded "><a href="mdbook.html"><strong aria-hidden="true">11.</strong> Building This Manual</a></li><li class="chapter-item expanded "><a href="fixing_tests.html"><strong aria-hidden="true">12.</strong> Fixing Tests</a></li><li class="chapter-item expanded affix "><li class="part-title">Other</li><li class="chapter-item expanded "><a href="faq.html"><strong aria-hidden="true">13.</strong> Frequently Asked Questions</a></li><li class="chapter-item expanded "><a href="lean3changes.html"><strong aria-hidden="true">14.</strong> Significant Changes from Lean 3</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -202,6 +202,60 @@ def main : IO Unit :=
 <li>Async programming</li>
 <li>Verification, you can prove properties of your functions using Lean itself</li>
 </ul>
+<h1><a class="header" href="#tour-of-lean" id="tour-of-lean">Tour of Lean</a></h1>
+<p>The best way to learn about Lean is to read and write Lean code.
+This article will act as a tour through some of the key features of the Lean
+language and give you some code snippets that you can execute on your machine.
+To learn about setting up a development environment, check out <a href="./gettingStarted.html">Getting Started</a>.</p>
+<p>There are two primary concepts in Lean: functions and types.
+This tour will emphasize features of the language which fall into
+these two concepts.</p>
+<h1><a class="header" href="#functions-and-namespaces" id="functions-and-namespaces">Functions and Namespaces</a></h1>
+<p>The most fundamental pieces of any Lean program are functions organized into namespaces.
+<a href="./functions.html">Functions</a> perform work on inputs to produce outputs,
+and they are organized under <a href="./namespaces.html">namespaces</a>,
+which are the primary way you group things in Lean.
+They are defined using the <a href="./definitions.html"><code>def</code></a> command,
+which give the function a name and define its arguments.</p>
+<pre><code class="language-lean">namespace BasicFunctions
+
+-- The `#eval` command is used to evaluate expressions
+#eval 2+2
+
+-- You use 'def' to define a function. This one accepts a natural number
+-- and returns a natural number.
+-- Parentheses are optional for function arguments, except for when
+-- you use an explicit type annotation.
+-- Lean can often infer the type of the functions arguments
+def sampleFunction1 x := x*x + 3
+
+-- Apply the function, naming the function return result using 'def'.
+-- The variable type is inferred from the function return type.
+def result1 := sampleFunction1 4573
+
+-- This line uses an interpolated string to print the result. Expressions inside
+-- braces `{}` are converted into string using the polymorphic method `toString`
+#eval println! &quot;The result of squaring the integer 4573 and adding 3 is {result1}&quot;
+
+-- When needed, annotate the type of a parameter name using '(argument:type)'.
+-- Parentheses are required.
+def sampleFunction2 (x : Nat) := 2*x*x - x + 3
+
+def result2 := sampleFunction2 (7 + 4)
+
+#eval println! &quot;The result of applying the 2nd sample function to (7 + 4) is {result2}&quot;
+
+-- Conditionals use if/then/else
+def sampleFunction3 (x : Int) :=
+  if x &gt; 100 then
+    2*x*x - x + 3
+  else
+    2*x*x + x - 37
+
+#eval println! &quot;The result of applying sampleFunction3 to 2 is {sampleFunction3 2}&quot;
+
+end BasicFunctions
+</code></pre>
 <pre><code class="language-lean">-- Lean has first class functions
 -- `twice` takes two argumes `f` and `a` where
 -- `f` is a function from natural numbers to natural numbers, and
@@ -338,57 +392,6 @@ theorem Weekday.nextOfPrevious' (d : Weekday) : next (previous d) = d := by
   cases d -- A proof by cases
   repeat rfl -- Each case is solved using `rfl`
 </code></pre>
-<h1><a class="header" href="#tour-of-lean" id="tour-of-lean">Tour of Lean</a></h1>
-<p>The best way to learn about Lean is to read and write Lean code.
-This article will act as a tour through some of the key features of the Lean
-language and give you some code snippets that you can execute on your machine.
-To learn about setting up a development environment, check out <a href="./gettingStarted.html">Getting Started</a>.</p>
-<p>There are two primary concepts in Lean: functions and types.
-This tour will emphasize features of the language which fall into
-these two concepts.</p>
-<h1><a class="header" href="#functions-and-namespaces" id="functions-and-namespaces">Functions and Namespaces</a></h1>
-<p>The most fundamental pieces of any Lean program are functions organized into namespaces.
-<a href="./functions.html">Functions</a> perform work on inputs to produce outputs,
-and they are organized under <a href="./namespaces.html">namespaces</a>,
-which are the primary way you group things in Lean.
-They are defined using the <a href="./definitions.html"><code>def</code></a> command,
-which give the function a name and define its arguments.</p>
-<pre><code class="language-lean">namespace BasicFunctions
-
--- The `#eval` command is used to evaluate expressions
-#eval 2+2
-
--- You use 'def' to define a function. This one accepts a natural number and returns a natural number.
--- Parentheses are optional for function arguments, except for when you use an explicit type annotation.
--- Lean can often infer the type of the functions arguments
-def sampleFunction1 x := x*x + 3
-
--- Apply the function, naming the function return result using 'def'.
--- The variable type is inferred from the function return type.
-def result1 := sampleFunction1 4573
-
--- This line uses an interpolated string to print the result. Expressions inside
--- braces `{}` are converted into string using the polymorphic method `toString`
-#eval println! &quot;The result of squaring the integer 4573 and adding 3 is {result1}&quot;
-
--- When needed, annotate the type of a parameter name using '(argument:type)'.  Parentheses are required.
-def sampleFunction2 (x : Nat) := 2*x*x - x + 3
-
-def result2 := sampleFunction2 (7 + 4)
-
-#eval println! &quot;The result of applying the 2nd sample function to (7 + 4) is {result2}&quot;
-
--- Conditionals use if/then/else
-def sampleFunction3 (x : Int) :=
-  if x &gt; 100 then
-    2*x*x - x + 3
-  else
-    2*x*x + x - 37
-
-#eval println! &quot;The result of applying the 3rd sample function to 2 is {sampleFunction3 2}&quot;
-
-end BasicFunctions
-</code></pre>
 <h1><a class="header" href="#functions" id="functions">Functions</a></h1>
 <p>Functions are the fundamental unit of program execution in any programming language.
 As in other languages, a Lean function has a name, can have parameters and take arguments, and has a body.
@@ -506,6 +509,160 @@ def add1Times3FilterEven'' (xs : List Nat) :=
 </code></pre>
 <p>For users familiar with the Haskell programming language,
 Lean also supports the notation <code>f $ a</code> for the backward pipeline <code>f &lt;| a</code>.</p>
+<h1><a class="header" href="#variables-and-sections" id="variables-and-sections">Variables and Sections</a></h1>
+<p>Consider the following three function definitions:</p>
+<pre><code class="language-lean">def compose (α β γ : Type) (g : β → γ) (f : α → β) (x : α) : γ :=
+  g (f x)
+
+def doTwice (α : Type) (h : α → α) (x : α) : α :=
+  h (h x)
+
+def doThrice (α : Type) (h : α → α) (x : α) : α :=
+  h (h (h x))
+</code></pre>
+<p>Lean provides us with the <code>variable</code> and <code>variables</code> commands to make such declarations look more compact:</p>
+<pre><code class="language-lean">variables (α β γ : Type)
+
+def compose (g : β → γ) (f : α → β) (x : α) : γ :=
+  g (f x)
+
+def doTwice (h : α → α) (x : α) : α :=
+  h (h x)
+
+def doThrice (h : α → α) (x : α) : α :=
+  h (h (h x))
+</code></pre>
+<p>We can declare variables of any type, not just <code>Type</code> itself:</p>
+<pre><code class="language-lean">variables (α β γ : Type)
+variables (g : β → γ) (f : α → β) (h : α → α)
+variable (x : α)
+
+def compose := g (f x)
+def do_twice := h (h x)
+def do_thrice := h (h (h x))
+
+#print compose
+#print do_twice
+#print do_thrice
+</code></pre>
+<p>Printing them out shows that all three groups of definitions have exactly the same effect.</p>
+<p>The <code>variable</code> and <code>variables</code> commands instruct Lean to insert the declared variables as bound variables in definitions that refer to them.
+Lean is smart enough to figure out which variables are used explicitly or implicitly in a definition. We can therefore proceed as
+though <code>α</code>, <code>β</code>, <code>γ</code>, <code>g</code>, <code>f</code>, <code>h</code>, and <code>x</code> are fixed objects when we write our definitions, and let Lean abstract
+the definitions for us automatically.</p>
+<p>When declared in this way, a variable stays in scope until the end of the file we are working on.
+Sometimes, however, it is useful to limit the scope of a variable. For that purpose, Lean provides the notion of a <code>section</code>:</p>
+<pre><code class="language-lean">section useful
+  variables (α β γ : Type)
+  variables (g : β → γ) (f : α → β) (h : α → α)
+  variable (x : α)
+
+  def compose := g (f x)
+  def do_twice := h (h x)
+  def do_thrice := h (h (h x))
+end useful
+</code></pre>
+<p>When the section is closed, the variables go out of scope, and become nothing more than a distant memory.</p>
+<p>You do not have to indent the lines within a section. Nor do you have to name a section, which is to say,
+you can use an anonymous <code>section</code> / <code>end</code> pair.
+If you do name a section, however, you have to close it using the same name.
+Sections can also be nested, which allows you to declare new variables incrementally.</p>
+<h1><a class="header" href="#namespaces" id="namespaces">Namespaces</a></h1>
+<p>Lean provides us with the ability to group definitions into nested, hierarchical <em>namespaces</em>:</p>
+<pre><code class="language-lean">namespace Foo
+  def a : Nat := 5
+  def f (x : Nat) : Nat := x + 7
+
+  def fa : Nat := f a
+  def ffa : Nat := f (f a)
+
+  #check a
+  #check f
+  #check fa
+  #check ffa
+  #check Foo.fa
+end Foo
+
+-- #check a  -- error
+-- #check f  -- error
+#check Foo.a
+#check Foo.f
+#check Foo.fa
+#check Foo.ffa
+
+open Foo
+
+#check a
+#check f
+#check fa
+#check Foo.fa
+</code></pre>
+<p>When we declare that we are working in the namespace <code>Foo</code>, every identifier we declare has
+a full name with prefix &quot;<code>Foo.</code>&quot; Within the namespace, we can refer to identifiers
+by their shorter names, but once we end the namespace, we have to use the longer names.</p>
+<p>The <code>open</code> command brings the shorter names into the current context. Often, when we import a
+module, we will want to open one or more of the namespaces it contains, to have access to the short identifiers.
+But sometimes we will want to leave this information hidden, for example, when they conflict with
+identifiers in another namespace we want to use. Thus namespaces give us a way to manage our working environment.</p>
+<p>For example, Lean groups definitions and theorems involving lists into a namespace <code>List</code>.</p>
+<pre><code class="language-lean">#check List.nil
+#check List.cons
+#check List.map
+</code></pre>
+<p>We will discuss their types, below. The command <code>open List</code> allows us to use the shorter names:</p>
+<pre><code class="language-lean">open List
+
+#check nil
+#check cons
+#check map
+</code></pre>
+<p>Like sections, namespaces can be nested:</p>
+<pre><code class="language-lean">namespace Foo
+  def a : Nat := 5
+  def f (x : Nat) : Nat := x + 7
+
+  def fa : Nat := f a
+
+  namespace Bar
+    def ffa : Nat := f (f a)
+
+    #check fa
+    #check ffa
+  end Bar
+
+  #check fa
+  #check Bar.ffa
+end Foo
+
+#check Foo.fa
+#check Foo.Bar.ffa
+
+open Foo
+
+#check fa
+#check Bar.ffa
+</code></pre>
+<p>Namespaces that have been closed can later be reopened, even in another file:</p>
+<pre><code class="language-lean">namespace Foo
+  def a : Nat := 5
+  def f (x : Nat) : Nat := x + 7
+
+  def fa : Nat := f a
+end Foo
+
+#check Foo.a
+#check Foo.f
+
+namespace Foo
+  def ffa : Nat := f (f a)
+end Foo
+</code></pre>
+<p>Like sections, nested namespaces have to be closed in the order they are opened.
+Also, a namespace cannot be declared within a section; namespaces have to live on the outer levels.</p>
+<p>Namespaces and sections serve different purposes: namespaces organize data and sections declare variables for insertion in definitions.
+In many respects, however, a <code>namespace ... end</code> block behaves the same as a <code>section ... end</code> block.
+In particular, if you use the <code>variable</code> command within a namespace, its scope is limited to the namespace.
+Similarly, if you use an <code>open</code> command within a namespace, its effects disappear when the namespace is closed.</p>
 <h1><a class="header" href="#string-interpolation" id="string-interpolation">String interpolation</a></h1>
 <p>The <code>s!</code> prefix identifies a string literal as an interpolated string.
 An interpolated string is a string literal that might contain interpolation expressions.
