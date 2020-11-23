@@ -195,40 +195,33 @@ we may be busy, etc. If you really need this new feature or bug fix, we suggest 
 <ul>
 <li>Where is the documentation?</li>
 </ul>
-<p>The <a href="https://leanprover.github.io/theorem_proving_in_lean">Lean tutorial</a> is a good introduction to the system.
-It may contain a few inconsistencies due to recent changes, but we try to keep it in sync.
-The reference manual is work in progress, and we don't know when it will be ready.
-The core and math libraries contain many definitions and proofs, they demonstrate how we expect the system to be used.
-If the lack of documentation is an issue, then Lean is not a good match for you.
-Documentation is not the main priority right now. Recall that Lean is a research project and not a product.
+<p>This is the Lean 4 manual. It is working progress, but it will eventually cover the whole language.
 A public and very active chat room dedicated to Lean is open on <a href="https://leanprover.zulipchat.com">Zulip</a>.
-It is a good place to interact with other Lean users.
-You may also join the <a href="https://groups.google.com/forum/#!forum/lean-user">Lean user forum</a> on Google Groups.</p>
+It is a good place to interact with other Lean users.</p>
 <ul>
 <li>Should I use Lean to teach a course?</li>
 </ul>
 <p>Lean has been used to teach courses on logic, type theory and programming languages at CMU and the University of Washington.
-The lecture notes for the CMU course <a href="https://leanprover.github.io/logic_and_proof">Logic and Proof</a> are available online.
+The lecture notes for the CMU course <a href="https://leanprover.github.io/logic_and_proof">Logic and Proof</a> are available online,
+but they are for Lean 3.
 If you decide to teach a course using Lean, we suggest you prepare all material before the beginning of the course, and
 make sure that Lean attends all your needs. You should not expect we will fix bugs and/or add features needed for your course.</p>
 <ul>
 <li>Are there IDEs for Lean?</li>
 </ul>
-<p>Yes, the two main ones are for <a href="https://github.com/leanprover/lean-mode">Emacs</a> and <a href="https://github.com/leanprover/vscode-lean">VS Code</a>.
-The Emacs Lean mode is available via <a href="https://melpa.org/">MELPA</a>. The VS Code Lean extension is available on its marketplace.</p>
+<p>We currently have a very simple <a href="https://github.com/leanprover/lean4/tree/master/lean4-mode">Emacs mode</a> for Lean 4.
+Lean 3 supports many IDEs, the two main ones are for <a href="https://github.com/leanprover/lean-mode">Emacs</a> and <a href="https://github.com/leanprover/vscode-lean">VS Code</a>.</p>
 <ul>
 <li>Is Lean sound? How big is the kernel? Should I trust it?</li>
 </ul>
-<p>Lean has a relatively small kernel. The <a href="https://github.com/leanprover/lean/tree/master/src/checker">leanchecker</a> is a bare-bones version of the Lean kernel.
-There are also two independent checkers: <a href="https://github.com/leanprover/tc">tc</a> and <a href="https://github.com/gebner/trepplein">trepplein</a>.
-We have implemented several kernel extensions to improve performance and make sure the system is reasonably responsive for interactive use.
-We strongly recommend you frequently check your project without these extensions. The command line option <code>-t0</code> disables all of them.
-As far as we know, no proof of <code>false</code> has ever been accepted by Lean when using <code>-t0</code>.
-If you are really concerned about soundness, we recommend you often export your project and recheck it using the independent checkers above.</p>
+<p>Lean has a relatively small kernel.
+Several independent checkers have been implemented for Lean 3. Two of them are
+<a href="https://github.com/leanprover/tc">tc</a> and <a href="https://github.com/gebner/trepplein">trepplein</a>.
+We expect similar independent checkers will be built for Lean 4.</p>
 <ul>
 <li>Should I open a new issue?</li>
 </ul>
-<p>We use <a href="https://github.com/leanprover/lean/issues">github</a> to track bugs and new features.
+<p>We use <a href="https://github.com/leanprover/lean4/issues">github</a> to track bugs and new features.
 Bug reports are always welcome, but nitpicking issues are not (e.g., the error message is confusing).
 RFC issues are created by developers only.</p>
 
