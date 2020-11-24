@@ -97,7 +97,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="whatIsLean.html"><strong aria-hidden="true">1.</strong> What is Lean</a></li><li class="chapter-item expanded "><a href="tour.html"><strong aria-hidden="true">2.</strong> Tour of Lean</a></li><li class="chapter-item expanded affix "><li class="part-title">Language Manual</li><li class="chapter-item expanded "><a href="functions.html"><strong aria-hidden="true">3.</strong> Functions</a></li><li class="chapter-item expanded "><a href="sections.html"><strong aria-hidden="true">4.</strong> Sections</a></li><li class="chapter-item expanded "><a href="namespaces.html"><strong aria-hidden="true">5.</strong> Namespaces</a></li><li class="chapter-item expanded "><a href="do.html"><strong aria-hidden="true">6.</strong> The do Notation</a></li><li class="chapter-item expanded "><a href="tactics.html"><strong aria-hidden="true">7.</strong> Tactics</a></li><li class="chapter-item expanded "><a href="stringinterp.html"><strong aria-hidden="true">8.</strong> String interpolation</a></li><li class="chapter-item expanded affix "><li class="part-title">Other</li><li class="chapter-item expanded "><a href="faq.html"><strong aria-hidden="true">9.</strong> Frequently Asked Questions</a></li><li class="chapter-item expanded "><a href="lean3changes.html"><strong aria-hidden="true">10.</strong> Significant Changes from Lean 3</a></li><li class="chapter-item expanded "><a href="syntax_highlight_in_latex.html"><strong aria-hidden="true">11.</strong> Syntax Highlighting Lean in LaTeX</a></li><li class="chapter-item expanded affix "><li class="part-title">Development</li><li class="chapter-item expanded "><a href="commit_convention.html"><strong aria-hidden="true">12.</strong> Commit Convention</a></li><li class="chapter-item expanded "><a href="make/index.html"><strong aria-hidden="true">13.</strong> Building Lean</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="make/ubuntu-16.04.html"><strong aria-hidden="true">13.1.</strong> Ubuntu Setup</a></li><li class="chapter-item expanded "><a href="make/osx-10.9.html"><strong aria-hidden="true">13.2.</strong> macOS Setup</a></li><li class="chapter-item expanded "><a href="make/msys2.html"><strong aria-hidden="true">13.3.</strong> Windows Setup</a></li></ol></li><li class="chapter-item expanded "><a href="mdbook.html"><strong aria-hidden="true">14.</strong> Building This Manual</a></li><li class="chapter-item expanded "><a href="fixing_tests.html"><strong aria-hidden="true">15.</strong> Fixing Tests</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="whatIsLean.html"><strong aria-hidden="true">1.</strong> What is Lean</a></li><li class="chapter-item expanded "><a href="tour.html"><strong aria-hidden="true">2.</strong> Tour of Lean</a></li><li class="chapter-item expanded affix "><li class="part-title">Language Manual</li><li class="chapter-item expanded "><a href="functions.html"><strong aria-hidden="true">3.</strong> Functions</a></li><li class="chapter-item expanded "><a href="sections.html"><strong aria-hidden="true">4.</strong> Sections</a></li><li class="chapter-item expanded "><a href="namespaces.html"><strong aria-hidden="true">5.</strong> Namespaces</a></li><li class="chapter-item expanded "><a href="do.html"><strong aria-hidden="true">6.</strong> The do Notation</a></li><li class="chapter-item expanded "><a href="tactics.html"><strong aria-hidden="true">7.</strong> Tactics</a></li><li class="chapter-item expanded "><a href="stringinterp.html"><strong aria-hidden="true">8.</strong> String interpolation</a></li><li class="chapter-item expanded affix "><li class="part-title">Other</li><li class="chapter-item expanded "><a href="faq.html"><strong aria-hidden="true">9.</strong> Frequently Asked Questions</a></li><li class="chapter-item expanded "><a href="lean3changes.html"><strong aria-hidden="true">10.</strong> Significant Changes from Lean 3</a></li><li class="chapter-item expanded "><a href="syntax_highlight_in_latex.html"><strong aria-hidden="true">11.</strong> Syntax Highlighting Lean in LaTeX</a></li><li class="chapter-item expanded affix "><li class="part-title">Development</li><li class="chapter-item expanded "><a href="commit_convention.html"><strong aria-hidden="true">12.</strong> Commit Convention</a></li><li class="chapter-item expanded "><a href="make/index.html"><strong aria-hidden="true">13.</strong> Building Lean</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="make/ubuntu-16.04.html"><strong aria-hidden="true">13.1.</strong> Ubuntu Setup</a></li><li class="chapter-item expanded "><a href="make/osx-10.9.html"><strong aria-hidden="true">13.2.</strong> macOS Setup</a></li><li class="chapter-item expanded "><a href="make/msys2.html"><strong aria-hidden="true">13.3.</strong> Windows Setup</a></li><li class="chapter-item expanded "><a href="make/nix.html"><strong aria-hidden="true">13.4.</strong> Nix Setup (Experimental)</a></li></ol></li><li class="chapter-item expanded "><a href="mdbook.html"><strong aria-hidden="true">14.</strong> Building This Manual</a></li><li class="chapter-item expanded "><a href="fixing_tests.html"><strong aria-hidden="true">15.</strong> Fixing Tests</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -1736,6 +1736,8 @@ counter-intuitive behavior, and may confuse developers.</p>
 <li><a href="make/msvc.html">Windows (Visual Studio)</a></li>
 <li><a href="make/osx-10.9.html">macOS (homebrew)</a></li>
 <li>Linux/macOS/WSL via <a href="https://nixos.org/nix/">Nix</a>: Call <code>nix-shell</code> in the project root. That's it.</li>
+<li>There is also an <a href="make/nix.html"><strong>experimental</strong> setup based purely on Nix</a> that works fundamentally differently from the
+make/CMake setup described on this page.</li>
 </ul>
 <h2><a class="header" href="#generic-build-instructions" id="generic-build-instructions">Generic Build Instructions</a></h2>
 <p>Setting up a basic release build:</p>
@@ -1770,13 +1772,6 @@ Select the build type. Valid values are <code>RELEASE</code> (default), <code>DE
 <code>-D CMAKE_CXX_COMPILER=</code><br />
 Select the C/C++ compilers to use. Official Lean releases currently use Clang;
 see also <code>.github/workflows/ci.yml</code> for the CI config.</p>
-</li>
-<li>
-<p><code>-D CHECK_OLEAN_VERSION=OFF</code><br />
-The <code>.olean</code> files are tagged with the Lean version they were produced with.
-This means that by default, the core library has to be recompiled after e.g.
-every <code>git commit</code>. Use this option to avoid the version check. The <code>.olean</code>
-files can be removed manually by invoking <code>make clean-olean</code>.</p>
 </li>
 </ul>
 <p>Lean will automatically use <a href="https://ccache.dev/">CCache</a> if available to avoid
@@ -1948,6 +1943,86 @@ of <code>cmd.exe</code> for script tasks.</p>
 <p>You can use the <code>install</code> ninja/make target to install Lean into, by default,
 <code>C:\\User Programs (x86)\\LEAN</code>. To change this, add <code>-DCMAKE_INSTALL_PREFIX=path/you/want</code>
 to your cmake invocation.</p>
+<p>While <a href="https://nixos.org/nix/">Nix</a> can be used to quickly open a shell with all dependencies for the <a href="make/index.html">standard setup</a> installed, we also support a setup based purely on Nix, though it is still experimental; in particular, it is heavily based on an unreleased version of Nix enabling <a href="https://www.tweag.io/blog/2020-05-25-flakes/">Nix Flakes</a>. The setup has been tested on NixOS and other Linux distributions.</p>
+<h1><a class="header" href="#setup" id="setup">Setup</a></h1>
+<p>After installing (any version of) Nix ([https://nixos.org/download.html]), you can easily open a shell with the particular pre-release version of Nix needed by and tested with our setup (called the &quot;Lean shell&quot; from here on):</p>
+<pre><code class="language-bash"># in the Lean root directory
+$ nix-shell -A nix
+</code></pre>
+<p>While this shell is sufficient for executing the steps below, it is recommended to also set the following options in <code>/etc/nix/nix.conf</code> (<code>nix.extraOptions</code> in NixOS):</p>
+<pre><code>max-jobs = auto  # Allow building multiple derivations in parallel
+keep-outputs = true  # Do not garbage-collect build time-only dependencies (e.g. clang)
+extra-sandbox-paths = /nix/var/cache/ccache  # Extra local cache for C/C++ code
+# Allow fetching build results from the Lean Cachix cache
+extra-trusted-substituters = https://lean4.cachix.org/
+extra-trusted-public-keys = lean4.cachix.org-1:mawtxSxcaiWE24xCXXgh3qnvlTkyU7evRRnGeAhD4Wk=
+</code></pre>
+<p>On a multi-user installation of Nix (the default), you need to restart the Nix daemon afterwards:</p>
+<pre><code class="language-bash">sudo pkill nix-daemon
+</code></pre>
+<p>The <a href="https://cachix.org/">Cachix</a> integration will magically beam any build steps already executed by the CI right onto your machine when calling Nix commands in the shell opened above.
+On top of the local and remote Nix cache, we do still rely on CCache as well to make C/C++ build steps incremental, which are atomic steps from Nix's point of view.
+If you add the <code>extra-sandbox-paths</code> line above, you <strong>must</strong> also set up that directory as follows:</p>
+<pre><code class="language-bash">sudo mkdir -m0770 -p /nix/var/cache/ccache
+# macOS standard chown doesn't support --reference
+nix shell .#nixpkgs.coreutils -c sudo chown --reference=/nix/store /nix/var/cache/ccache
+</code></pre>
+<p>Note: Your system Nix might print warnings about not knowing some of these settings, which can be ignored.</p>
+<h1><a class="header" href="#basic-build-commands" id="basic-build-commands">Basic Build Commands</a></h1>
+<p>From the Lean root directory inside the Lean shell:</p>
+<pre><code class="language-bash">nix build .#stage1  # build this stage's stdlib &amp; executable
+nix build .#stage1.test  # run all tests
+nix run .#stage1.update-stage0  # update ./stage0 from this stage
+nix run .#stage1.update-stage0-commit  # ...and commit the results
+</code></pre>
+<p>The <code>stage1.</code> part in each command is optional:</p>
+<pre><code class="language-bash">nix build .#test  # run tests for stage 1
+nix build .  # build stage 1
+nix build  # dito
+</code></pre>
+<p>On a build error, Nix will show the last 10 lines of the output by default. You can pass <code>-L</code> to <code>nix build</code> to show all lines, or pass the shown <code>*.drv</code> path to <code>nix log</code> to show the full log after the fact.</p>
+<p>Note: Nix will print a warning &quot;Git tree [...] is dirty&quot; when you have uncommitted changes as a reminder that you're not building the &quot;actual repo contents&quot;, but the message is otherwise harmless.</p>
+<p>Keeping all outputs ever built on a machine alive can accumulate to quite impressive amounts of disk space, so you might want to trigger the Nix GC when /nix/store/ has grown too large:</p>
+<pre><code class="language-bash">nix-collect-garbage
+</code></pre>
+<p>This will remove everything not reachable from &quot;GC roots&quot; such as the <code>./result</code> symlink created by <code>nix build</code>, so you might want to call that first to keep your current stage 1 alive.</p>
+<h1><a class="header" href="#build-process-description" id="build-process-description">Build Process Description</a></h1>
+<p>The Nix build process conceptually works the same as described in <a href="make/index.html#lean-build-pipeline">Lean Build Pipeline</a>.
+However, there are two important differences in practice apart from the standard Nix properties (hermeneutic, reproducible builds stored in a global hash-indexed store etc.):</p>
+<ul>
+<li>Only files tracked by git (using <code>git add</code> or at least <code>git add --intent-to-add</code>) are compiled.
+This is actually a general property of Nix flakes, and has the benefit of making it basically impossible to forget to commit a file (at least in <code>src/</code>).</li>
+<li>Only files reachable from <code>src/Lean.lean</code> are compiled.
+This is because modules are discovered not from a directory listing anymore but by recursively compiling all dependencies of that top module.</li>
+</ul>
+<h1><a class="header" href="#emacs-integration" id="emacs-integration">Emacs Integration</a></h1>
+<p>Starting a known-good (pinned) version of Emacs from the Lean shell with <code>lean4-mode</code> fully set up for development on Lean is as easy as:</p>
+<pre><code class="language-bash">nix run .#emacs-dev
+</code></pre>
+<p>If you've already installed lean4-mode manually, you might need to first deactivate that. <code>elan</code> can be left as is on the other hand.</p>
+<p>Arguments can be passed as well:</p>
+<pre><code class="language-bash">nix run .#emacs-dev src/Lean.lean
+</code></pre>
+<p>Note that the UX of <code>emacs-dev</code> is quite different from the Make-based setup regarding the compilation of dependencies:
+there is no mutable directory incrementally filled by the build that we could point the editor at for .olean files.
+Instead, <code>emacs-dev</code> will gather the individual dependency outputs from the Nix store when checking a file -- and build them on the fly when necessary.
+However, it will only ever load changes saved to disk, not ones opened in other buffers.</p>
+<p>Because of technical limitations, there are currently two further restrictions for files in <code>src/</code>:</p>
+<ul>
+<li>They must be reachable from <code>src/Lean.lean</code> to be editable. Note that they have to be so anyway to be included in the full stage compilation, but it might initially be confusing when creating a new file.</li>
+<li>New imports, even when already compiled, will only be accessible after saving the file.</li>
+</ul>
+<h1><a class="header" href="#other-fun-stuff-to-do-with-nix" id="other-fun-stuff-to-do-with-nix">Other Fun Stuff to Do with Nix</a></h1>
+<p>Open Emacs with Lean set up from an arbitrary commit (without even cloning Lean beforehand... if your Nix is new enough):</p>
+<pre><code class="language-bash">nix run github:leanprover/lean4/7e4edeb#emacs-package
+</code></pre>
+<p>Open a shell with <code>lean</code> and <code>LEAN_PATH</code> set up for compiling a specific module (this is exactly what <code>emacs-dev</code> is doing internally):</p>
+<pre><code class="language-bash">nix develop .#mods.&quot;Lean.Parser.Basic&quot;
+</code></pre>
+<p>Not sure what you just broke? Run Lean from (e.g.) the previous commit on a file:</p>
+<pre><code class="language-bash">nix run .\?rev=$(git rev-parse @^) scratch.lean
+</code></pre>
+<p>...more surely to come...</p>
 <p>This manual is generated by <a href="https://github.com/rust-lang/mdBook">mdBook</a>. We are currently using a
 <a href="https://github.com/leanprover/mdBook">fork</a> of it for the following additional features:</p>
 <ul>
@@ -1955,13 +2030,16 @@ to your cmake invocation.</p>
 <li>Replace calling <code>rustdoc --test</code> from <code>mdbook test</code> with <code>./test</code></li>
 </ul>
 <p>To build this manual, first install the fork via</p>
-<pre><code>cargo install --git https://github.com/leanprover/mdBook mdbook
+<pre><code class="language-bash">cargo install --git https://github.com/leanprover/mdBook mdbook
 </code></pre>
 <p>Then use e.g. <a href="https://rust-lang.github.io/mdBook/cli/watch.html"><code>mdbook watch</code></a> in the <code>doc/</code> folder:</p>
-<pre><code>cd doc
+<pre><code class="language-bash">cd doc
 mdbook watch --open  # opens the output in `out/` in your default browser
 </code></pre>
 <p>Run <code>mdbook test</code> to test all <code>lean</code> code blocks.</p>
+<p>Using the <a href="make/nix.html">Nix setup</a>, you can instead open a shell with the mdBook fork downloaded from our binary cache:</p>
+<pre><code class="language-bash">nix develop .#doc
+</code></pre>
 <h1><a class="header" href="#fixing-tests" id="fixing-tests">Fixing Tests</a></h1>
 <p>The test suite contains some tests that compare the produced output
 with the expected output. For example, the directory <code>tests/lean</code>
