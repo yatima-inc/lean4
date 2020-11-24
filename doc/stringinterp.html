@@ -202,12 +202,12 @@ You nest interpolated strings inside interpolated strings</p>
   (name : String)
   (age  : Nat)
 
-instance : ToString Person := {
-  toString := fun { name := n, age := v } =&gt; s!&quot;\{ name := {n}, age := {v} }&quot;
-}
+instance : ToString Person where
+  toString : Person -&gt; String
+    | { name := n, age := v } =&gt; s!&quot;\{ name := {n}, age := {v} }&quot;
 
 def person1 : Person := {
-  name := &quot;John&quot;,
+  name := &quot;John&quot;
   age  := 28
 }
 

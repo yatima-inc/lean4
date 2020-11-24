@@ -209,10 +209,9 @@ and we have a constant (<code>reader_t.pure</code> in the example) which also ta
 for consuming implicit arguments. We are still exploring this feature and analyzing its impact, but the experience so far has been very positive. As an example,
 here is the example in the link above using Lean 4 implicit lambdas.</p>
 <pre><code class="language-lean"><span class="boring">variables (ρ : Type) (m : Type → Type) [Monad m]
-</span>instance : Monad (ReaderT ρ m) := {
-  pure := ReaderT.pure,
+</span>instance : Monad (ReaderT ρ m) where
+  pure := ReaderT.pure
   bind := ReaderT.bind
-}
 </code></pre>
 <p>Users can disable the implicit lambda feature by using <code>@</code> or writing a lambda expression with <code>{}</code> or <code>[]</code> binder annotations.
 Here are few examples</p>
