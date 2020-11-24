@@ -186,10 +186,10 @@ def age  := 28
 #eval println! &quot;Hello, {name}! Are you {age} years old?&quot;
 </code></pre>
 <h1><a class="header" href="#structure-of-an-interpolated-string" id="structure-of-an-interpolated-string">Structure of an interpolated string</a></h1>
-<p>To identify a string literal as an interpolated string, prepend it with the <code>s!</code>.
-Terms inside braces <code>{}</code> are regular expressions whose type implements the type class <code>ToString</code>.
+<p>To identify a string literal as an interpolated string, prepend it with <code>s!</code>.
+Terms inside braces <code>{}</code> are ordinary expressions whose type implements the type class <code>ToString</code>.
 To include a curly brace <code>{</code> in your interpolated string, you must escape it using <code>\{</code>.
-You nest interpolated strings inside interpolated strings</p>
+You can nest interpolated strings inside interpolated strings.</p>
 <pre><code class="language-lean">def vals := [1, 2, 3]
 
 #eval IO.println s!&quot;\{ vals := {vals} }&quot;
