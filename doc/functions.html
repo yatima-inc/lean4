@@ -190,9 +190,9 @@ the compiler tries to determine the return type from the final expression.</p>
 the function body is <code>x + 1</code>, and the return value is of type <code>Nat</code>.
 The following example defines the factorial recursive function using pattern matching.</p>
 <pre><code class="language-lean">def fact x :=
- match x with
- | 0   =&gt; 1
- | n+1 =&gt; (n+1) * fact n
+  match x with
+  | 0   =&gt; 1
+  | n+1 =&gt; (n+1) * fact n
 
 #eval fact 100
 </code></pre>

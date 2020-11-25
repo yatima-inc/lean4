@@ -188,8 +188,8 @@ The lambda expression notation has many new features that are not supported in L
 </span>def Prod.str : Nat × Nat → String :=
   fun (a, b) =&gt; &quot;(&quot; ++ toString a ++ &quot;, &quot; ++ toString b ++ &quot;)&quot;
 
-structure Point :=
-  (x y z : Nat)
+structure Point where
+  x y z : Nat
 
 def Point.addX : Point → Point → Nat :=
   fun { x := a, .. } { x := b, .. } =&gt;  a+b
@@ -319,7 +319,7 @@ example (x y : α) : g x y = fun (c : α) =&gt; x + y + c := rfl
 </code></pre>
 <p>In Lean 4, we can use <code>..</code> to provide missing explicit arguments as <code>_</code>.
 This feature combined with named arguments is useful for writing patterns. Here is an example:</p>
-<pre><code class="language-lean">inductive Term
+<pre><code class="language-lean">inductive Term where
   | var    (name : String)
   | num    (val : Nat)
   | add    (fn : Term) (arg : Term)

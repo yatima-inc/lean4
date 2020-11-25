@@ -198,9 +198,9 @@ You can nest interpolated strings inside interpolated strings.</p>
 </code></pre>
 <h1><a class="header" href="#tostring-instances" id="tostring-instances"><code>ToString</code> instances</a></h1>
 <p>You can define a <code>ToString</code> instance for your own datatypes.</p>
-<pre><code class="language-lean">structure Person :=
-  (name : String)
-  (age  : Nat)
+<pre><code class="language-lean">structure Person where
+  name : String
+  age  : Nat
 
 instance : ToString Person where
   toString : Person -&gt; String
