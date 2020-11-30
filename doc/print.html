@@ -1325,7 +1325,6 @@ theorem ex2 :
   funext (a, b) (c, d)
   show a + d = d + a
   rw [Nat.addComm]
-  rfl
 </code></pre>
 <h2><a class="header" href="#induction" id="induction">Induction</a></h2>
 <p>The <code>induction</code> tactic now supports user-defined induction principles with
@@ -1385,7 +1384,7 @@ Here is a similar proof using the tactic DSL.</p>
     match bs, memSplit h with
     | _, ⟨s, ⟨t, rfl⟩⟩ =&gt;
       exists b::s; exists t;
-      rw [List.consAppend]; rfl
+      rw [List.consAppend]
 </code></pre>
 <p>We can use <code>match-with</code> nested in tactics.
 Here is a similar proof that uses the <code>induction</code> tactic instead of recursion.</p>
@@ -1402,7 +1401,7 @@ Here is a similar proof that uses the <code>induction</code> tactic instead of r
       match bs, ih h with
       | _, ⟨s, ⟨t, rfl⟩⟩ =&gt;
         exists b::s; exists t
-        rw [List.consAppend]; rfl
+        rw [List.consAppend]
 </code></pre>
 <p>You can create your own notation using existing tactics. In the following example,
 we define a simple <code>obtain</code> tactic using macros. We say it is simple because it takes only one
@@ -1420,7 +1419,7 @@ theorem memSplit {a : α} {as : List α} (h : a ∈ as) : ∃ s t, as = s ++ a :
     | tail a b bs h =&gt;
       obtain ⟨s, ⟨t, h⟩⟩ from ih h
       exists b::s; exists t
-      rw [h, List.consAppend]; rfl
+      rw [h, List.consAppend]
     | head a bs =&gt; exact ⟨[], ⟨bs, rfl⟩⟩
   | nil =&gt; cases h
 
@@ -1466,7 +1465,6 @@ and you can use it to create proofs by induction.</p>
     | n+1 =&gt;
       show List.length (List.replicate.loop a n (a::as)) = Nat.succ n + as.length
       rw [aux n, List.lengthConsEq, Nat.addSucc, Nat.succAdd]
-      rfl
   exact aux n []
 </code></pre>
 <p>You can also introduce auxiliary recursive declarations using <code>where</code> clause after your definition.
@@ -1480,7 +1478,6 @@ where
     | n+1 =&gt;
       show List.length (List.replicate.loop a n (a::as)) = Nat.succ n + as.length
       rw [replicateLoopEq n, List.lengthConsEq, Nat.addSucc, Nat.succAdd]
-      rfl
 </code></pre>
 <h1><a class="header" href="#begin-end-lovers" id="begin-end-lovers"><code>begin-end</code> lovers</a></h1>
 <p>If you love Lean 3 <code>begin ... end</code> tactic blocks and commas, you can define this notation
@@ -1497,8 +1494,7 @@ macro &quot;begin &quot; ts:sepByT(tactic, &quot;, &quot;) &quot;end&quot; : ter
 theorem ex (x : Nat) : x + 0 = 0 + x :=
   begin
     rw Nat.zeroAdd,
-    rw Nat.addZero,
-    rfl
+    rw Nat.addZero
   end
 </code></pre>
 <h1><a class="header" href="#thunks-tasks-and-threads" id="thunks-tasks-and-threads">Thunks, Tasks, and Threads</a></h1>
