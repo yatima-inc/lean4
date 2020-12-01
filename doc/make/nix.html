@@ -240,7 +240,9 @@ However, it will only ever load changes saved to disk, not ones opened in other 
 <pre><code class="language-bash">nix run github:leanprover/lean4/7e4edeb#emacs-package
 </code></pre>
 <p>Open a shell with <code>lean</code> and <code>LEAN_PATH</code> set up for compiling a specific module (this is exactly what <code>emacs-dev</code> is doing internally):</p>
-<pre><code class="language-bash">nix develop .#mods.&quot;Lean.Parser.Basic&quot;
+<pre><code class="language-bash">nix develop .#mods.\&quot;Lean.Parser.Basic\&quot;
+# alternatively, directly pass a command to execute:
+nix develop .#stage2.mods.\&quot;Init.Control.Basic\&quot; -c bash -c 'lean $src -Dtrace.Elab.command=true'
 </code></pre>
 <p>Not sure what you just broke? Run Lean from (e.g.) the previous commit on a file:</p>
 <pre><code class="language-bash">nix run .\?rev=$(git rev-parse @^) scratch.lean
