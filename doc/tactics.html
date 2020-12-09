@@ -464,7 +464,7 @@ where
 <p>If you love Lean 3 <code>begin ... end</code> tactic blocks and commas, you can define this notation
 in Lean 4 using macros in a few lines of code.</p>
 <pre><code class="language-lean">open Lean in
-macro &quot;begin &quot; ts:sepByT(tactic, &quot;, &quot;) &quot;end&quot; : term =&gt; do
+macro &quot;begin &quot; ts:tactic,*,? &quot;end&quot; : term =&gt; do
   let stx  ← getRef
   let ts   := ts.getSepArgs.map (mkNullNode #[·, mkNullNode])
   let tseq := mkNode `Lean.Parser.Tactic.tacticSeqBracketed #[
