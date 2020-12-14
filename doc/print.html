@@ -2893,6 +2893,8 @@ in Lean 4 using macros in a few lines of code.</p>
 <pre><code class="language-lean">open Lean in
 macro &quot;begin &quot; ts:tactic,*,? &quot;end&quot; : term =&gt; do
   let stx ← `(by { $[$ts:tactic]* })
+  -- preserve position of the last token, which is used
+  -- as the error position in case of an unfinished proof
   stx.copyTailInfo (← getRef)
 
 theorem ex1 (x : Nat) : x + 0 = 0 + x :=
