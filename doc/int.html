@@ -179,10 +179,10 @@
 <p>The operator <code>/</code> for <code>Int</code> implements integer division.</p>
 <pre><code class="language-lean">#eval -10 / 4 -- -2
 </code></pre>
-<p>Similar to the <code>Nat, the internal representation of </code>Int` is optimized. Small integers are
+<p>Similar to <code>Nat</code>, the internal representation of <code>Int</code> is optimized. Small integers are
 represented by a single machine word. Big integers are implemented using <a href="https://gmplib.org/manual/">GMP</a> numbers.
 We recommend you use fixed precision numeric types only in performance critical code.</p>
-<p>The Lean kernel has not special support for reducing <code>Int</code> during type checking.
+<p>The Lean kernel does not have special support for reducing <code>Int</code> during type checking.
 However, since <code>Int</code> is defined as</p>
 <pre><code class="language-lean"><span class="boring">namespace hidden
 </span>inductive Int : Type where

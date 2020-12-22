@@ -226,7 +226,7 @@ The list is indefinite, so that there is a <code>Type n</code> for every natural
 <pre><code class="language-lean">#check Type
 #check Type 0
 </code></pre>
-<p>There is also another type, <code>Prop</code>, which has special properties.</p>
+<p>There is also another type universe, <code>Prop</code>, which has special properties.</p>
 <pre><code class="language-lean">#check Prop -- Type
 </code></pre>
 <p>We will discuss <code>Prop</code> later.</p>
@@ -234,7 +234,7 @@ The list is indefinite, so that there is a <code>Type n</code> for every natural
 make sense for any type <code>α</code>, no matter which type universe <code>α</code> lives in. This explains the type annotation of the function <code>List</code>:</p>
 <pre><code class="language-lean">#check List    -- Type u_1 → Type u_1
 </code></pre>
-<p>Here <code>u_1</code> is a variable ranging over type levels. The output of the <code>#check</code> command means that whenever <code>α</code> has type <code>Type n</code>, <code>list α</code> also has type <code>Type n</code>. The function <code>Prod</code> is similarly polymorphic:</p>
+<p>Here <code>u_1</code> is a variable ranging over type levels. The output of the <code>#check</code> command means that whenever <code>α</code> has type <code>Type n</code>, <code>List α</code> also has type <code>Type n</code>. The function <code>Prod</code> is similarly polymorphic:</p>
 <pre><code class="language-lean">#check Prod    -- Type u_1 → Type u_2 → Type (max u_1 u_2)
 </code></pre>
 <p>To define polymorphic constants and variables, Lean allows us to declare universe variables explicitly using the <code>universe</code> command:</p>

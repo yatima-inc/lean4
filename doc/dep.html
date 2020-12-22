@@ -193,14 +193,14 @@ for each <code>a : α</code>, <code>f a</code> is an element of <code>β a</code
 When <code>β</code> doesn't depend on <code>a</code>, <code>(a : α) → β</code> is no different from the type <code>α → β</code>.
 Indeed, in dependent type theory (and in Lean), <code>α → β</code> is just notation for <code>(a : α) → β</code> when <code>β</code> does not depend on <code>a</code>.</p>
 <p>Returning to the example of lists, we can use the command <code>#check</code> to inspect the type of the following <code>List</code> functions
-We will explain the <code>@</code> symbol and the difference between the round and curly brackets momentarily.</p>
+We will explain the <code>@</code> symbol and the difference between the round and curly braces momentarily.</p>
 <pre><code class="language-lean">#check @List.cons    -- {α : Type u_1} → α → List α → List α
 #check @List.nil     -- {α : Type u_1} → List α
 #check @List.length  -- {α : Type u_1} → List α → Nat
 #check @List.append  -- {α : Type u_1} → List α → List α → List α
 </code></pre>
 <p>Just as dependent function types <code>(a : α) → β a</code> generalize the notion of a function type <code>α → β</code> by allowing <code>β</code> to depend on <code>α</code>,
-dependent cartesian product types <code>(a : α) × β a</code> generalize the cartesian product <code>α × β</code> in the same way. Dependent products are also
+dependent Cartesian product types <code>(a : α) × β a</code> generalize the Cartesian product <code>α × β</code> in the same way. Dependent products are also
 called <em>sigma</em> types, and you can also write them as <code>Σ a : α, β a</code>. You can use <code>⟨a, b⟩</code> or <code>Sigma.mk a b</code> to create a dependent pair.</p>
 <pre><code class="language-lean">universes u v
 

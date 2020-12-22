@@ -175,16 +175,19 @@ You can also use Lean as an interactive theorem prover.</p>
 This allows your focus to remain on the problem domain and manipulating its data,
 rather than the details of programming.</p>
 <pre><code class="language-lean">-- Defines a function that takes a name and produces a greeting.
-def getGreeting (name : String) := &quot;Hello, {name}! Isn't Lean great?&quot;
+def getGreeting (name : String) := s!&quot;Hello, {name}! Isn't Lean great?&quot;
 
 -- The `main` function is the entry point of your program.
--- Its type is `IO Unit` because it can perform `IO` operations.
+-- Its type is `IO Unit` because it can perform `IO` operations (side effects).
 def main : IO Unit :=
-  -- Defines a list of names
+  -- Define a list of names
   let names := [&quot;Sebastian&quot;, &quot;Leo&quot;, &quot;Daniel&quot;]
 
-  -- Print the list of greetings `names.map getGreeting`
-  for greeting in names.map getGreeting do
+  -- Map each name to a greeting
+  let greetings := names.map getGreeting
+
+  -- Print the list of greetings
+  for greeting in greetings do
     IO.println greeting
 </code></pre>
 <p>Lean has numerous features, including:</p>
@@ -198,8 +201,8 @@ def main : IO Unit :=
 <li>Hygienic macros</li>
 <li>Dependent types</li>
 <li>Metaprogramming framework</li>
-<li>Async programming</li>
-<li>Verification, you can prove properties of your functions using Lean itself</li>
+<li>Multithreading</li>
+<li>Verification: you can prove properties of your functions using Lean itself</li>
 </ul>
 
                     </main>

@@ -177,16 +177,19 @@ You can also use Lean as an interactive theorem prover.</p>
 This allows your focus to remain on the problem domain and manipulating its data,
 rather than the details of programming.</p>
 <pre><code class="language-lean">-- Defines a function that takes a name and produces a greeting.
-def getGreeting (name : String) := &quot;Hello, {name}! Isn't Lean great?&quot;
+def getGreeting (name : String) := s!&quot;Hello, {name}! Isn't Lean great?&quot;
 
 -- The `main` function is the entry point of your program.
--- Its type is `IO Unit` because it can perform `IO` operations.
+-- Its type is `IO Unit` because it can perform `IO` operations (side effects).
 def main : IO Unit :=
-  -- Defines a list of names
+  -- Define a list of names
   let names := [&quot;Sebastian&quot;, &quot;Leo&quot;, &quot;Daniel&quot;]
 
-  -- Print the list of greetings `names.map getGreeting`
-  for greeting in names.map getGreeting do
+  -- Map each name to a greeting
+  let greetings := names.map getGreeting
+
+  -- Print the list of greetings
+  for greeting in greetings do
     IO.println greeting
 </code></pre>
 <p>Lean has numerous features, including:</p>
@@ -200,8 +203,8 @@ def main : IO Unit :=
 <li>Hygienic macros</li>
 <li>Dependent types</li>
 <li>Metaprogramming framework</li>
-<li>Async programming</li>
-<li>Verification, you can prove properties of your functions using Lean itself</li>
+<li>Multithreading</li>
+<li>Verification: you can prove properties of your functions using Lean itself</li>
 </ul>
 <h1><a class="header" href="#tour-of-lean" id="tour-of-lean">Tour of Lean</a></h1>
 <p>The best way to learn about Lean is to read and write Lean code.
@@ -220,14 +223,14 @@ They are defined using the <a href="./definitions.html"><code>def</code></a> com
 which give the function a name and define its arguments.</p>
 <pre><code class="language-lean">namespace BasicFunctions
 
--- The `#eval` command is used to evaluate expressions
+-- The `#eval` command evaluates an expression on the fly and prints the result.
 #eval 2+2
 
 -- You use 'def' to define a function. This one accepts a natural number
 -- and returns a natural number.
 -- Parentheses are optional for function arguments, except for when
 -- you use an explicit type annotation.
--- Lean can often infer the type of the functions arguments
+-- Lean can often infer the type of the function's arguments.
 def sampleFunction1 x := x*x + 3
 
 -- Apply the function, naming the function return result using 'def'.
@@ -235,11 +238,10 @@ def sampleFunction1 x := x*x + 3
 def result1 := sampleFunction1 4573
 
 -- This line uses an interpolated string to print the result. Expressions inside
--- braces `{}` are converted into string using the polymorphic method `toString`
+-- braces `{}` are converted into strings using the polymorphic method `toString`
 #eval println! &quot;The result of squaring the integer 4573 and adding 3 is {result1}&quot;
 
--- When needed, annotate the type of a parameter name using '(argument:type)'.
--- Parentheses are required.
+-- When needed, annotate the type of a parameter name using '(argument : type)'.
 def sampleFunction2 (x : Nat) := 2*x*x - x + 3
 
 def result2 := sampleFunction2 (7 + 4)
@@ -257,30 +259,31 @@ def sampleFunction3 (x : Int) :=
 
 end BasicFunctions
 </code></pre>
-<pre><code class="language-lean">-- Lean has first class functions
+<pre><code class="language-lean">-- Lean has first-class functions.
 -- `twice` takes two argumes `f` and `a` where
 -- `f` is a function from natural numbers to natural numbers, and
--- `a` is a natural number
+-- `a` is a natural number.
 def twice (f : Nat → Nat) (a : Nat) :=
   f (f a)
 
--- `fun` is to declare anonymous functions
+-- `fun` is used to declare anonymous functions
 #eval twice (fun x =&gt; x + 2) 10
 
--- You prove theorems about your functions.
+-- You can prove theorems about your functions.
 -- The following theorem states that for any natural number `a`,
 -- adding 2 twice produces a value equal to `a + 4`.
 theorem twiceAdd2 (a : Nat) : twice (fun x =&gt; x + 2) a = a + 4 :=
-  -- The proof is by reflexivity. Lean &quot;symbolic&quot; reduces both sides of the equality
-  -- and obtain the same result
+  -- The proof is by reflexivity. Lean &quot;symbolically&quot; reduces both sides of the equality
+  -- until they are identical.
   rfl
 
 -- `(. + 2)` is syntax sugar for `(fun x =&gt; x + 2)`. The parentheses + `.` notation
--- is useful for defining simple functions
+-- is useful for defining simple anonymous functions.
 #eval twice (. + 2) 10
 
--- An enumerated type is a special case of inductive type in Lean
--- The following command creates a new type `Weekday`
+-- Enumerated types are a special case of inductive types in Lean,
+-- which we will learn about later.
+-- The following command creates a new type `Weekday`.
 inductive Weekday where
   | sunday    : Weekday
   | monday    : Weekday
@@ -291,14 +294,15 @@ inductive Weekday where
   | saturday  : Weekday
 
 -- `Weekday` has 7 constructors/elements.
--- The constructors live in the `Weekday` namespace
--- Think of `sunday`, `monday`, …, saturday as being distinct elements of `Weekday`,
+-- The constructors live in the `Weekday` namespace.
+-- Think of `sunday`, `monday`, …, `saturday` as being distinct elements of `Weekday`,
 -- with no other distinguishing properties.
--- The command `#check` return the type of a term in Lean
+-- The command `#check` prints the type of a term in Lean.
 #check Weekday.sunday
 #check Weekday.monday
 
--- The `open` command opens a namespace
+-- The `open` command opens a namespace, making all declarations in it accessible without
+-- qualification.
 open Weekday
 #check sunday
 #check tuesday
@@ -315,14 +319,15 @@ def natOfWeekday (d : Weekday) : Nat :=
   | friday    =&gt; 6
   | saturday  =&gt; 7
 
--- The `#eval` command evaluates an expression and prints the result.
 #eval natOfWeekday tuesday
 
 def isMonday : Weekday → Bool :=
   -- `fun` + `match`  is a common idiom.
-  -- The the following expression is syntax sugar for
-  -- fun d =&gt; match d with | monday =&gt; true | _ =&gt; false
-  fun | monday =&gt; true | _ =&gt; false
+  -- The following expression is syntax sugar for
+  -- `fun d =&gt; match d with | monday =&gt; true | _ =&gt; false`.
+  fun
+    | monday =&gt; true
+    | _      =&gt; false
 
 #eval isMonday monday
 #eval isMonday sunday
@@ -336,7 +341,8 @@ def isMonday : Weekday → Bool :=
 -- the class `ToString`.
 -- You can implement instances of `ToString` for your own types.
 instance : ToString Weekday where
-  toString : Weekday -&gt; String
+  toString (d : Weekday) : String :=
+    match d with
     | sunday    =&gt; &quot;Sunday&quot;
     | monday    =&gt; &quot;Monday&quot;
     | tuesday   =&gt; &quot;Tuesday&quot;
@@ -347,22 +353,22 @@ instance : ToString Weekday where
 
 #eval toString (sunday, 10)
 
-def Weekday.next : Weekday -&gt; Weekday :=
-  fun d =&gt; match d with
-    | sunday    =&gt; monday
-    | monday    =&gt; tuesday
-    | tuesday   =&gt; wednesday
-    | wednesday =&gt; thursday
-    | thursday  =&gt; friday
-    | friday    =&gt; saturday
-    | saturday  =&gt; sunday
+def Weekday.next (d : Weekday) : Weekday :=
+  match d with
+  | sunday    =&gt; monday
+  | monday    =&gt; tuesday
+  | tuesday   =&gt; wednesday
+  | wednesday =&gt; thursday
+  | thursday  =&gt; friday
+  | friday    =&gt; saturday
+  | saturday  =&gt; sunday
 
 #eval Weekday.next Weekday.wednesday
--- Since `Weekday` namespace has already been opened, you can write.
+-- Since the `Weekday` namespace has already been opened, you can also write
 #eval next wednesday
 
--- The idiom `fun d =&gt; match d with ...` used in the previous definition
--- is so common that Lean provides a syntax sugar for it. The foolowing
+-- Matching on a parameter like in the previous definition
+-- is so common that Lean provides syntax sugar for it. The following
 -- function uses it.
 def Weekday.previous : Weekday -&gt; Weekday
   | sunday    =&gt; saturday
@@ -386,27 +392,27 @@ theorem Weekday.nextOfPrevious (d : Weekday) : next (previous d) = d :=
   | friday    =&gt; rfl
   | saturday  =&gt; rfl
 
--- You can automate definitions such  as `Weekday.nextOfPrevious`
--- using metaprogramming
+-- You can automate definitions such as `Weekday.nextOfPrevious`
+-- using metaprogramming (or &quot;tactics&quot;).
 theorem Weekday.nextOfPrevious' (d : Weekday) : next (previous d) = d := by
-  cases d -- A proof by cases
-  repeat rfl -- Each case is solved using `rfl`
+  cases d       -- A proof by case distinction
+  allGoals rfl  -- Each case is solved using `rfl`
 </code></pre>
 <h1><a class="header" href="#dependent-types" id="dependent-types">Dependent Types</a></h1>
 <p>In this section, we introduce simple type theory, types as objects, definitions, and explain what makes dependent type theory <em>dependent</em>.</p>
 <h2><a class="header" href="#simple-type-theory" id="simple-type-theory">Simple Type Theory</a></h2>
 <p>&quot;Type theory&quot; gets its name from the fact that every expression has an associated <em>type</em>.
 For example, in a given context, <code>x + 0</code> may denote a natural number and <code>f</code> may denote a function on the natural numbers.
-For those that don't like math, a Lean natural number is an arbitrary precision unsigned integer.</p>
+For those that don't like math, a Lean natural number is an arbitrary-precision unsigned integer.</p>
 <p>Here are some examples of how we can declare objects in Lean and check their types.</p>
-<pre><code class="language-lean">/- declare some constants -/
+<pre><code class="language-lean">/- Declare some constants. -/
 
 constant m  : Nat   -- m is a natural number
 constant n  : Nat
 constant b1 : Bool  -- b1 is a Boolean
 constant b2 : Bool
 
-/- check their types -/
+/- Check their types. -/
 
 #check m            -- output: Nat
 #check n
@@ -417,20 +423,20 @@ constant b2 : Bool
 #check b1 || b2     -- Boolean or
 #check true         -- Boolean &quot;true&quot;
 </code></pre>
-<p>Any text between the <code>/-</code> and <code>-/</code> constitutes a comment that is ignored by Lean.
-Similarly, two dashes indicate that the rest of the line contains a comment that is also ignored.
+<p>Any text between <code>/-</code> and <code>-/</code> constitutes a comment block that is ignored by Lean.
+Similarly, two dashes <code>--</code> indicate that the rest of the line contains a comment that is also ignored.
 Comment blocks can be nested, making it possible to &quot;comment out&quot; chunks of code, just as in many programming languages.</p>
 <p>The <code>constant</code> command introduce new constant symbols into the working environment.
-The <code>#check</code> command asks Lean to report their types; in Lean, commands that query the system for
+The <code>#check</code> command asks Lean to report their types; in Lean, auxiliary commands that query the system for
 information typically begin with the hash symbol. You should try declaring some constants and type checking
 some expressions on your own. Declaring new objects in this way is a good way to experiment with the system.</p>
 <p>What makes simple type theory powerful is that one can build new types out of others.
 For example, if <code>a</code> and <code>b</code> are types, <code>a -&gt; b</code> denotes the type of functions from <code>a</code> to <code>b</code>,
 and <code>a × b</code> denotes the type of pairs consisting of an element of <code>a</code>
-paired with an element of <code>b</code>, it is also known as the <em>cartesian product</em>.
-Note that, <code>×</code> is an Unicode symbol. We believe that judicious use of Unicode improves legibility,
-and all moderns editors have great support for it. In the Lean standard library, we often use
-greek letters to denote types, and the Unicode symbol <code>→</code> as a more compact version of <code>-&gt;</code>.</p>
+paired with an element of <code>b</code>, also known as the <em>Cartesian product</em>.
+Note that <code>×</code> is a Unicode symbol. We believe that judicious use of Unicode improves legibility,
+and all modern editors have great support for it. In the Lean standard library, we often use
+Greek letters to denote types, and the Unicode symbol <code>→</code> as a more compact version of <code>-&gt;</code>.</p>
 <pre><code class="language-lean">constant m : Nat
 constant n : Nat
 
@@ -456,16 +462,16 @@ constant F  : (Nat → Nat) → Nat -- a &quot;functional&quot;
 </code></pre>
 <p>Once again, you should try some examples on your own.</p>
 <p>Let us dispense with some basic syntax. You can enter the unicode arrow <code>→</code> by typing <code>\to</code> or <code>\r</code>.
-You can also use the ASCII alternative <code>-&gt;</code>, so that the expression <code>Nat -&gt; Nat</code> and <code>Nat → Nat</code> mean the same thing.
+You can also use the ASCII alternative <code>-&gt;</code>, so the expressions <code>Nat -&gt; Nat</code> and <code>Nat → Nat</code> mean the same thing.
 Both expressions denote the type of functions that take a natural number as input and return a natural number as output.
-The unicode symbol <code>×</code> for the cartesian product is entered <code>\times</code>.
-We will generally use lower-case greek letters like <code>α</code>, <code>β</code>, and <code>γ</code> to range over types.
+The unicode symbol <code>×</code> for the Cartesian product is entered as <code>\times</code>.
+We will generally use lower-case Greek letters like <code>α</code>, <code>β</code>, and <code>γ</code> to range over types.
 You can enter these particular ones with <code>\a</code>, <code>\b</code>, and <code>\g</code>.</p>
 <p>There are a few more things to notice here. First, the application of a function <code>f</code> to a value <code>x</code> is denoted <code>f x</code>.
 Second, when writing type expressions, arrows associate to the <em>right</em>; for example, the type of <code>g</code> is <code>Nat → (Nat → Nat)</code>.
 Thus we can view <code>g</code> as a function that takes natural numbers and returns another function that takes a natural number and
 returns a natural number.
-In type theory, this is generally more convenient than writing <code>g</code> as a function that takes a pair of natural numbers as input,
+In type theory, this is generally more convenient than writing <code>g</code> as a function that takes a pair of natural numbers as input
 and returns a natural number as output. For example, it allows us to &quot;partially apply&quot; the function <code>g</code>.
 The example above shows that <code>g m</code> has type <code>Nat → Nat</code>, that is, the function that &quot;waits&quot; for a second argument, <code>n</code>,
 and then returns <code>g m n</code>. Taking a function <code>h</code> of type <code>Nat × Nat → Nat</code> and &quot;redefining&quot; it to look like <code>g</code> is a process
@@ -531,7 +537,7 @@ The list is indefinite, so that there is a <code>Type n</code> for every natural
 <pre><code class="language-lean">#check Type
 #check Type 0
 </code></pre>
-<p>There is also another type, <code>Prop</code>, which has special properties.</p>
+<p>There is also another type universe, <code>Prop</code>, which has special properties.</p>
 <pre><code class="language-lean">#check Prop -- Type
 </code></pre>
 <p>We will discuss <code>Prop</code> later.</p>
@@ -539,7 +545,7 @@ The list is indefinite, so that there is a <code>Type n</code> for every natural
 make sense for any type <code>α</code>, no matter which type universe <code>α</code> lives in. This explains the type annotation of the function <code>List</code>:</p>
 <pre><code class="language-lean">#check List    -- Type u_1 → Type u_1
 </code></pre>
-<p>Here <code>u_1</code> is a variable ranging over type levels. The output of the <code>#check</code> command means that whenever <code>α</code> has type <code>Type n</code>, <code>list α</code> also has type <code>Type n</code>. The function <code>Prod</code> is similarly polymorphic:</p>
+<p>Here <code>u_1</code> is a variable ranging over type levels. The output of the <code>#check</code> command means that whenever <code>α</code> has type <code>Type n</code>, <code>List α</code> also has type <code>Type n</code>. The function <code>Prod</code> is similarly polymorphic:</p>
 <pre><code class="language-lean">#check Prod    -- Type u_1 → Type u_2 → Type (max u_1 u_2)
 </code></pre>
 <p>To define polymorphic constants and variables, Lean allows us to declare universe variables explicitly using the <code>universe</code> command:</p>
@@ -575,7 +581,7 @@ But how do we create a function from another expression?</p>
 Suppose that giving a variable <code>x : α</code> we can construct an expression <code>t : β</code>.
 Then the expression <code>fun (x : α) =&gt; t</code>, or, equivalently, <code>λ (x : α) =&gt; t</code>, is an object of type <code>α → β</code>.
 Think of this as the function from <code>α</code> to <code>β</code> which maps any value <code>x</code> to the value <code>t</code>,
-which depends on <code>x</code>.</p>
+which may depend on <code>x</code>.</p>
 <pre><code class="language-lean">#check fun (x : Nat) =&gt; x + 5
 #check λ (x : Nat) =&gt; x + 5
 #check fun x : Nat =&gt; x + 5
@@ -604,7 +610,7 @@ constant b : Bool
 <p>Think about what these expressions mean. The expression <code>fun x : Nat =&gt; x</code> denotes the identity function on <code>Nat</code>,
 the expression <code>fun x : α =&gt; b</code> denotes the constant function that always returns <code>b</code>,
 and <code>fun x : Nat =&gt; g (f x)</code>, denotes the composition of <code>f</code> and <code>g</code>.
-We can, in general, leave off the type annotations on the variable and let Lean infer it for us.
+We can, in general, leave off the type annotation on a variable and let Lean infer it for us.
 So, for example, we can write <code>fun x =&gt; g (f x)</code> instead of <code>fun x : Nat =&gt; g (f x)</code>.</p>
 <p>We can abstract over the constants <code>f</code> and <code>g</code> in the previous definitions:</p>
 <pre><code class="language-lean">#check fun (g : String → Bool) (f : Nat → String) (x : Nat) =&gt; g (f x)
@@ -753,14 +759,14 @@ for each <code>a : α</code>, <code>f a</code> is an element of <code>β a</code
 When <code>β</code> doesn't depend on <code>a</code>, <code>(a : α) → β</code> is no different from the type <code>α → β</code>.
 Indeed, in dependent type theory (and in Lean), <code>α → β</code> is just notation for <code>(a : α) → β</code> when <code>β</code> does not depend on <code>a</code>.</p>
 <p>Returning to the example of lists, we can use the command <code>#check</code> to inspect the type of the following <code>List</code> functions
-We will explain the <code>@</code> symbol and the difference between the round and curly brackets momentarily.</p>
+We will explain the <code>@</code> symbol and the difference between the round and curly braces momentarily.</p>
 <pre><code class="language-lean">#check @List.cons    -- {α : Type u_1} → α → List α → List α
 #check @List.nil     -- {α : Type u_1} → List α
 #check @List.length  -- {α : Type u_1} → List α → Nat
 #check @List.append  -- {α : Type u_1} → List α → List α → List α
 </code></pre>
 <p>Just as dependent function types <code>(a : α) → β a</code> generalize the notion of a function type <code>α → β</code> by allowing <code>β</code> to depend on <code>α</code>,
-dependent cartesian product types <code>(a : α) × β a</code> generalize the cartesian product <code>α × β</code> in the same way. Dependent products are also
+dependent Cartesian product types <code>(a : α) × β a</code> generalize the Cartesian product <code>α × β</code> in the same way. Dependent products are also
 called <em>sigma</em> types, and you can also write them as <code>Σ a : α, β a</code>. You can use <code>⟨a, b⟩</code> or <code>Sigma.mk a b</code> to create a dependent pair.</p>
 <pre><code class="language-lean">universes u v
 
@@ -1986,10 +1992,10 @@ you can develop your own certified arbitrary-precision library and use it to imp
 <p>The operator <code>/</code> for <code>Int</code> implements integer division.</p>
 <pre><code class="language-lean">#eval -10 / 4 -- -2
 </code></pre>
-<p>Similar to the <code>Nat, the internal representation of </code>Int` is optimized. Small integers are
+<p>Similar to <code>Nat</code>, the internal representation of <code>Int</code> is optimized. Small integers are
 represented by a single machine word. Big integers are implemented using <a href="https://gmplib.org/manual/">GMP</a> numbers.
 We recommend you use fixed precision numeric types only in performance critical code.</p>
-<p>The Lean kernel has not special support for reducing <code>Int</code> during type checking.
+<p>The Lean kernel does not have special support for reducing <code>Int</code> during type checking.
 However, since <code>Int</code> is defined as</p>
 <pre><code class="language-lean"><span class="boring">namespace hidden
 </span>inductive Int : Type where
