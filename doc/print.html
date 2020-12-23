@@ -3033,7 +3033,9 @@ The lambda expression notation has many new features that are not supported in L
   fun (a, b) =&gt; &quot;(&quot; ++ toString a ++ &quot;, &quot; ++ toString b ++ &quot;)&quot;
 
 structure Point where
-  x y z : Nat
+  x : Nat
+  y : Nat
+  z : Nat
 
 def Point.addX : Point → Point → Nat :=
   fun { x := a, .. } { x := b, .. } =&gt;  a+b
