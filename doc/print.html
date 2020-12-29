@@ -3573,7 +3573,7 @@ update the stage 0 compiler, which can be done via <code>make -C stageN update-s
 <code>make update-stage0</code> without <code>-C</code> defaults to stage1.</p>
 <h2><a class="header" href="#development-setup" id="development-setup">Development Setup</a></h2>
 <p>After building a stage, you can invoke <code>make -C stageN test</code> (or, even better,
-<code>make -C stageN ARGS=-j</code> to make <code>ctest</code> parallel) to run the Lean test suite.
+<code>make -C stageN test ARGS=-jN</code> to make <code>ctest</code> parallel) to run the Lean test suite.
 <code>make test</code> without <code>-C</code> defaults to stage1. While the Lean tests will
 automatically use that stage's corresponding Lean executables, for running tests
 or compiling Lean programs manually, you need to put them into your <code>PATH</code>
