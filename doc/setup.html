@@ -215,6 +215,7 @@ The Lean package comes with a package root file <code>MyPackage.lean</code> and 
 $ nix build .#executable  # compile `main` definition into executable
 $ nix run .#emacs-dev  # open a pinned version of Emacs with lean4-mode fully set up
 $ nix run .#emacs-dev MyPackage.lean  # arguments can be passed as well, e.g. the file to open
+$ nix run .#vscode-dev MyPackage.lean  # ditto, using VS Code
 </code></pre>
 <p>Note that if you rename <code>MyPackage.lean</code>, you also have to adjust the <code>name</code> attribute in <code>flake.nix</code> accordingly.</p>
 <p>Package dependencies can be added as further input flakes and passed to the <code>deps</code> list of <code>buildLeanPackage</code>. Example: <a href="https://github.com/Kha/testpkg2/blob/master/flake.nix#L5">https://github.com/Kha/testpkg2/blob/master/flake.nix#L5</a></p>
