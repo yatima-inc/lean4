@@ -210,7 +210,7 @@ def main : IO Unit :=
 <p>The best way to learn about Lean is to read and write Lean code.
 This article will act as a tour through some of the key features of the Lean
 language and give you some code snippets that you can execute on your machine.
-To learn about setting up a development environment, check out <a href="./gettingStarted.html">Getting Started</a>.</p>
+To learn about setting up a development environment, check out <a href="./setup.html">Setting Up Lean</a>.</p>
 <p>There are two primary concepts in Lean: functions and types.
 This tour will emphasize features of the language which fall into
 these two concepts.</p>
@@ -1232,7 +1232,7 @@ The following function converts a <code>Weekday</code> into a natural number.</p
 <p>It is often useful to group definitions related to a type in a namespace with the same name.
 For example, we can put the function above into the <code>Weekday</code> namespace.
 We are then allowed to use the shorter name when we open the namespace.</p>
-<p>In the following example, wedefine functions from <code>Weekday</code> to <code>Weekday</code> in the namespace <code>Weekday</code>.</p>
+<p>In the following example, we define functions from <code>Weekday</code> to <code>Weekday</code> in the namespace <code>Weekday</code>.</p>
 <pre><code class="language-lean"><span class="boring">inductive Weekday where
 </span><span class="boring"> | sunday    : Weekday
 </span><span class="boring"> | monday    : Weekday
@@ -3094,7 +3094,7 @@ we may be busy, etc. If you really need this new feature or bug fix, we suggest 
 <ul>
 <li>Where is the documentation?</li>
 </ul>
-<p>This is the Lean 4 manual. It is working progress, but it will eventually cover the whole language.
+<p>This is the Lean 4 manual. It is a work in progress, but it will eventually cover the whole language.
 A public and very active chat room dedicated to Lean is open on <a href="https://leanprover.zulipchat.com">Zulip</a>.
 It is a good place to interact with other Lean users.</p>
 <ul>
