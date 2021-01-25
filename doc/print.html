@@ -3447,11 +3447,12 @@ or.imp_or_right H3 (assume H4 : b - c = 0, sub_eq_zero H4)
 <ul>
 <li>either <code>xelatex</code> or <code>lualatex</code> is required to handle Unicode characters in the code.</li>
 <li><code>--shell-escape</code> is needed to allow <code>xelatex</code> to execute <code>pygmentize</code> in a shell.</li>
-<li>If the chosen monospace font is missing some Unicode symbols, you can direct them to be displayed using a fallback font.</li>
+<li>If the chosen monospace font is missing some Unicode symbols, you can direct them to be displayed using a fallback font or other replacement LaTeX code.</li>
 </ul>
 <pre><code class="language-latex">\usepackage{newunicodechar}
 \newfontfamily{\freeserif}{DejaVu Sans}
 \newunicodechar{✝}{\freeserif{✝}}
+\newunicodechar{𝓞}{\ensuremath{\mathcal{O}}}
 </code></pre>
 <ul>
 <li>minted has a &quot;helpful&quot; feature that draws red boxes around characters the chosen lexer doesn't recognize.
