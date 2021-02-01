@@ -7,6 +7,8 @@ theorem ex1 (m : Nat) : Le m 0 → m = 0 := by
   cases h
   rfl
 
+#exit
+
 theorem ex2 (m n : Nat) : Le m n → Le m.succ n.succ := by
   intro h
   induction h with
@@ -14,6 +16,8 @@ theorem ex2 (m n : Nat) : Le m n → Le m.succ n.succ := by
   | succ n m ih =>
     apply Le.succ
     apply ih
+
+#exit
 
 theorem ex3 (m : Nat) : Le 0 m := by
   induction m with

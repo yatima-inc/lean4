@@ -63,7 +63,7 @@ structure Context where
 
 structure State where
   argPos    : Nat := 0 -- current argument position
-  targetPos : Nat := 0 -- current target at targetsStx
+  targetPos : Nat := 0 -- current target at (targets : Array Expr)
   f         : Expr
   fType     : Expr
   alts      : Array (Name × MVarId) := #[]
@@ -92,7 +92,13 @@ structure Result where
   alts    : Array (Name × MVarId) := #[]
 
 partial def mkElimApp (elimName : Name) (elimInfo : ElimInfo) (targets : Array Expr) (tag : Name) : TermElabM Result := do
-  let rec loop : M Unit := do
+  let f ← Term.mkConst elimName
+  let fType ← inferType f
+  let (_, s) ← loop.run { elimInfo := elimInfo, targets := targets } |>.run { f := f, fType := fType }
+  Lean.Elab.Term.synthesizeAppInstMVars s.instMVars
+  pure { elimApp := (← instantiateMVars s.f), alts := s.alts }
+where
+  loop : M Unit := do
     match (← getFType) with
     | Expr.forallE binderName _ _ c =>
       let ctx ← read
@@ -129,11 +135,6 @@ partial def mkElimApp (elimName : Name) (elimInfo : ElimInfo) (targets : Array E
       loop
     | _ =>
       pure ()
-  let f ← Term.mkConst elimName
-  let fType ← inferType f
-  let (_, s) ← loop.run { elimInfo := elimInfo, targets := targets } |>.run { f := f, fType := fType }
-  Lean.Elab.Term.synthesizeAppInstMVars s.instMVars
-  pure { elimApp := (← instantiateMVars s.f), alts := s.alts }
 
 /- Given a goal `... targets ... |- C[targets]` associated with `mvarId`, assign
   `motiveArg := fun targets => C[targets]` -/
@@ -287,141 +288,6 @@ def getInductiveValFromMajor (major : Expr) : TacticM InductiveVal :=
       (fun _ => Meta.throwTacticEx `induction mvarId m!"major premise type is not an inductive type {indentExpr majorType}")
       (fun val _ => pure val)
 
-private partial def getRecFromUsingLoop (baseRecName : Name) (majorType : Expr) : TacticM (Option Meta.RecursorInfo) := do
-  let finalize (majorType : Expr) : TacticM (Option Meta.RecursorInfo) := do
-    let majorType? ← unfoldDefinition? majorType
-    match majorType? with
-    | some majorType => withIncRecDepth $ getRecFromUsingLoop baseRecName majorType
-    | none           => pure none
-  let majorType ← whnfCore majorType
-  match majorType.getAppFn with
-  | Expr.const name _ _ =>
-    let candidate := name ++ baseRecName
-    match (← getEnv).find? candidate with
-    | some _ =>
-      try
-        liftMetaMAtMain fun _ => do
-          let info ← Meta.mkRecursorInfo candidate
-          pure (some info)
-      catch _ =>
-        finalize majorType
-    | none   => finalize majorType
-  | _ => finalize majorType
-
-def getRecFromUsing (major : Expr) (baseRecName : Name) : TacticM Meta.RecursorInfo := do
-  match ← getRecFromUsingLoop baseRecName (← inferType major) with
-  | some recInfo => pure recInfo
-  | none =>
-    let recName ← resolveGlobalConstNoOverload baseRecName
-    try
-      liftMetaMAtMain fun _ => Meta.mkRecursorInfo recName
-    catch _ =>
-      throwError! "invalid recursor name '{baseRecName}'"
-
-/- Create `RecInfo` assuming builtin recursor -/
-private def getRecInfoDefault (major : Expr) (optInductionAlts : Syntax) (allowMissingAlts : Bool) : TacticM (RecInfo × Array Name) := do
-  let indVal ← getInductiveValFromMajor major
-  let recName := mkRecName indVal.name
-  if optInductionAlts.isNone then
-    pure ({ recName := recName }, #[])
-  else
-    let ctorNames   := indVal.ctors
-    let alts        := getAltsOfInductionAlts optInductionAlts[0]
-    checkAltCtorNames alts ctorNames
-    let mut altsNew := #[]
-    -- This code can be simplified if we decide to keep `checkAltsOfOptInductionAlts`
-    let mut remainingAlts := alts
-    let mut prevAnonymousAlt? := none
-    for ctorName in ctorNames do
-      match remainingAlts.findIdx? (fun alt => (getAltName alt).isSuffixOf ctorName) with
-      | some idx =>
-        let newAlt    := remainingAlts[idx]
-        altsNew       := altsNew.push newAlt
-        remainingAlts := remainingAlts.eraseIdx idx
-      | none =>
-          match remainingAlts.findIdx? (fun alt => getAltName alt == `_) with
-          | some idx =>
-            let newAlt        := remainingAlts[idx]
-            altsNew           := altsNew.push newAlt
-            remainingAlts     := remainingAlts.eraseIdx idx
-            prevAnonymousAlt? := some newAlt
-          | none => match prevAnonymousAlt? with
-            | some alt => altsNew := altsNew.push alt
-            | none     =>
-              if allowMissingAlts then
-                altsNew := altsNew.push Syntax.missing
-              else
-                throwError! "alternative for constructor '{ctorName}' is missing"
-    unless remainingAlts.isEmpty do
-      throwErrorAt remainingAlts[0] "unused alternative"
-    pure ({ recName := recName, alts := altsNew }, ctorNames.toArray)
-
-/-
-  Recall that
-  ```
-  altRHS := Term.hole <|> Term.syntheticHole <|> tacticSeq
-  inductionAlt  : Parser := parser! ident' >> many ident' >> darrow >> altRHS
-  inductionAlts : Parser := parser! withPosition ("| " >> sepBy1 inductionAlt (checkColGe "alternatives must be indented" >> "|"))
-  usingRec : Parser := optional (" using " >> ident)
-  generalizingVars := optional (" generalizing " >> many1 ident)
-  induction := parser! nonReservedSymbol "induction " >> sepBy1 termParser ", " >> usingRec >> generalizingVars >> optional inductionAlts
-  ```
--/
-private def getRecInfo (stx : Syntax) (major : Expr) : TacticM RecInfo := withRef stx $ withMainMVarContext do
-  let usingRecStx := stx[2]
-  let optInductionAlts := stx[4]
-  checkAltsOfOptInductionAlts optInductionAlts
-  if usingRecStx.isNone then
-    let (rinfo, _) ← getRecInfoDefault major optInductionAlts false
-    pure rinfo
-  else
-    let baseRecName := usingRecStx.getIdAt 1 |>.eraseMacroScopes
-    let recInfo ← getRecFromUsing major baseRecName
-    let recName := recInfo.recursorName
-    if optInductionAlts.isNone then
-      pure { recName := recName }
-    else
-      let alts := getAltsOfInductionAlts optInductionAlts[0]
-      let paramNames ← liftMetaMAtMain fun _ => getParamNames recInfo.recursorName
-      let mut remainingAlts     := alts
-      let mut prevAnonymousAlt? := none
-      let mut altsNew           := #[]
-      for i in [:paramNames.size] do
-        if recInfo.isMinor i then
-          let paramName := paramNames[i]
-          match remainingAlts.findIdx? (fun alt => getAltName alt == paramName) with
-          | some idx =>
-            let newAlt    := remainingAlts[idx]
-            altsNew       := altsNew.push newAlt
-            remainingAlts := remainingAlts.eraseIdx idx
-          | none => match remainingAlts.findIdx? (fun alt => getAltName alt == `_) with
-            | some idx =>
-              let newAlt     := remainingAlts[idx]
-              altsNew        := altsNew.push newAlt
-              remainingAlts  := remainingAlts.eraseIdx idx
-              prevAnonymousAlt? := some newAlt
-            | none => match prevAnonymousAlt? with
-              | some alt => altsNew := altsNew.push alt
-              | none     => throwError! "alternative for minor premise '{paramName}' is missing"
-      unless remainingAlts.isEmpty do
-        throwErrorAt remainingAlts[0] "unused alternative"
-      pure { recName := recName, alts := altsNew }
-
-private def processResult (alts : Array Syntax) (result : Array Meta.InductionSubgoal) (numToIntro : Nat := 0) : TacticM Unit := do
-  if alts.isEmpty then
-    setGoals $ result.toList.map fun s => s.mvarId
-  else
-    unless alts.size == result.size do
-      throwError! "mistmatch on the number of subgoals produced ({result.size}) and alternatives provided ({alts.size})"
-    let mut gs := #[]
-    for i in [:result.size] do
-      let subgoal    := result[i]
-      let mut mvarId := subgoal.mvarId
-      if numToIntro > 0 then
-        (_, mvarId) ← introNP mvarId numToIntro
-      gs ← evalAlt mvarId alts[i] gs
-    setGoals gs.toList
-
 private def generalizeTerm (term : Expr) : TacticM Expr := do
   match term with
   | Expr.fvar .. => pure term
@@ -431,35 +297,34 @@ private def generalizeTerm (term : Expr) : TacticM Expr := do
       let (fvarId, mvarId) ← Meta.intro1 mvarId
       pure (mkFVar fvarId, [mvarId])
 
+private def getElimInfoFor (optUsingIdent : Syntax) (targets : Array Expr) (isCasesOn := false) : TacticM ElimInfo := do
+  if optUsingIdent.isNone then
+    unless targets.size == 1 do
+      throwError! "multiple targets are only supported when a user-defined eliminator is provided with 'using'"
+    let indVal ← getInductiveValFromMajor targets[0]
+    let declName := if isCasesOn then mkCasesOnName indVal.name else mkRecName indVal.name
+    getElimInfo declName
+  else
+    withRef optUsingIdent[1] do getElimInfo (← resolveGlobalConstNoOverload optUsingIdent[1].getId.eraseMacroScopes)
+
 @[builtinTactic Lean.Parser.Tactic.induction] def evalInduction : Tactic := fun stx => focus do
   let targets ← stx[1].getSepArgs.mapM fun target => do
     let target ← withMainMVarContext $ elabTerm target none
     generalizeTerm target
   let n ← generalizeVars stx targets
-  if targets.size == 1 then
-    let recInfo ← getRecInfo stx targets[0]
-    let (mvarId, _) ← getMainGoal
-    let altVars := recInfo.alts.map fun alt => (getAltVarNames alt).toList
-    let result ← Meta.induction mvarId targets[0].fvarId! recInfo.recName altVars
-    processResult recInfo.alts result (numToIntro := n)
-  else
-    if stx[2].isNone then
-      throwError! "eliminator must be provided when multiple targets are used (use 'using <eliminator-name>')"
-    let elimId := stx[2][1]
-    let elimName := elimId.getId
-    let elimInfo ← withRef elimId do getElimInfo elimName
-    let (mvarId, _) ← getMainGoal
-    let tag ← getMVarTag mvarId
-    withMVarContext mvarId do
-      let result ← withRef stx[1] do -- use target position as reference
-        ElimApp.mkElimApp elimName elimInfo targets tag
-      assignExprMVar mvarId result.elimApp
-      let elimArgs := result.elimApp.getAppArgs
-      let targets ← elimInfo.targetsPos.mapM fun i => instantiateMVars elimArgs[i]
-      let targetFVarIds := targets.map (·.fvarId!)
-      ElimApp.setMotiveArg mvarId elimArgs[elimInfo.motivePos].mvarId! targetFVarIds
-      let optInductionAlts := stx[4]
-      ElimApp.evalAlts elimInfo result.alts (getAltsOfOptInductionAlts optInductionAlts) (numGeneralized := n) (toClear := targetFVarIds)
+  let elimInfo ← getElimInfoFor stx[2] targets
+  let (mvarId, _) ← getMainGoal
+  let tag ← getMVarTag mvarId
+  withMVarContext mvarId do
+    let result ← withRef stx[1] do -- use target position as reference
+      ElimApp.mkElimApp elimInfo.name elimInfo targets tag
+    assignExprMVar mvarId result.elimApp
+    let elimArgs := result.elimApp.getAppArgs
+    let targets ← elimInfo.targetsPos.mapM fun i => instantiateMVars elimArgs[i]
+    let toClear := targets.filter (·.isFVar) |>.map (·.fvarId!)
+    ElimApp.setMotiveArg mvarId elimArgs[elimInfo.motivePos].mvarId! targetFVarIds
+    let optInductionAlts := stx[4]
+    ElimApp.evalAlts elimInfo result.alts (getAltsOfOptInductionAlts optInductionAlts) (numGeneralized := n) (toClear := toClear)
 
 -- Recall that
 -- majorPremise := parser! optional (try (ident >> " : ")) >> termParser
@@ -498,17 +363,9 @@ builtin_initialize registerTraceClass `Elab.cases
 @[builtinTactic Lean.Parser.Tactic.cases] def evalCases : Tactic := fun stx => focus do
   -- parser! nonReservedSymbol "cases " >> sepBy1 (group majorPremise) ", " >> usingRec >> optInductionAlts
   let targets ← elabTargets stx[1].getSepArgs
-  let targetFVarIds := targets.map (·.fvarId!)
   let optInductionAlts := stx[3]
   checkAltsOfOptInductionAlts optInductionAlts
-  let elimInfo ←
-    if stx[2].isNone then
-      unless targets.size == 1 do
-        throwErrorAt stx[1] "multiple targets are only supported when a user-defined eliminator is provided with 'using'"
-      let indVal ← getInductiveValFromMajor targets[0]
-      withRef stx do getElimInfo <| mkCasesOnName indVal.name
-    else
-      withRef stx[2][1] do getElimInfo (← resolveGlobalConstNoOverload stx[2][1].getId.eraseMacroScopes)
+  let elimInfo ← getElimInfoFor stx[2] targets (isCasesOn := true)
   let targetRef := stx[1]
   let (mvarId, _) ← getMainGoal
   let tag ← getMVarTag mvarId
@@ -516,12 +373,13 @@ builtin_initialize registerTraceClass `Elab.cases
     let result ← withRef targetRef <| ElimApp.mkElimApp elimInfo.name elimInfo targets tag
     let elimArgs := result.elimApp.getAppArgs
     let targets ← elimInfo.targetsPos.mapM fun i => instantiateMVars elimArgs[i]
+    let toClear := targets.filter (·.isFVar) |>.map (·.fvarId!)
     let motiveType ← inferType elimArgs[elimInfo.motivePos]
     let mvarId ← generalizeTargets mvarId motiveType targets
     let (targetsNew, mvarId) ← introN mvarId targets.size
     withMVarContext mvarId do
       ElimApp.setMotiveArg mvarId elimArgs[elimInfo.motivePos].mvarId! targetsNew
       assignExprMVar mvarId result.elimApp
-      ElimApp.evalAlts elimInfo result.alts (getAltsOfOptInductionAlts optInductionAlts) (numEqs := targets.size) (toClear := targetFVarIds)
+      ElimApp.evalAlts elimInfo result.alts (getAltsOfOptInductionAlts optInductionAlts) (numEqs := targets.size) (toClear := toClear)
 
 end Lean.Elab.Tactic
