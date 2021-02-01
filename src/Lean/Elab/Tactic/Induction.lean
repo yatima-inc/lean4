@@ -461,30 +461,6 @@ private def generalizeTerm (term : Expr) : TacticM Expr := do
       let optInductionAlts := stx[4]
       ElimApp.evalAlts elimInfo result.alts (getAltsOfOptInductionAlts optInductionAlts) (numGeneralized := n) (toClear := targetFVarIds)
 
-private partial def checkCasesResult (casesResult : Array Meta.CasesSubgoal) (ctorNames : Array Name) (alts : Array Syntax) : TacticM Unit := do
-  let rec loop (i j : Nat) : TacticM Unit :=
-    if h : j < alts.size then do
-      let alt   := alts.get ⟨j, h⟩
-      if alt.isMissing then
-        loop i (j+1)
-      else
-        let ctorName := ctorNames.get! j
-        if h : i < casesResult.size then
-          let subgoal := casesResult.get ⟨i, h⟩
-          if ctorName == subgoal.ctorName then
-            loop (i+1) (j+1)
-          else
-            throwError! "alternative for '{subgoal.ctorName}' has not been provided"
-        else
-          throwError! "alternative for '{ctorName}' is not needed"
-    else if h : i < casesResult.size then
-      let subgoal := casesResult.get ⟨i, h⟩
-      throwError! "alternative for '{subgoal.ctorName}' has not been provided"
-    else
-      pure ()
-  unless alts.isEmpty do
-    loop 0 0
-
 -- Recall that
 -- majorPremise := parser! optional (try (ident >> " : ")) >> termParser
 private def getTargetHypothesisName? (target : Syntax) : Option Name :=
