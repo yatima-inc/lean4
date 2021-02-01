@@ -519,26 +519,25 @@ def elabTargets (targets : Array Syntax) : TacticM (Array Expr) :=
 
 builtin_initialize registerTraceClass `Elab.cases
 
-/- Default `cases` tactic that uses `casesOn` eliminator -/
-def evalCasesOn (target : Expr) (optInductionAlts : Syntax) : TacticM Unit := do
-  let (mvarId, _) ← getMainGoal
-  let (recInfo, ctorNames) ← getRecInfoDefault target optInductionAlts (allowMissingAlts := true)
-  let altVars := recInfo.alts.map fun alt => (getAltVarNames alt).toList
-  let result ← Meta.cases mvarId target.fvarId! altVars
-  trace[Elab.cases]! "recInfo.alts.size: #{recInfo.alts.size} {recInfo.alts.map getAltVarNames}"
-  trace[Elab.cases]! "recInfo.alts: #{recInfo.alts.map toString}"
-  checkCasesResult result ctorNames recInfo.alts
-  let result  := result.map (fun s => s.toInductionSubgoal)
-  let alts := recInfo.alts.filter fun stx => !stx.isMissing
-  processResult alts result
-
-def evalCasesUsing (elimId : Syntax) (targetRef : Syntax) (targets : Array Expr) (optInductionAlts : Syntax) : TacticM Unit := do
-  let elimName := elimId.getId
-  let elimInfo ← withRef elimId do getElimInfo elimName
+@[builtinTactic Lean.Parser.Tactic.cases] def evalCases : Tactic := fun stx => focus do
+  -- parser! nonReservedSymbol "cases " >> sepBy1 (group majorPremise) ", " >> usingRec >> optInductionAlts
+  let targets ← elabTargets stx[1].getSepArgs
+  let targetFVarIds := targets.map (·.fvarId!)
+  let optInductionAlts := stx[3]
+  checkAltsOfOptInductionAlts optInductionAlts
+  let elimInfo ←
+    if stx[2].isNone then
+      unless targets.size == 1 do
+        throwErrorAt stx[1] "multiple targets are only supported when a user-defined eliminator is provided with 'using'"
+      let indVal ← getInductiveValFromMajor targets[0]
+      withRef stx do getElimInfo <| mkCasesOnName indVal.name
+    else
+      withRef stx[2][1] do getElimInfo (← resolveGlobalConstNoOverload stx[2][1].getId.eraseMacroScopes)
+  let targetRef := stx[1]
   let (mvarId, _) ← getMainGoal
   let tag ← getMVarTag mvarId
   withMVarContext mvarId do
-    let result ← withRef targetRef $ ElimApp.mkElimApp elimName elimInfo targets tag
+    let result ← withRef targetRef <| ElimApp.mkElimApp elimInfo.name elimInfo targets tag
     let elimArgs := result.elimApp.getAppArgs
     let targets ← elimInfo.targetsPos.mapM fun i => instantiateMVars elimArgs[i]
     let motiveType ← inferType elimArgs[elimInfo.motivePos]
@@ -547,18 +546,6 @@ def evalCasesUsing (elimId : Syntax) (targetRef : Syntax) (targets : Array Expr)
     withMVarContext mvarId do
       ElimApp.setMotiveArg mvarId elimArgs[elimInfo.motivePos].mvarId! targetsNew
       assignExprMVar mvarId result.elimApp
-      ElimApp.evalAlts elimInfo result.alts (getAltsOfOptInductionAlts optInductionAlts) (numEqs := targets.size)
-
-@[builtinTactic Lean.Parser.Tactic.cases] def evalCases : Tactic := fun stx => focus do
-  -- parser! nonReservedSymbol "cases " >> sepBy1 (group majorPremise) ", " >> usingRec >> optInductionAlts
-  let targets ← elabTargets stx[1].getSepArgs
-  let optInductionAlts := stx[3]
-  checkAltsOfOptInductionAlts optInductionAlts
-  if stx[2].isNone then
-    unless targets.size == 1 do
-      throwErrorAt stx[1] "multiple targets are only supported when a user-defined eliminator is provided with 'using'"
-    evalCasesOn targets[0] optInductionAlts
-  else
-    evalCasesUsing stx[2][1] (targetRef := stx[1]) targets optInductionAlts
+      ElimApp.evalAlts elimInfo result.alts (getAltsOfOptInductionAlts optInductionAlts) (numEqs := targets.size) (toClear := targetFVarIds)
 
 end Lean.Elab.Tactic
