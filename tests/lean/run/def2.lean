@@ -1,5 +1,3 @@
-
-
 inductive Vec.{u} (α : Type u) : Nat → Type u
 | nil  : Vec α 0
 | cons : α → {n : Nat} → Vec α n → Vec α (n+1)
@@ -11,8 +9,8 @@ variable {α : Type u}
 variable (f : α → α → α)
 
 def mapHead1 : {n : Nat} → Vec α n → Vec α n → Vec α n
-| _, nil, nil => nil
-| _, cons a va, cons b bv => cons (f a b) va
+| nil, nil => nil
+| cons a va, cons b bv => cons (f a b) va
 
 theorem ex1 : mapHead1 f nil nil = nil :=
 rfl

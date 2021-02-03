@@ -50,7 +50,7 @@ x✝² : Prop
 x✝¹ : x✝²
  : x✝²
 ⊢ decide x✝² = true
-hidingInaccessibleNames.lean:27:17-27:18: error: don't know how to synthesize placeholder
+hidingInaccessibleNames.lean:27:11-27:12: error: don't know how to synthesize placeholder
 context:
 x✝ : Char
 ⊢ x✝.val = x✝.val

@@ -1,5 +1,3 @@
-
-
 open Nat
 
 inductive BV : Nat → Type
@@ -10,9 +8,10 @@ open BV
 
 variable (f : Bool → Bool → Bool)
 
-def map2 : {n : Nat} →  BV n → BV n → BV n
-| .(0), nil, nil             => nil
-| .(n+1), cons n b1 v1, cons .(n) b2 v2 => cons n (f b1 b2) (map2 v1 v2)
+def map2 : {n : Nat} →  BV n → BV n → BV n :=
+  @fun
+  | .(0), nil, nil             => nil
+  | .(n+1), cons n b1 v1, cons .(n) b2 v2 => cons n (f b1 b2) (map2 v1 v2)
 
 theorem ex1 : map2 f nil nil = nil :=
 rfl
@@ -23,8 +22,8 @@ rfl
 #print map2
 
 def map2' : {n : Nat} →  BV n → BV n → BV n
-| _, nil,          nil          => nil
-| _, cons _ b1 v1, cons _ b2 v2 => cons _ (f b1 b2) (map2' v1 v2)
+  | nil,          nil          => nil
+  | cons _ b1 v1, cons _ b2 v2 => cons _ (f b1 b2) (map2' v1 v2)
 
 theorem ex3 : map2' f nil nil = nil :=
 rfl

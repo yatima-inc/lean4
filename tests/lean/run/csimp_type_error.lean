@@ -1,5 +1,3 @@
-
-
 namespace scratch
 
 inductive type
@@ -10,10 +8,16 @@ open type
 def value : type -> Type
   | bv w   => {n // n < w}
 
-def tester_fails : ∀ {tp : type}, value tp -> Bool
+def tester_fails : ∀ {tp : type}, value tp -> Bool :=
+  @fun
   | bv _,   v1 => decide (v1.val = 0)
 
-def tester_ok : ∀ {tp : type}, value tp -> Prop
+def tester_ok : ∀ {tp : type}, value tp -> Prop :=
+  @fun
   | bv _,   v1 => v1.val = 0
+
+def tester_ok' {tp : type} (v : value tp) : Prop :=
+  match tp, v with
+  | bv _, v1 => v1.val = 0
 
 end scratch

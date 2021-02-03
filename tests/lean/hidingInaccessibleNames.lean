@@ -19,9 +19,9 @@ theorem ex1 : p ∨ q → q ∨ p := by
   assumption
   done
 
-theorem ex2 : {p : Prop} → [Decidable p] → p → decide p = true
+theorem ex2 : {p : Prop} → [Decidable p] → p → decide p = true := @fun
   | _, isTrue  _, _   => _
   | _, isFalse h₁, h₂ => absurd h₂ h₁
 
 theorem ex3 : ∀ {c d : Char}, c = d → c.val = d.val
-  | _, _, rfl => _
+  | rfl => _

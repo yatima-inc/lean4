@@ -1,8 +1,9 @@
-theorem zeroLtOfLt : {a b : Nat} → a < b → 0 < b
-| 0,   _, h => h
-| a+1, b, h =>
-  have a < b from Nat.ltTrans (Nat.ltSuccSelf _) h
-  zeroLtOfLt this
+theorem zeroLtOfLt {a b : Nat} (h : a < b) : 0 < b :=
+  match a, b, h with
+  | 0,   _, h => h
+  | a+1, b, h =>
+    have a < b from Nat.ltTrans (Nat.ltSuccSelf _) h
+    zeroLtOfLt this
 
 def fold {m α β} [Monad m] (as : Array α) (b : β) (f : α → β → m β) : m β := do
 let rec loop : (i : Nat) → i ≤ as.size → β → m β

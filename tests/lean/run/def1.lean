@@ -1,5 +1,3 @@
-
-
 inductive BV : Nat → Type
 | nil  : BV 0
 | cons : (n : Nat) → (hd : Bool) → (tl : BV n) → BV (Nat.succ n)
@@ -7,8 +5,8 @@ inductive BV : Nat → Type
 open BV
 
 def h : {n : Nat} → BV n.succ.succ → Bool
-| _, cons (Nat.succ (Nat.succ m)) b v => b
-| _, cons (Nat.succ Nat.zero) b v     => not b
+| cons (Nat.succ (Nat.succ m)) b v => b
+| cons (Nat.succ Nat.zero) b v     => not b
 
 theorem ex1 (m : Nat) (b : Bool) (v : BV m.succ.succ) : h (cons m.succ.succ b v) = b :=
 rfl

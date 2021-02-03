@@ -1,5 +1,3 @@
-
-
 inductive Foo : Bool → Type
 | Z  : Foo false
 | O  : Foo false → Foo true
@@ -8,9 +6,9 @@ inductive Foo : Bool → Type
 open Foo
 
 def toNat : {b : Bool} → Foo b → Nat
-| _, Z   => 0
-| _, O n => toNat n + 1
-| _, E n => toNat n + 1
+| Z   => 0
+| O n => toNat n + 1
+| E n => toNat n + 1
 
 example : toNat (E (O Z)) = 2 :=
 rfl

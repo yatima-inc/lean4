@@ -76,10 +76,10 @@ inductive VecPred {α : Type u} (P : α → Prop) : {n : Nat} → Vec α n → P
 | cons  {n : Nat} {head : α} {tail : Vec α n} : P head → VecPred P tail → VecPred P (Vec.cons head tail)
 
 theorem ex3 {α : Type u} (P : α → Prop) : {n : Nat} → (v : Vec α (n+1)) → VecPred P v → Exists P
-| _, Vec.cons head _, VecPred.cons h _ => ⟨head, h⟩
+| Vec.cons head _, VecPred.cons h _ => ⟨head, h⟩
 
 theorem ex4 {α : Type u} (P : α → Prop) : {n : Nat} → (v : Vec α (n+1)) → VecPred P v → Exists P
-| _, Vec.cons head _, VecPred.cons h (w : VecPred P Vec.nil) => ⟨head, h⟩  -- ERROR
+| Vec.cons head _, VecPred.cons h (w : VecPred P Vec.nil) => ⟨head, h⟩  -- ERROR
 
 axiom someNat : Nat
 

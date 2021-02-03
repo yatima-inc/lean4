@@ -390,13 +390,14 @@ def expandWhereDeclsOpt (whereDeclsOpt : Syntax) (body : Syntax) : MacroM Syntax
     expandWhereDecls whereDeclsOpt[0] body
 
 /- Helper function for `expandMatchAltsIntoMatch` -/
-private def expandMatchAltsIntoMatchAux (matchAlts : Syntax) (matchTactic : Bool) : Nat → Array Syntax → MacroM Syntax
-  | 0,   discrs => do
+private def expandMatchAltsIntoMatchAux (matchAlts : Syntax) (matchTactic : Bool) (n : Nat) (discrs : Array Syntax) : MacroM Syntax :=
+  match n with
+  | 0 =>
     if matchTactic then
       `(tactic|match $[$discrs:term],* with $matchAlts:matchAlts)
     else
       `(match $[$discrs:term],* with $matchAlts:matchAlts)
-  | n+1, discrs => withFreshMacroScope do
+  | n+1 => withFreshMacroScope do
     let x ← `(x)
     let body ← expandMatchAltsIntoMatchAux matchAlts matchTactic n (discrs.push x)
     if matchTactic then
@@ -406,7 +407,7 @@ private def expandMatchAltsIntoMatchAux (matchAlts : Syntax) (matchTactic : Bool
 
 /--
   Expand `matchAlts` syntax into a full `match`-expression.
-  Example
+  Example:
     ```
     | 0, true => alt_1
     | i, _    => alt_2
@@ -431,6 +432,58 @@ def expandMatchAltsIntoMatch (ref : Syntax) (matchAlts : Syntax) (tactic := fals
 
 def expandMatchAltsIntoMatchTactic (ref : Syntax) (matchAlts : Syntax) : MacroM Syntax :=
   withRef ref <| expandMatchAltsIntoMatchAux matchAlts true (getMatchAltsNumPatterns matchAlts) #[]
+
+/--
+  Add wildcard patterns (`_`) to `matchAlts` for implicit parameters of `expectedType`.
+  Example: given `expectedType` of the form `{n : Nat} → Vec α n → {m : Nat} → Vec β m → C`,
+  and `matchAlts`
+  ```
+  | nil,       nil       => alt_1
+  | nil,       cons b bs => alt_2
+  | cons a as, nil       => alt_3
+  | cons a as, cons b bs => alt_4
+  ```
+  this method return the following new `matchAlts`
+  ```
+  | _, nil,       _, nil       => alt_1
+  | _, nil,       _, cons b bs => alt_2
+  | _, cons a as, _, nil       => alt_4
+  | _, cons a as, _, cons b bs => alt_3
+  ```
+-/
+def addWildcardPatternsForImplicits (matchAlts : Syntax) (expectedType : Expr) : TermElabM Syntax := do
+  if !hasImplicit expectedType then
+    return matchAlts
+  else
+    let alts := matchAlts[0].getArgs
+    let alts ← alts.mapM fun alt => do
+      let patterns := addWildcard (← getRef) expectedType alt[1].getSepArgs.toList
+      let patterns := Syntax.mkSep patterns.toArray (mkAtomFrom (← getRef) ", ")
+      return alt.setArg 1 patterns
+    return matchAlts.setArg 0 <| mkNullNode alts
+where
+  hasImplicit : Expr → Bool
+    | Expr.forallE _ _ b c => !c.binderInfo.isExplicit || hasImplicit b
+    | _ => false
+
+  addWildcard (ref : Syntax) (type : Expr) (patterns : List Syntax) : List Syntax :=
+    match type with
+    | Expr.forallE _ _ b c =>
+      if c.binderInfo.isExplicit then
+        match patterns with
+        | p :: ps => p :: addWildcard ref b ps
+        | []      => []
+      else
+        mkHole ref :: addWildcard ref b patterns
+    | _ => patterns
+
+/--
+  Similar to `expandMatchAltsIntoMatch`, but uses `expectedType` to add wildcard patterns `_` for implicit parameters.
+  See `addWildcardPatternsForImplicits`.
+-/
+def expandMatchAltsIntoMatchWithExpectedType (matchAlts : Syntax) (expectedType : Expr) : TermElabM Syntax := do
+  let matchAlts ← addWildcardPatternsForImplicits matchAlts expectedType
+  liftMacroM <| expandMatchAltsIntoMatchAux matchAlts (matchTactic := false) (getMatchAltsNumPatterns matchAlts) #[]
 
 /--
   Similar to `expandMatchAltsIntoMatch`, but supports an optional `where` clause.
@@ -460,8 +513,9 @@ def expandMatchAltsIntoMatchTactic (ref : Syntax) (matchAlts : Syntax) : MacroM 
       | i, _    => ... f i + g i ...
     ```
 -/
-def expandMatchAltsWhereDecls (matchAltsWhereDecls : Syntax) : MacroM Syntax :=
+def expandMatchAltsWhereDecls (matchAltsWhereDecls : Syntax) (expectedType : Expr) : TermElabM Syntax := do
   let matchAlts     := matchAltsWhereDecls[0]
+  let matchAlts     ← addWildcardPatternsForImplicits matchAlts expectedType
   let whereDeclsOpt := matchAltsWhereDecls[1]
   let rec loop (i : Nat) (discrs : Array Syntax) : MacroM Syntax :=
     match i with
@@ -475,7 +529,7 @@ def expandMatchAltsWhereDecls (matchAltsWhereDecls : Syntax) : MacroM Syntax :=
       let x ← `(x)
       let body ← loop n (discrs.push x)
       `(@fun $x => $body)
-  loop (getMatchAltsNumPatterns matchAlts) #[]
+  liftMacroM <| loop (getMatchAltsNumPatterns matchAlts) #[]
 
 @[builtinTermElab «fun»] def elabFun : TermElab := fun stx expectedType? => match stx with
   | `(fun $binders* => $body) => do
@@ -495,36 +549,63 @@ def expandMatchAltsWhereDecls (matchAltsWhereDecls : Syntax) : MacroM Syntax :=
     withMacroExpansion stx stxNew $ elabTerm stxNew expectedType?
   | _ => throwUnsupportedSyntax
 
+inductive LetValue
+  | term      (val : Syntax)
+  | matchAlts (val : Syntax)
+
+structure LetDeclView where
+  id      : Syntax
+  binders : Array Syntax
+  type    : Syntax
+  value   : LetValue
+
+def mkLetIdDeclView (letIdDecl : Syntax) : LetDeclView := {
+  -- `letIdDecl` is of the form `ident >> many bracketedBinder >> optType >> " := " >> termParser
+  id      := letIdDecl[0]
+  binders := letIdDecl[1].getArgs
+  type    := expandOptType letIdDecl letIdDecl[2]
+  value   := LetValue.term letIdDecl[4]
+}
+
+def mkLetEqnsDeclView (letEqnsDecl : Syntax) : LetDeclView := {
+  id      := letEqnsDecl[0]
+  binders := letEqnsDecl[1].getArgs
+  type    := expandOptType letEqnsDecl letEqnsDecl[2]
+  value   := LetValue.matchAlts letEqnsDecl[3]
+}
+
 /- If `useLetExpr` is true, then a kernel let-expression `let x : type := val; body` is created.
    Otherwise, we create a term of the form `(fun (x : type) => body) val`
 
    The default elaboration order is `binders`, `typeStx`, `valStx`, and `body`.
    If `elabBodyFirst == true`, then we use the order `binders`, `typeStx`, `body`, and `valStx`. -/
-def elabLetDeclAux (id : Syntax) (binders : Array Syntax) (typeStx : Syntax) (valStx : Syntax) (body : Syntax)
-    (expectedType? : Option Expr) (useLetExpr : Bool) (elabBodyFirst : Bool) : TermElabM Expr := do
-  let (type, val, arity) ← elabBinders binders fun xs => do
-    let type ← elabType typeStx
-    registerCustomErrorIfMVar type typeStx "failed to infer 'let' declaration type"
+def elabLetDeclAux (view : LetDeclView) (body : Syntax) (expectedType? : Option Expr) (useLetExpr : Bool) (elabBodyFirst : Bool) : TermElabM Expr := do
+  let (type, valStx, val, arity) ← elabBinders view.binders fun xs => do
+    let type ← elabType view.type
+    registerCustomErrorIfMVar type view.type "failed to infer 'let' declaration type"
+    let valStx ← match view.value with
+      | LetValue.term v      => pure v
+      | LetValue.matchAlts v => expandMatchAltsIntoMatchWithExpectedType v type
     if elabBodyFirst then
       let type ← mkForallFVars xs type
       let val  ← mkFreshExprMVar type
-      pure (type, val, xs.size)
+      pure (type, valStx, val, xs.size)
     else
       let val  ← elabTermEnsuringType valStx type
       let type ← mkForallFVars xs type
       let val  ← mkLambdaFVars xs val
-      pure (type, val, xs.size)
-  trace[Elab.let.decl]! "{id.getId} : {type} := {val}"
+      pure (type, valStx, val, xs.size)
+  trace[Elab.let.decl]! "{view.id.getId} : {type} := {val}"
   let result ←
     if useLetExpr then
-      withLetDecl id.getId type val fun x => do
-        addLocalVarInfo id x
+      withLetDecl view.id.getId type val fun x => do
+        addLocalVarInfo view.id x
         let body ← elabTerm body expectedType?
         let body ← instantiateMVars body
         mkLetFVars #[x] body
     else
-      let f ← withLocalDecl id.getId BinderInfo.default type fun x => do
-        addLocalVarInfo id x
+      let f ← withLocalDecl view.id.getId BinderInfo.default type fun x => do
+        addLocalVarInfo view.id x
         let body ← elabTerm body expectedType?
         let body ← instantiateMVars body
         mkLambdaFVars #[x] body
@@ -537,21 +618,6 @@ def elabLetDeclAux (id : Syntax) (binders : Array Syntax) (typeStx : Syntax) (va
         throwError "unexpected error when elaborating 'let'"
   pure result
 
-structure LetIdDeclView where
-  id      : Syntax
-  binders : Array Syntax
-  type    : Syntax
-  value   : Syntax
-
-def mkLetIdDeclView (letIdDecl : Syntax) : LetIdDeclView :=
-  -- `letIdDecl` is of the form `ident >> many bracketedBinder >> optType >> " := " >> termParser
-  let id      := letIdDecl[0]
-  let binders := letIdDecl[1].getArgs
-  let optType := letIdDecl[2]
-  let type    := expandOptType letIdDecl optType
-  let value   := letIdDecl[4]
-  { id := id, binders := binders, type := type, value := value }
-
 def expandLetEqnsDecl (letDecl : Syntax) : MacroM Syntax := do
   let ref       := letDecl
   let matchAlts := letDecl[3]
@@ -563,8 +629,7 @@ def elabLetDeclCore (stx : Syntax) (expectedType? : Option Expr) (useLetExpr : B
   let letDecl := stx[1][0]
   let body    := stx[3]
   if letDecl.getKind == `Lean.Parser.Term.letIdDecl then
-    let { id := id, binders := binders, type := type, value := val } := mkLetIdDeclView letDecl
-    elabLetDeclAux id binders type val body expectedType? useLetExpr elabBodyFirst
+    elabLetDeclAux (mkLetIdDeclView letDecl) body expectedType? useLetExpr elabBodyFirst
   else if letDecl.getKind == `Lean.Parser.Term.letPatDecl then
     -- node `Lean.Parser.Term.letPatDecl  $ try (termParser >> pushNone >> optType >> " := ") >> termParser
     let pat     := letDecl[0]
@@ -579,10 +644,7 @@ def elabLetDeclCore (stx : Syntax) (expectedType? : Option Expr) (useLetExpr : B
       | false, false => unreachable!
     withMacroExpansion stx stxNew <| elabTerm stxNew expectedType?
   else if letDecl.getKind == `Lean.Parser.Term.letEqnsDecl then
-    let letDeclIdNew ← liftMacroM <| expandLetEqnsDecl letDecl
-    let declNew := stx[1].setArg 0 letDeclIdNew
-    let stxNew  := stx.setArg 1 declNew
-    withMacroExpansion stx stxNew <| elabTerm stxNew expectedType?
+    elabLetDeclAux (mkLetEqnsDeclView letDecl) body expectedType? useLetExpr elabBodyFirst
   else
     throwUnsupportedSyntax
 

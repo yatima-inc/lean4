@@ -10,13 +10,19 @@ inductive Op : (ishapes : List S) → (oshape : S) → Type
   | gemm   : {m n p : Nat} → Op [[m, n], [n, p]] [m, p]
 
 def Op.f : {ishapes : List S} → {oshape : S} → Op ishapes oshape → T oshape
-  | [shape, _],        _,      binary _ => arbitrary
-  | [[m, n], [_, p]],  [_, _], gemm     => arbitrary
+  | binary _ => arbitrary
+  | gemm     => arbitrary
+
+def Op.f1 : {ishapes : List S} → {oshape : S} → Op ishapes oshape → T oshape :=
+  @fun
+    | [shape, _],        _,      binary _ => arbitrary
+    | [[m, n], [_, p]],  [_, _], gemm     => arbitrary
 
 #print Op.f
 
-def Op.f2 : {ishapes : List S} → {oshape : S} → Op ishapes oshape → T oshape
-  | _,  _, binary _ => arbitrary
-  | _,  _, gemm     => arbitrary
+def Op.f2 : {ishapes : List S} → {oshape : S} → Op ishapes oshape → T oshape :=
+  @fun
+    | _,  _, binary _ => arbitrary
+    | _,  _, gemm     => arbitrary
 
 #print Op.f2

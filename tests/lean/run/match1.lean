@@ -37,8 +37,8 @@ def C.x : C → Nat
 | C.mk₂ x _ => x
 
 def head : {α : Type} → List α → Option α
-| _, a::as => some a
-| _, _     => none
+| a::as => some a
+| _     => none
 
 theorem ex4 : head [1, 2] = some 1 :=
 rfl
@@ -53,8 +53,8 @@ rfl
 
 def head3 {α : Type} (xs : List α) : Option α :=
 let rec aux : {α : Type} → List α → Option α
-  | _, a::as => some a
-  | _, _     => none;
+  | a::as => some a
+  | _     => none;
 aux xs
 
 theorem ex6 : head3 [1, 2] = some 1 :=
@@ -65,16 +65,16 @@ inductive Vec.{u} (α : Type u) : Nat → Type u
 | cons {n} (head : α) (tail : Vec α n) : Vec α (n+1)
 
 def Vec.mapHead1 {α β δ} : {n : Nat} → Vec α n → Vec β n → (α → β → δ) → Option δ
-| _,   nil,       nil,       f => none
-| _, cons a as, cons b bs,   f => some (f a b)
+| nil,       nil,       f => none
+| cons a as, cons b bs,   f => some (f a b)
 
 def Vec.mapHead2 {α β δ} : {n : Nat} → Vec α n → Vec β n → (α → β → δ) → Option δ
-| _, nil,            nil,         f => none
-| _, @cons _ n a as, cons b bs,   f => some (f a b)
+| nil,            nil,         f => none
+| @cons _ n a as, cons b bs,   f => some (f a b)
 
 def Vec.mapHead3 {α β δ} : {n : Nat} → Vec α n → Vec β n → (α → β → δ) → Option δ
-| _, nil,            nil,         f => none
-| _, cons (tail := as) (head := a), cons b bs,   f => some (f a b)
+| nil,            nil,         f => none
+| cons (tail := as) (head := a), cons b bs,   f => some (f a b)
 
 inductive Foo
 | mk₁ (x y z w : Nat)
@@ -102,10 +102,10 @@ instance {α} : Inhabited (Sigma fun m => Vec α m) :=
 ⟨⟨0, Vec.nil⟩⟩
 
 partial def filter {α} (p : α → Bool) : {n : Nat} → Vec α n → Sigma fun m => Vec α m
-| _, Vec.nil        => ⟨0, Vec.nil⟩
-| _, Vec.cons x xs  => match p x, filter p xs with
-  | true,  ⟨_, ys⟩ => ⟨_, Vec.cons x ys⟩
-  | false, ys      => ys
+  | Vec.nil        => ⟨0, Vec.nil⟩
+  | Vec.cons x xs  => match p x, filter p xs with
+    | true,  ⟨_, ys⟩ => ⟨_, Vec.cons x ys⟩
+    | false, ys      => ys
 
 inductive Bla
 | ofNat  (x : Nat)

@@ -15,5 +15,5 @@ def Val : S → Type
   | I => Int
 
 noncomputable def Expr.eval : {s : S} → Expr s → Val s
-  | _, lit n => n
-  | _, eq e₁ e₂ => decide (e₁.eval = e₂.eval)
+  | lit n => n
+  | eq e₁ e₂ => decide (e₁.eval = e₂.eval)

@@ -11,18 +11,19 @@ section map
 variable {α : Type _} {β : Type _} (f : α → β)
 
 protected def Tree.map : Tree α → Tree β
-| Tree.leaf x => Tree.leaf (f x)
-| Tree.branch tl tr => Tree.branch (Tree.map tl) (Tree.map tr)
+  | Tree.leaf x => Tree.leaf (f x)
+  | Tree.branch tl tr => Tree.branch (Tree.map tl) (Tree.map tr)
 
 protected def Path.map : {t : Tree α} → Path t → Path (t.map f)
-| Tree.leaf _, Path.term x => Path.term (f x)
-| Tree.branch _ _, Path.left tl tr p => Path.left (tl.map f) (tr.map f) (Path.map p)
-| Tree.branch _ _, Path.right tl tr p => Path.right (tl.map f) (tr.map f) (Path.map p)
+  | Path.term x        => Path.term (f x)
+  | Path.left tl tr p  => Path.left (tl.map f) (tr.map f) (Path.map p)
+  | Path.right tl tr p => Path.right (tl.map f) (tr.map f) (Path.map p)
 
-protected def Path.unmap : {t : Tree α} → Path (t.map f) → Path t
-| Tree.leaf x,   Path.term _   => Path.term x
-| Tree.branch tl tr, Path.left _ _ p => Path.left tl tr (Path.unmap p)
-| Tree.branch tl tr, Path.right _ _ p => Path.right tl tr (Path.unmap p)
+protected def Path.unmap {t : Tree α} (p : Path (t.map f)) : Path t :=
+  match t, p with
+  | Tree.leaf x,   Path.term _          => Path.term x
+  | Tree.branch tl tr, Path.left _ _ p  => Path.left tl tr (Path.unmap p)
+  | Tree.branch tl tr, Path.right _ _ p => Path.right tl tr (Path.unmap p)
 
 #print Path.unmap
 
