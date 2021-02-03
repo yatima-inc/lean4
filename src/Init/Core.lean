@@ -258,7 +258,7 @@ def typeEqOfHEq (h : a ≅ b) : α = β :=
 end
 
 theorem eqRecHEq {α : Sort u} {φ : α → Sort v} : {a a' : α} → (h : a = a') → (p : φ a) → (Eq.recOn (motive := fun x _ => φ x) h p) ≅ p
-  | a, _, rfl, p => HEq.refl p
+  | rfl, p => HEq.refl p
 
 theorem heqOfEqRecEq {α β : Sort u} {a : α} {b : β} (h₁ : α = β) (h₂ : Eq.rec (motive := fun α _ => α) a h₁ = b) : a ≅ b := by
   subst h₁
@@ -267,7 +267,7 @@ theorem heqOfEqRecEq {α β : Sort u} {a : α} {b : β} (h₁ : α = β) (h₂ :
   done
 
 theorem castHEq : ∀ {α β : Sort u} (h : α = β) (a : α), cast h a ≅ a
-  | α, _, rfl, a => HEq.refl a
+  | rfl, a => HEq.refl a
 
 variable {a b c d : Prop}
 
@@ -508,7 +508,7 @@ def existsOfSubtype {α : Type u} {p : α → Prop} : { x // p x } → Exists (f
 
 variable {α : Type u} {p : α → Prop}
 
-protected theorem eq : ∀ {a1 a2 : {x // p x}}, val a1 = val a2 → a1 = a2
+protected theorem eq : ∀ {a1 a2 : {x // p x}}, val a1 = val a2 → a1 = a2 := @fun
   | ⟨x, h1⟩, ⟨_, _⟩, rfl => rfl
 
 theorem eta (a : {x // p x}) (h : p (val a)) : mk (val a) h = a := by

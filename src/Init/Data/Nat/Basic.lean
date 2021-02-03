@@ -78,7 +78,7 @@ protected theorem addLeftComm (n m k : Nat) : n + (m + k) = m + (n + k) := by
 protected theorem addRightComm (n m k : Nat) : (n + m) + k = (n + k) + m := by
   rw [Nat.addAssoc, Nat.addComm m k, ← Nat.addAssoc]
 
-protected theorem addLeftCancel : ∀ {n m k : Nat}, n + m = n + k → m = k
+protected theorem addLeftCancel : ∀ {n m k : Nat}, n + m = n + k → m = k := @fun
   | 0,      m, k, h => Nat.zeroAdd m ▸ Nat.zeroAdd k ▸ h
   | succ n, m, k, h =>
     have n+m = n+k from
@@ -178,7 +178,7 @@ theorem predLe : ∀ (n : Nat), pred n ≤ n
   | zero   => rfl
   | succ n => leSucc _
 
-theorem predLt : ∀ {n : Nat}, n ≠ 0 → pred n < n
+theorem predLt : ∀ {n : Nat}, n ≠ 0 → pred n < n := @fun
   | zero,   h => absurd rfl h
   | succ n, h => ltSuccOfLe (Nat.leRefl _)
 
@@ -187,7 +187,7 @@ theorem subLe (n m : Nat) : n - m ≤ n := by
   | zero      => exact Nat.leRefl (n - 0)
   | succ m ih => apply Nat.leTrans (predLe (n - m)) ih
 
-theorem subLt : ∀ {n m : Nat}, 0 < n → 0 < m → n - m < n
+theorem subLt : ∀ {n m : Nat}, 0 < n → 0 < m → n - m < n := @fun
   | 0,   m,   h1, h2 => absurd h1 (Nat.ltIrrefl 0)
   | n+1, 0,   h1, h2 => absurd h2 (Nat.ltIrrefl 0)
   | n+1, m+1, h1, h2 =>
@@ -265,7 +265,7 @@ theorem leAddRight : ∀ (n k : Nat), n ≤ n + k
 theorem leAddLeft (n m : Nat): n ≤ m + n :=
   Nat.addComm n m ▸ leAddRight n m
 
-theorem le.dest : ∀ {n m : Nat}, n ≤ m → Exists (fun k => n + k = m)
+theorem le.dest : ∀ {n m : Nat}, n ≤ m → Exists (fun k => n + k = m) := @fun
   | zero,   zero,   h => ⟨0, rfl⟩
   | zero,   succ n, h => ⟨succ n, Nat.addComm 0 (succ n) ▸ rfl⟩
   | succ n, zero,   h => Bool.noConfusion h
@@ -366,7 +366,7 @@ theorem powLePowOfLeLeft {n m : Nat} (h : n ≤ m) : ∀ (i : Nat), n^i ≤ m^i
   | 0      => Nat.leRefl _
   | succ i => Nat.mulLeMul (powLePowOfLeLeft h i) h
 
-theorem powLePowOfLeRight {n : Nat} (hx : n > 0) {i : Nat} : ∀ {j}, i ≤ j → n^i ≤ n^j
+theorem powLePowOfLeRight {n : Nat} (hx : n > 0) {i : Nat} : ∀ {j}, i ≤ j → n^i ≤ n^j := @fun
   | 0,      h =>
     have i = 0 from eqZeroOfLeZero h
     this.symm ▸ Nat.leRefl _

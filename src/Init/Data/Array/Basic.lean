@@ -140,7 +140,7 @@ def modifyOp [Inhabited α] (self : Array α) (idx : Nat) (f : α → α) : Arra
   loop 0 b
 
 -- Move?
-private theorem zeroLtOfLt : {a b : Nat} → a < b → 0 < b
+private theorem zeroLtOfLt : {a b : Nat} → a < b → 0 < b := @fun
   | 0,   _, h => h
   | a+1, b, h =>
     have a < b from Nat.ltTrans (Nat.ltSuccSelf _) h

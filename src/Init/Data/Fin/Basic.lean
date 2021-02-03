@@ -26,7 +26,7 @@ protected def ofNat {n : Nat} (a : Nat) : Fin (succ n) :=
 protected def ofNat' {n : Nat} (a : Nat) (h : n > 0) : Fin n :=
   ⟨a % n, Nat.modLt _ h⟩
 
-private theorem mlt {b : Nat} : {a : Nat} → a < n → b % n < n
+private theorem mlt {b : Nat} : {a : Nat} → a < n → b % n < n := @fun
   | 0,   h => Nat.modLt _ h
   | a+1, h =>
     have n > 0 from Nat.ltTrans (Nat.zeroLtSucc _) h;
@@ -86,7 +86,7 @@ instance : OfNat (Fin (noindex! (n+1))) i where
 theorem vneOfNe {i j : Fin n} (h : i ≠ j) : val i ≠ val j :=
   fun h' => absurd (eqOfVeq h') h
 
-theorem modnLt : ∀ {m : Nat} (i : Fin n), m > 0 → (i % m).val < m
+theorem modnLt : ∀ {m : Nat} (i : Fin n), m > 0 → (i % m).val < m := @fun
   | m, ⟨a, h⟩, hp =>  Nat.ltOfLeOfLt (modLe _ _) (modLt _ hp)
 
 end Fin

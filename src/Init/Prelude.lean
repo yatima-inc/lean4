@@ -162,19 +162,23 @@ structure Subtype {α : Sort u} (p : α → Prop) where
 @[extern "lean_sorry", neverExtract]
 axiom sorryAx (α : Sort u) (synthetic := true) : α
 
-theorem eqFalseOfNeTrue : {b : Bool} → Not (Eq b true) → Eq b false
-  | true, h => False.elim (h rfl)
+theorem eqFalseOfNeTrue {b : Bool} (h : Not (Eq b true)) : Eq b false :=
+  match b, h with
+  | true,  h => False.elim (h rfl)
   | false, h => rfl
 
-theorem eqTrueOfNeFalse : {b : Bool} → Not (Eq b false) → Eq b true
-  | true, h => rfl
+theorem eqTrueOfNeFalse {b : Bool} (h : Not (Eq b false)) : Eq b true :=
+  match b, h with
+  | true,  h => rfl
   | false, h => False.elim (h rfl)
 
-theorem neFalseOfEqTrue : {b : Bool} → Eq b true → Not (Eq b false)
+theorem neFalseOfEqTrue {b : Bool} (h : Eq b true) : Not (Eq b false) :=
+  match b, h with
   | true, _  => fun h => Bool.noConfusion h
   | false, h => Bool.noConfusion h
 
-theorem neTrueOfEqFalse : {b : Bool} → Eq b false → Not (Eq b true)
+theorem neTrueOfEqFalse {b : Bool} (h : Eq b false) : Not (Eq b true) :=
+  match b, h with
   | true, h  => Bool.noConfusion h
   | false, _ => fun h => Bool.noConfusion h
 
@@ -244,13 +248,15 @@ abbrev DecidableEq (α : Sort u) :=
 def decEq {α : Sort u} [s : DecidableEq α] (a b : α) : Decidable (Eq a b) :=
   s a b
 
-theorem decideEqTrue : {p : Prop} → [s : Decidable p] → p → Eq (decide p) true
-  | _, isTrue  _, _   => rfl
-  | _, isFalse h₁, h₂ => absurd h₂ h₁
+theorem decideEqTrue {p : Prop} [s : Decidable p] (h : p) : Eq (decide p) true :=
+  match s, h with
+  | isTrue  _, _   => rfl
+  | isFalse h₁, h₂ => absurd h₂ h₁
 
-theorem decideEqFalse : {p : Prop} → [s : Decidable p] → Not p → Eq (decide p) false
-  | _, isTrue  h₁, h₂ => absurd h₁ h₂
-  | _, isFalse h, _   => rfl
+theorem decideEqFalse {p : Prop} [s : Decidable p] (h : Not p) : Eq (decide p) false :=
+  match s, h with
+  | isTrue  h₁, h₂ => absurd h₁ h₂
+  | isFalse h, _   => rfl
 
 theorem ofDecideEqTrue {p : Prop} [s : Decidable p] : Eq (decide p) true → p := fun h =>
   match s with
@@ -494,7 +500,8 @@ def Nat.beq : Nat → Nat → Bool
   | succ n, zero   => false
   | succ n, succ m => beq n m
 
-theorem Nat.eqOfBeqEqTrue : {n m : Nat} → Eq (beq n m) true → Eq n m
+theorem Nat.eqOfBeqEqTrue {n m : Nat} (h : Eq (beq n m) true) : Eq n m :=
+  match n, m, h with
   | zero,   zero,   h => rfl
   | zero,   succ m, h => Bool.noConfusion h
   | succ n, zero,   h => Bool.noConfusion h
@@ -503,13 +510,14 @@ theorem Nat.eqOfBeqEqTrue : {n m : Nat} → Eq (beq n m) true → Eq n m
     have Eq n m from eqOfBeqEqTrue this
     this ▸ rfl
 
-theorem Nat.neOfBeqEqFalse : {n m : Nat} → Eq (beq n m) false → Not (Eq n m)
-  | zero,   zero,   h₁, h₂ => Bool.noConfusion h₁
-  | zero,   succ m, h₁, h₂ => Nat.noConfusion h₂
-  | succ n, zero,   h₁, h₂ => Nat.noConfusion h₂
-  | succ n, succ m, h₁, h₂ =>
-    have Eq (beq n m) false from h₁
-    Nat.noConfusion h₂ (fun h₂ => absurd h₂ (neOfBeqEqFalse this))
+theorem Nat.neOfBeqEqFalse {n m : Nat} (h : Eq (beq n m) false) : Not (Eq n m) :=
+  fun h' => match n, m, h, h' with
+    | zero,   zero,   h₁, h₂ => Bool.noConfusion h₁
+    | zero,   succ m, h₁, h₂ => Nat.noConfusion h₂
+    | succ n, zero,   h₁, h₂ => Nat.noConfusion h₂
+    | succ n, succ m, h₁, h₂ =>
+      have Eq (beq n m) false from h₁
+      Nat.noConfusion h₂ (fun h₂ => absurd h₂ (neOfBeqEqFalse this))
 
 @[extern "lean_nat_dec_eq"]
 protected def Nat.decEq (n m : @& Nat) : Decidable (Eq n m) :=
@@ -564,7 +572,8 @@ theorem Nat.succLeSucc {n m : Nat} (h : LessEq n m) : LessEq (succ n) (succ m) :
 theorem Nat.zeroLtSucc (n : Nat) : Less 0 (succ n) :=
   succLeSucc (zeroLe n)
 
-theorem Nat.leStep : {n m : Nat} → LessEq n m → LessEq n (succ m)
+theorem Nat.leStep {n m : Nat} (h : LessEq n m) : LessEq n (succ m) :=
+  match n, m, h with
   | zero,   zero,   h => rfl
   | zero,   succ n, h => rfl
   | succ n, zero,   h => Bool.noConfusion h
@@ -573,8 +582,8 @@ theorem Nat.leStep : {n m : Nat} → LessEq n m → LessEq n (succ m)
     have LessEq n (succ m) from leStep this
     succLeSucc this
 
-set_option pp.raw true
-protected theorem Nat.leTrans : {n m k : Nat} → LessEq n m → LessEq m k → LessEq n k
+protected theorem Nat.leTrans {n m k : Nat} (h₁ : LessEq n m) (h₂ : LessEq m k) : LessEq n k :=
+  match n, m, k, h₁, h₂ with
   | zero,   m,      k,      h₁, h₂ => zeroLe _
   | succ n, zero,   k,      h₁, h₂ => Bool.noConfusion h₁
   | succ n, succ m, zero,   h₁, h₂ => Bool.noConfusion h₂
@@ -594,7 +603,7 @@ theorem Nat.leSucc : (n : Nat) → LessEq n (succ n)
 theorem Nat.leSuccOfLe {n m : Nat} (h : LessEq n m) : LessEq n (succ m) :=
   Nat.leTrans h (leSucc m)
 
-protected theorem Nat.eqOrLtOfLe : {n m: Nat} → LessEq n m → Or (Eq n m) (Less n m)
+protected theorem Nat.eqOrLtOfLe : {n m: Nat} → LessEq n m → Or (Eq n m) (Less n m) := @fun
   | zero,   zero,   h => Or.inl rfl
   | zero,   succ n, h => Or.inr (zeroLe n)
   | succ n, zero,   h => Bool.noConfusion h
@@ -619,7 +628,7 @@ protected theorem Nat.ltOrGe (n m : Nat) : Or (Less n m) (GreaterEq n m) :=
       | Or.inl h1 => Or.inl (h1 ▸ Nat.leRefl _)
       | Or.inr h1 => Or.inr h1
 
-protected theorem Nat.leAntisymm : {n m : Nat} → LessEq n m → LessEq m n → Eq n m
+protected theorem Nat.leAntisymm : {n m : Nat} → LessEq n m → LessEq m n → Eq n m := @fun
   | zero,   zero,   h₁, h₂ => rfl
   | succ n, zero,   h₁, h₂ => Bool.noConfusion h₁
   | zero,   succ m, h₁, h₂ => Bool.noConfusion h₂
@@ -648,7 +657,7 @@ protected def Nat.sub : (@& Nat) → (@& Nat) → Nat
 instance : Sub Nat where
   sub := Nat.sub
 
-theorem Nat.predLePred : {n m : Nat} → LessEq n m → LessEq (pred n) (pred m)
+theorem Nat.predLePred : {n m : Nat} → LessEq n m → LessEq (pred n) (pred m) := @fun
   | zero,   zero,   h => rfl
   | zero,   succ n, h => zeroLe n
   | succ n, zero,   h => Bool.noConfusion h
@@ -673,7 +682,8 @@ structure Fin (n : Nat) where
   val  : Nat
   isLt : Less val n
 
-theorem Fin.eqOfVeq {n} : ∀ {i j : Fin n}, Eq i.val j.val → Eq i j
+theorem Fin.eqOfVeq {n} {i j : Fin n} (h : Eq i.val j.val) : Eq i j :=
+  match i, j, h with
   | ⟨v, h⟩, ⟨_, _⟩, rfl => rfl
 
 theorem Fin.veqOfEq {n} {i j : Fin n} (h : Eq i j) : Eq i.val j.val :=
@@ -887,10 +897,10 @@ def Char.ofNat (n : Nat) : Char :=
     (fun h => Char.ofNatAux n h)
     (fun _ => { val := ⟨{ val := 0, isLt := decide! }⟩, valid := Or.inl decide! })
 
-theorem Char.eqOfVeq : ∀ {c d : Char}, Eq c.val d.val → Eq c d
+theorem Char.eqOfVeq : ∀ {c d : Char}, Eq c.val d.val → Eq c d := @fun
   | ⟨v, h⟩, ⟨_, _⟩, rfl => rfl
 
-theorem Char.veqOfEq : ∀ {c d : Char}, Eq c d → Eq c.val d.val
+theorem Char.veqOfEq : ∀ {c d : Char}, Eq c d → Eq c.val d.val := @fun
   | _, _, rfl => rfl
 
 theorem Char.neOfVne {c d : Char} (h : Not (Eq c.val d.val)) : Not (Eq c d) :=
