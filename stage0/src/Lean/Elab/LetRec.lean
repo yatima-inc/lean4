@@ -45,27 +45,29 @@ private def mkLetRecDeclView (letRec : Syntax) : TermElabM LetRecView := do
       addAuxDeclarationRanges declName decl decl[0]
       let binders := decl[1].getArgs
       let typeStx := expandOptType decl decl[2]
-      let (type, numParams) ← elabBinders binders fun xs => do
-          let type ← elabType typeStx
-          registerCustomErrorIfMVar type typeStx "failed to infer 'let rec' declaration type"
-          let type ← mkForallFVars xs type
-          pure (type, xs.size)
+      let (type, numParams, valStx) ← elabBinders binders fun xs => do
+        let type ← elabType typeStx
+        registerCustomErrorIfMVar type typeStx "failed to infer 'let rec' declaration type"
+        let valStx ←
+          if decl.isOfKind `Lean.Parser.Term.letIdDecl then
+            pure decl[4]
+          else
+            let matchAlts := decl[3]
+            expandMatchAltsIntoMatchWithExpectedType matchAlts type
+        let type ← mkForallFVars xs type
+        pure (type, xs.size, valStx)
       let mvar ← mkFreshExprMVar type MetavarKind.syntheticOpaque
-      let valStx ←
-        if decl.isOfKind `Lean.Parser.Term.letIdDecl then
-          pure decl[4]
-        else
-          liftMacroM $ expandMatchAltsIntoMatch decl decl[3]
       pure {
-        ref           := decl,
-        attrs         := attrs,
-        shortDeclName := shortDeclName,
-        declName      := declName,
-        numParams     := numParams,
-        type          := type,
-        mvar          := mvar,
+        ref           := decl
+        attrs         := attrs
+        shortDeclName := shortDeclName
+        declName      := declName
+        numParams     := numParams
+        type          := type
+        mvar          := mvar
         valStx        := valStx
-        : LetRecDeclView }
+        : LetRecDeclView
+      }
     else
       throwUnsupportedSyntax
   pure {
@@ -98,15 +100,15 @@ private def registerLetRecsToLift (views : Array LetRecDeclView) (fvars : Array 
   let lctx ← getLCtx
   let localInsts ← getLocalInstances
   let toLift := views.mapIdx fun i view => {
-    ref            := view.ref,
-    fvarId         := fvars[i].fvarId!,
-    attrs          := view.attrs,
-    shortDeclName  := view.shortDeclName,
-    declName       := view.declName,
-    lctx           := lctx,
-    localInstances := localInsts,
-    type           := view.type,
-    val            := values[i],
+    ref            := view.ref
+    fvarId         := fvars[i].fvarId!
+    attrs          := view.attrs
+    shortDeclName  := view.shortDeclName
+    declName       := view.declName
+    lctx           := lctx
+    localInstances := localInsts
+    type           := view.type
+    val            := values[i]
     mvarId         := view.mvar.mvarId!
     : LetRecToLift }
   modify fun s => { s with letRecsToLift := toLift.toList ++ s.letRecsToLift }

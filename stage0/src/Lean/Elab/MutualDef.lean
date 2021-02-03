@@ -158,20 +158,20 @@ def declValEqns      := parser! Term.matchAltsWhereDecls
 def declVal          := declValSimple <|> declValEqns <|> Term.whereDecls
 ```
 -/
-private def declValToTerm (declVal : Syntax) : MacroM Syntax := withRef declVal do
+private def declValToTerm (type : Expr) (declVal : Syntax) : TermElabM Syntax := withRef declVal do
   if declVal.isOfKind `Lean.Parser.Command.declValSimple then
-    expandWhereDeclsOpt declVal[2] declVal[1]
+    liftMacroM <| expandWhereDeclsOpt declVal[2] declVal[1]
   else if declVal.isOfKind `Lean.Parser.Command.declValEqns then
-    expandMatchAltsWhereDecls declVal[0]
+    expandMatchAltsWhereDecls declVal[0] type
   else if declVal.isOfKind `Lean.Parser.Term.whereDecls then
-    expandWhereDeclsAsStructInst declVal
+    liftMacroM <| expandWhereDeclsAsStructInst declVal
   else
-    Macro.throwErrorAt declVal "unexpected definition value"
+    throwErrorAt declVal "unexpected definition value"
 
 private def elabFunValues (headers : Array DefViewElabHeader) : TermElabM (Array Expr) :=
-  headers.mapM fun header => withDeclName header.declName $ withLevelNames header.levelNames do
-    let valStx ← liftMacroM $ declValToTerm header.valueStx
+  headers.mapM fun header => withDeclName header.declName <| withLevelNames header.levelNames do
     forallBoundedTelescope header.type header.numParams fun xs type => do
+      let valStx ← declValToTerm type header.valueStx
       let val ← elabTermEnsuringType valStx type
       mkLambdaFVars xs val
 
