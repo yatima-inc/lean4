@@ -185,7 +185,7 @@ as metavariables. They have a type and a local context. The local context contai
 all local variables in scope.</p>
 <p>In the following example, we prove the same simple theorem using different tactics.
 The keyword <code>by</code> instructs Lean to use the tactic DSL to construct a term.
-Our initial goal is a hole with type <code>p ∨ q → q ∨ p</code>. We tactic <code>intro h</code>
+Our initial goal is a hole with type <code>p ∨ q → q ∨ p</code>. The tactic <code>intro h</code>
 fills this hole using the term <code>fun h =&gt; ?m</code> where <code>?m</code> is a new hole we need to solve.
 This hole has type <code>q ∨ p</code>, and the local context contains <code>h : p ∨ q</code>.
 The tactic <code>cases</code> fills the hole using <code>Or.casesOn h (fun h1 =&gt; ?m1) (fun h2 =&gt; ?m2)</code>

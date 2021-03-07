@@ -250,7 +250,7 @@ has addition:</p>
 <p>The example above demonstrates how type classes are used to overload notation.
 Now, we explore another application. We often need an arbitrary element of a given type.
 Recall that types may not have any elements in Lean.
-It often happens that we would like a definition to return an arbitraryt element in a &quot;corner case.&quot;
+It often happens that we would like a definition to return an arbitrary element in a &quot;corner case.&quot;
 For example, we may like the expression <code>head xs</code> to be of type <code>a</code> when <code>xs</code> is of type <code>List a</code>.
 Similarly, many theorems hold under the additional assumption that a type is not empty.
 For example, if <code>a</code> is a type, <code>exists x : a, x = x</code> is true only if <code>a</code> is not empty.
