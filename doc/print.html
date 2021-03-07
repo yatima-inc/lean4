@@ -2562,7 +2562,7 @@ Here is a similar proof that uses the <code>induction</code> tactic instead of r
 </span><span class="boring"> | tail (a b : α) (bs : List α) : Mem a bs → Mem a (b::bs)
 </span><span class="boring">infix:50 &quot;∈&quot; =&gt; Mem
 </span>theorem mem_split {a : α} {as : List α} (h : a ∈ as) : ∃ s t, as = s ++ a :: t := by
-  induction as with
+  induction as generalizing h with
   | nil          =&gt; cases h
   | cons b bs ih =&gt; cases h with
     | head a bs =&gt; exact ⟨[], ⟨bs, rfl⟩⟩
@@ -2583,7 +2583,7 @@ discriminant. Later, we show how to create more complex automation using macros.
   `(tactic| match $d:term with | $p:term =&gt; ?_)
 
 theorem mem_split {a : α} {as : List α} (h : a ∈ as) : ∃ s t, as = s ++ a :: t := by
-  induction as with
+  induction as generalizing h with
   | cons b bs ih =&gt; cases h with
     | tail a b bs h =&gt;
       obtain ⟨s, ⟨t, h⟩⟩ from ih h
