@@ -132,7 +132,7 @@ def elabAsFVar (stx : Syntax) (userName? : Option Name := none) : TacticM FVarId
         let fvarId? ← (← getLCtx).findDeclRevM? fun localDecl => do
           if (← isDefEq type localDecl.type) then return localDecl.fvarId else return none
         match fvarId? with
-        | none => throwError! "failed to find a hypothesis with type{indentExpr type}"
+        | none => throw_error "failed to find a hypothesis with type{indentExpr type}"
         | some fvarId => return fvarId
       let lctxNew := (← getLCtx).setUserName fvarId h.getId
       let mvarNew ← mkFreshExprMVarAt lctxNew (← getLocalInstances) (← getMVarType mvarId) MetavarKind.syntheticOpaque (← getMVarTag mvarId)

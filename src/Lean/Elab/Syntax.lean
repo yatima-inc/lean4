@@ -145,7 +145,7 @@ where
     match (← resolveParserName id) with
     | [(c, true)]      => ensureNoPrec stx; return mkIdentFrom stx c
     | [(c, false)]     => ensureNoPrec stx; `(ParserDescr.parser $(quote c))
-    | cs@(_ :: _ :: _) => throwError! "ambiguous parser declaration {cs.map (·.1)}"
+    | cs@(_ :: _ :: _) => throw_error "ambiguous parser declaration {cs.map (·.1)}"
     | [] =>
       if Parser.isParserCategory (← getEnv) id then
         processParserCategory stx
@@ -154,7 +154,7 @@ where
         Parser.ensureConstantParserAlias id
         `(ParserDescr.const $(quote id))
       else
-        throwError! "unknown parser declaration/category/alias '{id}'"
+        throw_error "unknown parser declaration/category/alias '{id}'"
 
   processUnary (stx : Syntax) := do
     let aliasName := (stx[0].getId).eraseMacroScopes
@@ -648,7 +648,7 @@ def expandElab (currNamespace : Name) (stx : Syntax) : CommandElabM Syntax := do
     else
       -- We considered making the command extensible and support new user-defined categories. We think it is unnecessary.
       -- If users want this feature, they add their own `elab` macro that uses this one as a fallback.
-      throwError! "unsupported syntax category '{catName}'"
+      throw_error "unsupported syntax category '{catName}'"
   return mkNullNode #[stxCmd, elabCmd]
 
 @[builtinCommandElab «elab»] def elabElab : CommandElab :=

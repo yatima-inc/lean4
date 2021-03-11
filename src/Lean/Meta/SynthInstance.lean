@@ -619,8 +619,8 @@ def synthInstance (type : Expr) (maxResultSize? : Option Nat := none) : MetaM Ex
       let result? ← synthInstance? type maxResultSize?
       match result? with
       | some result => pure result
-      | none        => throwError! "failed to synthesize{indentExpr type}")
-    (fun _ => throwError! "failed to synthesize{indentExpr type}")
+      | none        => throw_error "failed to synthesize{indentExpr type}")
+    (fun _ => throw_error "failed to synthesize{indentExpr type}")
 
 private def synthPendingImp (mvarId : MVarId) (maxResultSize? : Option Nat) : MetaM Bool := do
   let mvarDecl ← getMVarDecl mvarId

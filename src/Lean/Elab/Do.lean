@@ -1098,7 +1098,7 @@ abbrev M := ReaderT Context TermElabM
 
 def checkReassignable (xs : Array Name) : M Unit := do
   let throwInvalidReassignment (x : Name) : M Unit :=
-    throwError! "'{x.simpMacroScopes}' cannot be reassigned"
+    throw_error "'{x.simpMacroScopes}' cannot be reassigned"
   let ctx ← read
   for x in xs do
     unless ctx.mutableVars.contains x do
@@ -1239,7 +1239,7 @@ mutual
         doSeqToCode <| getDoSeqElems (getDoSeq auxDo) ++ doElems
       else
         if isMutableLet doLetArrow then
-          throwError! "'mut' is currently not supported in let-decls with 'else' case"
+          throw_error "'mut' is currently not supported in let-decls with 'else' case"
         let contSeq := mkDoSeq doElems.toArray
         let elseSeq := mkSingletonDoSeq optElse[1]
         let auxDo ← `(do let discr ← $doElem; match discr with | $pattern:term => $contSeq | _ => $elseSeq)
@@ -1517,7 +1517,7 @@ mutual
             else
               return mkSeq term (← doSeqToCode doElems)
           else
-            throwError! "unexpected do-element\n{doElem}"
+            throw_error "unexpected do-element\n{doElem}"
 end
 
 def run (doStx : Syntax) (m : Syntax) : TermElabM CodeBlock :=

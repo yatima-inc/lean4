@@ -169,13 +169,13 @@ private def getStructName (stx : Syntax) (expectedType? : Option Expr) (sourceVi
     | _                        => useSource ()
 where
   throwUnknownExpectedType :=
-    throwError! "invalid \{...} notation, expected type is not known"
+    throw_error "invalid \{...} notation, expected type is not known"
   throwUnexpectedExpectedType type (kind := "expected") := do
     let type ← instantiateMVars type
     if type.getAppFn.isMVar then
       throwUnknownExpectedType
     else
-      throwError! "invalid \{...} notation, {kind} type is not of the form (C ...){indentExpr type}"
+      throw_error "invalid \{...} notation, {kind} type is not of the form (C ...){indentExpr type}"
 
 inductive FieldLHS where
   | fieldName  (ref : Syntax) (name : Name)
@@ -397,7 +397,7 @@ private def isSimpleField? : Fields → Option (Field Struct)
 private def getFieldIdx (structName : Name) (fieldNames : Array Name) (fieldName : Name) : TermElabM Nat := do
   match fieldNames.findIdx? fun n => n == fieldName with
   | some idx => pure idx
-  | none     => throwError! "field '{fieldName}' is not a valid field of '{structName}'"
+  | none     => throw_error "field '{fieldName}' is not a valid field of '{structName}'"
 
 private def mkProjStx (s : Syntax) (fieldName : Name) : Syntax :=
   Syntax.node `Lean.Parser.Term.proj #[s, mkAtomFrom s ".", mkIdentFrom s fieldName]
@@ -529,7 +529,7 @@ def defaultMissing? (e : Expr) : Option Expr :=
   annotation? `structInstDefault e
 
 def throwFailedToElabField {α} (fieldName : Name) (structName : Name) (msgData : MessageData) : TermElabM α :=
-  throwError! "failed to elaborate field '{fieldName}' of '{structName}, {msgData}"
+  throw_error "failed to elaborate field '{fieldName}' of '{structName}, {msgData}"
 
 def trySynthStructInstance? (s : Struct) (expectedType : Expr) : TermElabM (Option Expr) := do
   if !s.allDefault then
@@ -784,7 +784,7 @@ end DefaultFields
 private def elabStructInstAux (stx : Syntax) (expectedType? : Option Expr) (source : Source) : TermElabM Expr := do
   let structName ← getStructName stx expectedType? source
   unless isStructureLike (← getEnv) structName do
-    throwError! "invalid \{...} notation, '{structName}' is not a structure"
+    throw_error "invalid \{...} notation, '{structName}' is not a structure"
   match mkStructView stx structName source with
   | Except.error ex  => throwError ex
   | Except.ok struct =>

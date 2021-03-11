@@ -21,13 +21,13 @@ open Meta
     | some expectedType =>
       let expectedType ← whnf expectedType
       matchConstInduct expectedType.getAppFn
-        (fun _ => throwError! "invalid constructor ⟨...⟩, expected type must be an inductive type {indentExpr expectedType}")
+        (fun _ => throw_error "invalid constructor ⟨...⟩, expected type must be an inductive type {indentExpr expectedType}")
         (fun ival us => do
           match ival.ctors with
           | [ctor] =>
             let newStx ← `($(mkCIdentFrom stx ctor) $(args)*)
             withMacroExpansion stx newStx $ elabTerm newStx expectedType?
-          | _ => throwError! "invalid constructor ⟨...⟩, expected type must be an inductive type with only one constructor {indentExpr expectedType}")
+          | _ => throw_error "invalid constructor ⟨...⟩, expected type must be an inductive type with only one constructor {indentExpr expectedType}")
     | none => throwError "invalid constructor ⟨...⟩, expected type must be known"
   | _ => throwUnsupportedSyntax
 
@@ -104,9 +104,9 @@ private def mkNativeReflAuxDecl (type val : Expr) : TermElabM Name := do
 private def elabClosedTerm (stx : Syntax) (expectedType? : Option Expr) : TermElabM Expr := do
   let e ← elabTermAndSynthesize stx expectedType?
   if e.hasMVar then
-    throwError! "invalid macro application, term contains metavariables{indentExpr e}"
+    throw_error "invalid macro application, term contains metavariables{indentExpr e}"
   if e.hasFVar then
-    throwError! "invalid macro application, term contains free variables{indentExpr e}"
+    throw_error "invalid macro application, term contains free variables{indentExpr e}"
   pure e
 
 @[builtinTermElab «nativeRefl»] def elabNativeRefl : TermElab := fun stx _ => do
@@ -115,7 +115,7 @@ private def elabClosedTerm (stx : Syntax) (expectedType? : Option Expr) : TermEl
   let type ← inferType e
   let type ← whnf type
   unless type.isConstOf `Bool || type.isConstOf `Nat do
-    throwError! "invalid `nativeRefl!` macro application, term must have type `Nat` or `Bool`{indentExpr type}"
+    throw_error "invalid `nativeRefl!` macro application, term must have type `Nat` or `Bool`{indentExpr type}"
   let auxDeclName ← mkNativeReflAuxDecl type e
   let isBool := type.isConstOf `Bool
   let reduceValFn := if isBool then `Lean.reduceBool else `Lean.reduceNat
@@ -124,7 +124,7 @@ private def elabClosedTerm (stx : Syntax) (expectedType? : Option Expr) : TermEl
   let reduceVal   := mkApp (Lean.mkConst reduceValFn) aux
   let val? ← Meta.reduceNative? reduceVal
   match val? with
-  | none     => throwError! "failed to reduce term at `nativeRefl!` macro application{e}"
+  | none     => throw_error "failed to reduce term at `nativeRefl!` macro application{e}"
   | some val =>
     let rflPrf ← mkEqRefl val
     let r  := mkApp3 (Lean.mkConst reduceThm) aux val rflPrf
@@ -141,7 +141,7 @@ private def getPropToDecide (expectedType? : Option Expr) : TermElabM Expr := do
     if expectedType.hasFVar then
       expectedType ← zetaReduce expectedType
     if expectedType.hasFVar || expectedType.hasMVar then
-      throwError! "expected type must not contain free or meta variables{indentExpr expectedType}"
+      throw_error "expected type must not contain free or meta variables{indentExpr expectedType}"
     pure expectedType
 
 @[builtinTermElab «nativeDecide»] def elabNativeDecide : TermElab := fun stx expectedType? => do
@@ -158,7 +158,7 @@ private def getPropToDecide (expectedType? : Option Expr) : TermElabM Expr := do
   let d ← instantiateMVars d
   let r ← withDefault <| whnf d
   unless r.isConstOf ``true do
-    throwError! "failed to reduce to 'true'{indentExpr p}"
+    throw_error "failed to reduce to 'true'{indentExpr p}"
   let s := d.appArg! -- get instance from `d`
   let rflPrf ← mkEqRefl (toExpr true)
   pure $ mkApp3 (Lean.mkConst `ofDecideEqTrue) p s rflPrf
@@ -284,7 +284,7 @@ private def elabCDot (stx : Syntax) (expectedType? : Option Expr) : TermElabM Ex
      let heqType ← inferType heq
      let heqType ← instantiateMVars heqType
      match (← Meta.matchEq? heqType) with
-     | none => throwError! "invalid `▸` notation, argument{indentExpr heq}\nhas type{indentExpr heqType}\nequality expected"
+     | none => throw_error "invalid `▸` notation, argument{indentExpr heq}\nhas type{indentExpr heqType}\nequality expected"
      | some (α, lhs, rhs) =>
        let mut lhs := lhs
        let mut rhs := rhs
@@ -295,7 +295,7 @@ private def elabCDot (stx : Syntax) (expectedType? : Option Expr) : TermElabM Ex
        unless expectedAbst.hasLooseBVars do
          expectedAbst ← kabstract expectedType lhs
          unless expectedAbst.hasLooseBVars do
-           throwError! "invalid `▸` notation, expected type{indentExpr expectedType}\ndoes contain equation left-hand-side nor right-hand-side{indentExpr heqType}"
+           throw_error "invalid `▸` notation, expected type{indentExpr expectedType}\ndoes contain equation left-hand-side nor right-hand-side{indentExpr heqType}"
          heq ← mkEqSymm heq
          (lhs, rhs) := (rhs, lhs)
        let hExpectedType := expectedAbst.instantiate1 lhs

@@ -87,11 +87,11 @@ instance [BEq α] [Hashable α] [Monad m] [STWorld ω m] [MonadRecDepth m] : Mon
   if curr == max then throwError maxRecDepthErrorMessage
   MonadRecDepth.withRecDepth (curr+1) x
 
-syntax "throwError! " (interpolatedStr(term) <|> term) : term
+syntax "throw_error " (interpolatedStr(term) <|> term) : term
 syntax "throwErrorAt! " term:max (interpolatedStr(term) <|> term) : term
 
 macro_rules
-  | `(throwError! $msg) =>
+  | `(throw_error $msg) =>
     if msg.getKind == interpolatedStrKind then
       `(throwError (m! $msg))
     else

@@ -15,15 +15,15 @@ def checkNotAlreadyDeclared {m} [Monad m] [MonadEnv m] [MonadError m] (declName 
   let env ← getEnv
   if env.contains declName then
     match privateToUserName? declName with
-    | none          => throwError! "'{declName}' has already been declared"
-    | some declName => throwError! "private declaration '{declName}' has already been declared"
+    | none          => throw_error "'{declName}' has already been declared"
+    | some declName => throw_error "private declaration '{declName}' has already been declared"
   if env.contains (mkPrivateName env declName) then
-    throwError! "a private declaration '{declName}' has already been declared"
+    throw_error "a private declaration '{declName}' has already been declared"
   match privateToUserName? declName with
   | none => pure ()
   | some declName =>
     if env.contains declName then
-      throwError! "a non-private declaration '{declName}' has already been declared"
+      throw_error "a non-private declaration '{declName}' has already been declared"
 
 inductive Visibility where
   | regular | «protected» | «private»
@@ -133,7 +133,7 @@ def applyVisibility (visibility : Visibility) (declName : Name) : m Name := do
 def mkDeclName (currNamespace : Name) (modifiers : Modifiers) (shortName : Name) : m (Name × Name) := do
   let name := (extractMacroScopes shortName).name
   unless name.isAtomic || isFreshInstanceName name do
-    throwError! "atomic identifier expected '{shortName}'"
+    throw_error "atomic identifier expected '{shortName}'"
   let declName := currNamespace ++ shortName
   let declName ← applyVisibility modifiers.visibility declName
   match modifiers.visibility with

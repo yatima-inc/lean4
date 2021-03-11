@@ -21,7 +21,7 @@ def goalsToMessageData (goals : List MVarId) : MessageData :=
   MessageData.joinSep (goals.map $ MessageData.ofGoal) m!"\n\n"
 
 def Term.reportUnsolvedGoals (goals : List MVarId) : TermElabM Unit := do
-  throwError! "unsolved goals\n{goalsToMessageData goals}"
+  throw_error "unsolved goals\n{goalsToMessageData goals}"
 
 namespace Tactic
 
@@ -211,7 +211,7 @@ def ensureHasNoMVars (e : Expr) : TacticM Unit := do
   let pendingMVars ← getMVars e
   discard <| Term.logUnassignedUsingErrorInfos pendingMVars
   if e.hasExprMVar then
-    throwError! "tactic failed, resulting expression contains metavariables{indentExpr e}"
+    throw_error "tactic failed, resulting expression contains metavariables{indentExpr e}"
 
 def withMainMVarContext {α} (x : TacticM α) : TacticM α := do
   let (mvarId, _) ← getMainGoal
@@ -412,7 +412,7 @@ def getFVarId (id : Syntax) : TacticM FVarId := withRef id do
   let fvar? ← Term.isLocalIdent? id;
   match fvar? with
   | some fvar => pure fvar.fvarId!
-  | none      => throwError! "unknown variable '{id.getId}'"
+  | none      => throw_error "unknown variable '{id.getId}'"
 
 def getFVarIds (ids : Array Syntax) : TacticM (Array FVarId) := do
   withMainMVarContext $ ids.mapM getFVarId

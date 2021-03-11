@@ -125,7 +125,7 @@ unsafe def mkParenthesizerAttribute : IO (KeyedDeclsAttribute Parenthesizer) :=
       -- `isValidSyntaxNodeKind` is updated only in the next stage for new `[builtin*Parser]`s, but we try to
       -- synthesize a parenthesizer for it immediately, so we just check for a declaration in this case
       if (builtin && (env.find? id).isSome) || Parser.isValidSyntaxNodeKind env id then pure id
-      else throwError! "invalid [parenthesizer] argument, unknown syntax kind '{id}'"
+      else throw_error "invalid [parenthesizer] argument, unknown syntax kind '{id}'"
   } `Lean.PrettyPrinter.parenthesizerAttribute
 @[builtinInit mkParenthesizerAttribute] constant parenthesizerAttribute : KeyedDeclsAttribute Parenthesizer
 
@@ -146,7 +146,7 @@ unsafe def mkCategoryParenthesizerAttribute : IO (KeyedDeclsAttribute CategoryPa
       let env ← getEnv
       let id ← Attribute.Builtin.getId stx
       if Parser.isParserCategory env id then pure id
-      else throwError! "invalid [parenthesizer] argument, unknown parser category '{toString id}'"
+      else throw_error "invalid [parenthesizer] argument, unknown parser category '{toString id}'"
   } `Lean.PrettyPrinter.categoryParenthesizerAttribute
 @[builtinInit mkCategoryParenthesizerAttribute] constant categoryParenthesizerAttribute : KeyedDeclsAttribute CategoryParenthesizer
 

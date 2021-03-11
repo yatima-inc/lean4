@@ -264,10 +264,10 @@ def registerTagAttribute (name : Name) (descr : String) (validate : Name → Att
     descr := descr,
     add   := fun decl stx kind => do
       Attribute.Builtin.ensureNoArgs stx
-      unless kind == AttributeKind.global do throwError! "invalid attribute '{name}', must be global"
+      unless kind == AttributeKind.global do throw_error "invalid attribute '{name}', must be global"
       let env ← getEnv
       unless (env.getModuleIdxFor? decl).isNone do
-        throwError! "invalid attribute '{name}', declaration is in an imported module"
+        throw_error "invalid attribute '{name}', declaration is in an imported module"
       validate decl
       let env ← getEnv
       setEnv $ ext.addEntry env decl
@@ -315,10 +315,10 @@ def registerParametricAttribute {α : Type} [Inhabited α] (impl : ParametricAtt
     name  := impl.name
     descr := impl.descr
     add   := fun decl stx kind => do
-      unless kind == AttributeKind.global do throwError! "invalid attribute '{impl.name}', must be global"
+      unless kind == AttributeKind.global do throw_error "invalid attribute '{impl.name}', must be global"
       let env ← getEnv
       unless (env.getModuleIdxFor? decl).isNone do
-        throwError! "invalid attribute '{impl.name}', declaration is in an imported module"
+        throw_error "invalid attribute '{impl.name}', declaration is in an imported module"
       let val ← impl.getParam decl stx
       let env' := ext.addEntry env (decl, val)
       setEnv env'
@@ -374,10 +374,10 @@ def registerEnumAttributes {α : Type} [Inhabited α] (extName : Name) (attrDesc
     descr           := descr,
     add             := fun decl stx kind => do
       Attribute.Builtin.ensureNoArgs stx
-      unless kind == AttributeKind.global do throwError! "invalid attribute '{name}', must be global"
+      unless kind == AttributeKind.global do throw_error "invalid attribute '{name}', must be global"
       let env ← getEnv
       unless (env.getModuleIdxFor? decl).isNone do
-        throwError! "invalid attribute '{name}', declaration is in an imported module"
+        throw_error "invalid attribute '{name}', declaration is in an imported module"
       validate decl val
       setEnv $ ext.addEntry env (decl, val),
     applicationTime := applicationTime

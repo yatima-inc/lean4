@@ -186,7 +186,7 @@ private def expandFields (structStx : Syntax) (structModifiers : Modifiers) (str
     idents.foldlM (init := views) fun (views : Array StructFieldView) ident => withRef ident do
       let name     := ident.getId
       if isInternalSubobjectFieldName name then
-        throwError! "invalid field name '{name}', identifiers starting with '_' are reserved to the system"
+        throw_error "invalid field name '{name}', identifiers starting with '_' are reserved to the system"
       let declName := structDeclName ++ name
       let declName ← applyVisibility fieldModifiers.visibility declName
       addDocString' declName fieldModifiers.docString?
@@ -211,7 +211,7 @@ private def checkParentIsStructure (parent : Expr) : TermElabM Name :=
   match parent.getAppFn with
   | Expr.const c _ _ => do
     unless isStructure (← getEnv) c do
-      throwError! "'{c}' is not a structure"
+      throw_error "'{c}' is not a structure"
     pure c
   | _ => throwError "expected structure"
 
@@ -227,7 +227,7 @@ private partial def processSubfields (structDeclName : Name) (parentFVar : Expr)
     if h : i < subfieldNames.size then
       let subfieldName := subfieldNames.get ⟨i, h⟩
       if containsFieldName infos subfieldName then
-        throwError! "field '{subfieldName}' from '{parentStructName}' has already been declared"
+        throw_error "field '{subfieldName}' from '{parentStructName}' has already been declared"
       let val  ← mkProjection parentFVar subfieldName
       let type ← inferType val
       withLetDecl subfieldName type val fun subfieldFVar =>
@@ -305,10 +305,10 @@ private partial def withFields
           withFields views (i+1) infos k
     | some info =>
       match info.kind with
-      | StructFieldKind.newField   => throwError! "field '{view.name}' has already been declared"
+      | StructFieldKind.newField   => throw_error "field '{view.name}' has already been declared"
       | StructFieldKind.fromParent =>
         match view.value? with
-        | none       => throwError! "field '{view.name}' has been declared in parent structure"
+        | none       => throw_error "field '{view.name}' has been declared in parent structure"
         | some valStx => do
           if let some type := view.type? then
             throwErrorAt! type "omit field '{view.name}' type to set default value"
@@ -458,7 +458,7 @@ private def addDefaults (lctx : LocalContext) (defaultAuxDecls : Array (Name × 
     defaultAuxDecls.forM fun (declName, type, value) => do
       let value ← instantiateMVars value
       if value.hasExprMVar then
-        throwError! "invalid default value for field, it contains metavariables{indentExpr value}"
+        throw_error "invalid default value for field, it contains metavariables{indentExpr value}"
       /- The identity function is used as "marker". -/
       let value ← mkId value
       discard <| mkAuxDefinition declName type value (zeta := true)
