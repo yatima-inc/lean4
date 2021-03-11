@@ -1804,7 +1804,7 @@ the type class <code>OfNat</code>.</p>
   inv : den ≠ 0
 
 instance : OfNat Rational n where
-  ofNat := { num := n, den := 1, inv := decide! }
+  ofNat := { num := n, den := 1, inv := by decide }
 
 instance : ToString Rational where
   toString r := s!&quot;{r.num}/{r.den}&quot;
@@ -1942,7 +1942,7 @@ priority to override the builtin ones.</p>
 
 @[defaultInstance 1]
 instance : OfNat Rational n where
-  ofNat := { num := n, den := 1, inv := decide! }
+  ofNat := { num := n, den := 1, inv := by decide }
 
 instance : ToString Rational where
   toString r := s!&quot;{r.num}/{r.den}&quot;
