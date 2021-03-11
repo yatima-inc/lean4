@@ -145,8 +145,8 @@ def basicFun : Parser := nodeWithAntiquot "basicFun" `Lean.Parser.Term.basicFun 
 @[builtinTermParser] def «fun» := parser!:maxPrec unicodeSymbol "λ" "fun" >> (basicFun <|> matchAlts)
 
 def optExprPrecedence := optional (atomic ":" >> termParser maxPrec)
-@[builtinTermParser] def «parser!»  := parser!:leadPrec "parser! " >> optExprPrecedence >> termParser
-@[builtinTermParser] def «tparser!» := parser!:leadPrec "tparser! " >> optExprPrecedence >> termParser
+@[builtinTermParser] def «parser!»  := parser!:leadPrec (symbol "parser! " <|> "leading_parser") >> optExprPrecedence >> termParser
+@[builtinTermParser] def «tparser!» := parser!:leadPrec (symbol "tparser! " <|> "trailing_parser") >> optExprPrecedence >> termParser
 @[builtinTermParser] def borrowed   := parser! "@&" >> termParser leadPrec
 @[builtinTermParser] def quotedName := parser! nameLit
 @[builtinTermParser] def doubleQuotedName := parser! "`" >> checkNoWsBefore >> nameLit
@@ -162,8 +162,8 @@ def letEqnsDecl := nodeWithAntiquot "letEqnsDecl" `Lean.Parser.Term.letEqnsDecl 
 -- Remark: we use `nodeWithAntiquot` here to make sure anonymous antiquotations (e.g., `$x`) are not `letDecl`
 def letDecl     := nodeWithAntiquot "letDecl" `Lean.Parser.Term.letDecl (notFollowedBy (nonReservedSymbol "rec") "rec" >> (letIdDecl <|> letPatDecl <|> letEqnsDecl))
 @[builtinTermParser] def «let» := parser!:leadPrec  withPosition ("let " >> letDecl) >> optSemicolon termParser
-@[builtinTermParser] def «let!» := parser!:leadPrec withPosition ("let! " >> letDecl) >> optSemicolon termParser
-@[builtinTermParser] def «let*» := parser!:leadPrec withPosition ("let* " >> letDecl) >> optSemicolon termParser
+@[builtinTermParser] def «let!» := parser!:leadPrec withPosition ((symbol "let! " <|> symbol "let_λ " <|> "let_fun ") >> letDecl) >> optSemicolon termParser
+@[builtinTermParser] def «let*» := parser!:leadPrec withPosition ((symbol "let* " <|> "let_delayed ") >> letDecl) >> optSemicolon termParser
 def «scoped» := parser! "scoped "
 def «local»  := parser! "local "
 def attrKind := parser! optional («scoped» <|> «local»)
@@ -180,19 +180,19 @@ def whereDecls := parser! "where " >> many1Indent (group (letRecDecl >> optional
 @[runBuiltinParserAttributeHooks]
 def matchAltsWhereDecls := parser! matchAlts >> optional whereDecls
 
-@[builtinTermParser] def nativeRefl   := parser! "nativeRefl! " >> termParser maxPrec
-@[builtinTermParser] def nativeDecide := parser! "nativeDecide!"
-@[builtinTermParser] def decide       := parser! "decide!"
+@[builtinTermParser] def nativeRefl   := parser! (symbol "nativeRefl! " <|> "by_native_refl ") >> termParser maxPrec
+@[builtinTermParser] def nativeDecide := parser! (symbol "nativeDecide!" <|> "by_native_decide")
+@[builtinTermParser] def decide       := parser! (symbol "decide!" <|> "by_decide")
 
-@[builtinTermParser] def noindex := parser! "noindex!" >> termParser maxPrec
+@[builtinTermParser] def noindex := parser! (symbol "noindex!" <|> "no_index ") >> termParser maxPrec
 
-@[builtinTermParser] def binrel  := parser! "binrel! " >> ident >> ppSpace >> termParser maxPrec >> termParser maxPrec
+@[builtinTermParser] def binrel  := parser! (symbol "binrel! " <|> "bin_rel ")  >> ident >> ppSpace >> termParser maxPrec >> termParser maxPrec
 
-@[builtinTermParser] def forInMacro := parser! "forIn! " >> termParser maxPrec >> termParser maxPrec >> termParser maxPrec
+@[builtinTermParser] def forInMacro := parser! (symbol "forIn! " <|> "for_in ") >> termParser maxPrec >> termParser maxPrec >> termParser maxPrec
 
-@[builtinTermParser] def typeOf             := parser! "typeOf! " >> termParser maxPrec
-@[builtinTermParser] def ensureTypeOf       := parser! "ensureTypeOf! " >> termParser maxPrec >> strLit >> termParser
-@[builtinTermParser] def ensureExpectedType := parser! "ensureExpectedType! " >> strLit >> termParser maxPrec
+@[builtinTermParser] def typeOf             := parser! (symbol "typeOf!  " <|> "type_of ") >> termParser maxPrec
+@[builtinTermParser] def ensureTypeOf       := parser! (symbol "ensureTypeOf! " <|> "ensure_type_of ") >> termParser maxPrec >> strLit >> termParser
+@[builtinTermParser] def ensureExpectedType := parser! (symbol "ensureExpectedType! " <|> "ensure_expected_type ") >> strLit >> termParser maxPrec
 
 def namedArgument  := parser! atomic ("(" >> ident >> " := ") >> termParser >> ")"
 def ellipsis       := parser! ".."
@@ -225,7 +225,7 @@ def bracketedBinderF := bracketedBinder  -- no default arg
 
 @[builtinTermParser] def panic       := parser!:leadPrec "panic! " >> termParser
 @[builtinTermParser] def unreachable := parser!:leadPrec "unreachable!"
-@[builtinTermParser] def dbgTrace    := parser!:leadPrec withPosition ("dbgTrace! " >> ((interpolatedStr termParser) <|> termParser)) >> optSemicolon termParser
+@[builtinTermParser] def dbgTrace    := parser!:leadPrec withPosition ((symbol "dbgTrace! " <|> "debug_trace") >> ((interpolatedStr termParser) <|> termParser)) >> optSemicolon termParser
 @[builtinTermParser] def assert      := parser!:leadPrec withPosition ("assert! " >> termParser) >> optSemicolon termParser
 
 

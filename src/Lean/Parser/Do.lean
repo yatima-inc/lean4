@@ -105,7 +105,7 @@ def doFinally    := parser! "finally " >> doSeq
 @[builtinDoElemParser] def doBreak     := parser! "break"
 @[builtinDoElemParser] def doContinue  := parser! "continue"
 @[builtinDoElemParser] def doReturn    := parser!:leadPrec withPosition ("return " >> optional (checkLineEq >> termParser))
-@[builtinDoElemParser] def doDbgTrace  := parser!:leadPrec "dbgTrace! " >> ((interpolatedStr termParser) <|> termParser)
+@[builtinDoElemParser] def doDbgTrace  := parser!:leadPrec (symbol "dbgTrace! " <|> "debug_trace ") >> ((interpolatedStr termParser) <|> termParser)
 @[builtinDoElemParser] def doAssert    := parser!:leadPrec "assert! " >> termParser
 
 /-

@@ -16,7 +16,7 @@ builtin_initialize
 @[builtinTacticParser] def nestedTactic := tacticSeqBracketed
 
 /- Auxiliary parser for expanding `match` tactic -/
-@[builtinTacticParser] def eraseAuxDiscrs := parser!:maxPrec "eraseAuxDiscrs!"
+@[builtinTacticParser] def eraseAuxDiscrs := parser!:maxPrec (symbol "eraseAuxDiscrs!" <|> "erase_aux_discrs")
 
 def matchRhs  := Term.hole <|> Term.syntheticHole <|> tacticSeq
 def matchAlts := Term.matchAlts (rhsParser := matchRhs)
