@@ -420,8 +420,8 @@ instance : ToString Rational where
 <code>OfNat.ofNat Nat 2 (instOfNatNat 2)</code> and
 <code>OfNat.ofNat Rational 2 (instOfNatRational 2)</code> respectively.
 We say the numerals <code>2</code> occurring in the elaborated terms are <em>raw</em> natural numbers.
-You can input the raw natural number <code>2</code> using the macro <code>natLit! 2</code>.</p>
-<pre><code class="language-lean">#check natLit! 2  -- Nat
+You can input the raw natural number <code>2</code> using the macro <code>nat_lit 2</code>.</p>
+<pre><code class="language-lean">#check nat_lit 2  -- Nat
 </code></pre>
 <p>Raw natural numbers are <em>not</em> polymorphic.</p>
 <p>The <code>OfNat</code> instance is parametric on the numeral. So, you can define instances for particular numerals.
@@ -430,7 +430,7 @@ The second argument is often a variable as in the example above, or a <em>raw</e
   unit : α
   op   : α → α → α
 
-instance [s : Monoid α] : OfNat α (natLit! 1) where
+instance [s : Monoid α] : OfNat α (nat_lit 1) where
   ofNat := s.unit
 
 def getUnit [Monoid α] : α :=
