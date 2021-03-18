@@ -32,7 +32,7 @@ def declModifiers (inline : Bool) := leading_parser optional docComment >> optio
 def declId           := leading_parser ident >> optional (".{" >> sepBy1 ident ", " >> "}")
 def declSig          := leading_parser many (ppSpace >> (Term.simpleBinderWithoutType <|> Term.bracketedBinder)) >> Term.typeSpec
 def optDeclSig       := leading_parser many (ppSpace >> (Term.simpleBinderWithoutType <|> Term.bracketedBinder)) >> Term.optType
-def declValSimple    := leading_parser " :=\n" >> termParser >> optional Term.whereDecls
+def declValSimple    := leading_parser " :=\n" >> withPosition termParser >> optional Term.whereDecls
 def declValEqns      := leading_parser Term.matchAltsWhereDecls
 def declVal          := declValSimple <|> declValEqns <|> Term.whereDecls
 def «abbrev»         := leading_parser "abbrev " >> declId >> optDeclSig >> declVal
