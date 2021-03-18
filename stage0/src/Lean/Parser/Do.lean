@@ -20,7 +20,7 @@ def leftArrow : Parser := unicodeSymbol " ← " " <- "
 
 def doSeqItem      := leading_parser ppLine >> doElemParser >> optional "; "
 def doSeqIndent    := leading_parser many1Indent doSeqItem
-def doSeqBracketed := leading_parser "{" >> withoutPosition (many1 doSeqItem) >> ppLine >> "}"
+def doSeqBracketed := leading_parser bracket "{" (many1 doSeqItem) (ppLine >> "}")
 def doSeq          := doSeqBracketed <|> doSeqIndent
 
 def termBeforeDo := withForbidden "do" termParser
