@@ -51,12 +51,12 @@ open ParamMap (Key)
 abbrev ParamMap := Std.HashMap Key (Array Param)
 
 def ParamMap.fmt (map : ParamMap) : Format :=
-  let fmts := map.fold (fun fmt k ps =>
-    let k := match k with
-      | ParamMap.Key.decl n  => format n
-      | ParamMap.Key.jp n id => format n ++ ":" ++ format id
-    fmt ++ Format.line ++ k ++ " -> " ++ formatParams ps)
-   Format.nil
+  let fmts :=
+    map.fold (init := Format.nil) fun fmt k ps =>
+      let k := match k with
+        | ParamMap.Key.decl n  => format n
+        | ParamMap.Key.jp n id => format n ++ ":" ++ format id
+      fmt ++ Format.line ++ k ++ " -> " ++ formatParams ps
   "{" ++ (Format.nest 1 fmts) ++ "}"
 
 instance : ToFormat ParamMap := ⟨ParamMap.fmt⟩

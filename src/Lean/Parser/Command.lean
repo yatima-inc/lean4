@@ -56,12 +56,13 @@ def structCtor           := leading_parser atomic (declModifiers true >> ident >
 def structureTk          := leading_parser "structure "
 def classTk              := leading_parser "class "
 def «extends»            := leading_parser " extends " >> sepBy1 termParser ", "
-def «structure»          := leading_parser
+def «structure»          :=
+  leading_parser
     (structureTk <|> classTk) >> declId >> many Term.bracketedBinder >> optional «extends» >> Term.optType
     >> optional ((symbol " := " <|> " where ") >> optional structCtor >> structFields)
     >> optDeriving
-@[builtinCommandParser] def declaration := leading_parser
-declModifiers false >> («abbrev» <|> «def» <|> «theorem» <|> «constant» <|> «instance» <|> «axiom» <|> «example» <|> «inductive» <|> classInductive <|> «structure»)
+@[builtinCommandParser] def declaration :=
+  leading_parser declModifiers false >> («abbrev» <|> «def» <|> «theorem» <|> «constant» <|> «instance» <|> «axiom» <|> «example» <|> «inductive» <|> classInductive <|> «structure»)
 @[builtinCommandParser] def «deriving»     := leading_parser "deriving " >> "instance " >> sepBy1 ident ", " >> " for " >> sepBy1 ident ", "
 @[builtinCommandParser] def «section»      := leading_parser "section " >> optional ident
 @[builtinCommandParser] def «namespace»    := leading_parser "namespace " >> ident

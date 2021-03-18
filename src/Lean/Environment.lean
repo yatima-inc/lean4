@@ -494,13 +494,12 @@ unsafe def Environment.freeRegions (env : Environment) : IO Unit :=
 
 def mkModuleData (env : Environment) : IO ModuleData := do
   let pExts ← persistentEnvExtensionsRef.get
-  let entries : Array (Name × Array EnvExtensionEntry) := pExts.size.fold
-    (fun i result =>
+  let entries : Array (Name × Array EnvExtensionEntry) :=
+    pExts.size.fold (init := #[]) fun i result =>
       let state  := (pExts.get! i).getState env
       let exportEntriesFn := (pExts.get! i).exportEntriesFn
       let extName    := (pExts.get! i).name
-      result.push (extName, exportEntriesFn state))
-    #[]
+      result.push (extName, exportEntriesFn state)
   pure {
     imports    := env.header.imports,
     constants  := env.constants.foldStage2 (fun cs _ c => cs.push c) #[],

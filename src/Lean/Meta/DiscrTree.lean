@@ -91,10 +91,9 @@ partial def Trie.format {α} [ToFormat α] : Trie α → Format
 instance {α} [ToFormat α] : ToFormat (Trie α) := ⟨Trie.format⟩
 
 partial def format {α} [ToFormat α] (d : DiscrTree α) : Format :=
-  let (_, r) := d.root.foldl
-    (fun (p : Bool × Format) k c =>
-      (false, p.2 ++ (if p.1 then Format.nil else Format.line) ++ Format.paren (fmt k ++ " => " ++ fmt c)))
-    (true, Format.nil)
+  let (_, r) :=
+    d.root.foldl (init := (true, Format.nil)) fun (p : Bool × Format) k c =>
+      (false, p.2 ++ (if p.1 then Format.nil else Format.line) ++ Format.paren (fmt k ++ " => " ++ fmt c))
   Format.group r
 
 instance {α} [ToFormat α] : ToFormat (DiscrTree α) := ⟨format⟩
@@ -289,7 +288,8 @@ private partial def insertAux {α} [BEq α] (keys : Array Key) (v : α) : Nat �
   | i, Trie.node vs cs =>
     if h : i < keys.size then
       let k := keys.get ⟨i, h⟩
-      let c := Id.run $ cs.binInsertM
+      let c :=
+        Id.run <| cs.binInsertM
           (fun a b => a.1 < b.1)
           (fun ⟨_, s⟩ => let c := insertAux keys v (i+1) s; (k, c)) -- merge with existing
           (fun _ => let c := createNodes keys v (i+1); (k, c))

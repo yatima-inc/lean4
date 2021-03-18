@@ -86,10 +86,11 @@ def doIfLetBind := leading_parser " ← " >> termParser
 def doIfLet     := nodeWithAntiquot "doIfLet"     `Lean.Parser.Term.doIfLet       <| "let " >> termParser >> (doIfLetPure <|> doIfLetBind)
 def doIfProp    := nodeWithAntiquot "doIfProp"    `Lean.Parser.Term.doIfProp      <| optIdent >> termParser
 def doIfCond    := withAntiquot (mkAntiquot "doIfCond" none (anonymous := false)) <| doIfLet <|> doIfProp
-@[builtinDoElemParser] def doIf := leading_parser withPosition $
-  "if " >> doIfCond >> " then " >> doSeq
-  >> many (checkColGe "'else if' in 'do' must be indented" >> group (elseIf >> doIfCond >> " then " >> doSeq))
-  >> optional (checkColGe "'else' in 'do' must be indented" >> " else " >> doSeq)
+@[builtinDoElemParser] def doIf :=
+  leading_parser withPosition $
+    "if " >> doIfCond >> " then " >> doSeq
+    >> many (checkColGe "'else if' in 'do' must be indented" >> group (elseIf >> doIfCond >> " then " >> doSeq))
+    >> optional (checkColGe "'else' in 'do' must be indented" >> " else " >> doSeq)
 @[builtinDoElemParser] def doUnless := leading_parser "unless " >> withForbidden "do" termParser >> "do " >> doSeq
 def doForDecl := leading_parser termParser >> " in " >> withForbidden "do" termParser
 @[builtinDoElemParser] def doFor    := leading_parser "for " >> sepBy1 doForDecl ", " >> "do " >> doSeq

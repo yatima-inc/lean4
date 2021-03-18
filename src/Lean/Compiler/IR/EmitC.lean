@@ -459,17 +459,18 @@ def toHexDigit (c : Nat) : String :=
 
 def quoteString (s : String) : String :=
   let q := "\"";
-  let q := s.foldl
-    (fun q c => q ++
-      if c == '\n' then "\\n"
-      else if c == '\n' then "\\t"
-      else if c == '\\' then "\\\\"
-      else if c == '\"' then "\\\""
-      else if c.toNat <= 31 then
-        "\\x" ++ toHexDigit (c.toNat / 16) ++ toHexDigit (c.toNat % 16)
-      -- TODO(Leo): we should use `\unnnn` for escaping unicode characters.
-      else String.singleton c)
-    q;
+  let q :=
+    s.foldl
+      (fun q c => q ++
+        if c == '\n' then "\\n"
+        else if c == '\n' then "\\t"
+        else if c == '\\' then "\\\\"
+        else if c == '\"' then "\\\""
+        else if c.toNat <= 31 then
+          "\\x" ++ toHexDigit (c.toNat / 16) ++ toHexDigit (c.toNat % 16)
+        -- TODO(Leo): we should use `\unnnn` for escaping unicode characters.
+        else String.singleton c)
+      q
   q ++ "\""
 
 def emitNumLit (t : IRType) (v : Nat) : M Unit := do

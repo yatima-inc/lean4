@@ -476,8 +476,9 @@ partial def elabChoiceAux (cmds : Array Syntax) (i : Nat) : CommandElabM Unit :=
 @[builtinCommandElab «variable»] def elabVariable : CommandElab
   | `(variable $binders*) => do
     -- Try to elaborate `binders` for sanity checking
-    runTermElabM none fun _ => Term.withAutoBoundImplicitLocal <|
-      Term.elabBinders binders (catchAutoBoundImplicit := true) fun _ => pure ()
+    runTermElabM none fun _ =>
+      Term.withAutoBoundImplicitLocal <|
+        Term.elabBinders binders (catchAutoBoundImplicit := true) fun _ => pure ()
     let varUIds ← binders.concatMap getBracketedBinderIds |>.mapM (withFreshMacroScope ∘ MonadQuotation.addMacroScope)
     modifyScope fun scope => { scope with varDecls := scope.varDecls ++ binders, varUIds := scope.varUIds ++ varUIds }
   | _ => throwUnsupportedSyntax

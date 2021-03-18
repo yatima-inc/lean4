@@ -981,9 +981,10 @@ theorem Squash.ind {α : Type u} {motive : Squash α → Prop} (h : ∀ (a : α)
 
 instance {α} : Subsingleton (Squash α) := ⟨fun a b =>
   Squash.ind (motive := fun a => a = b)
-    (fun a => Squash.ind (motive := fun b => Squash.mk a = b)
-      (fun b => show Quot.mk _ a = Quot.mk _ b by apply Quot.sound; exact trivial)
-      b)
+    (fun a =>
+      Squash.ind (motive := fun b => Squash.mk a = b)
+        (fun b => show Quot.mk _ a = Quot.mk _ b by apply Quot.sound; exact trivial)
+        b)
     a⟩
 
 namespace Lean

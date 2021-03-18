@@ -85,12 +85,12 @@ def structInstArrayRef := leading_parser "[" >> termParser >>"]"
 def structInstLVal   := leading_parser (ident <|> fieldIdx <|> structInstArrayRef) >> many (group ("." >> (ident <|> fieldIdx)) <|> structInstArrayRef)
 def structInstField  := ppGroup $ leading_parser structInstLVal >> " := " >> termParser
 def optEllipsis      := leading_parser optional ".."
-@[builtinTermParser] def structInst := leading_parser
-  bracket "{"
-   (ppHardSpace >> optional (atomic (termParser >> " with "))
-    >> manyIndent (group (structInstField >> optional ", "))
-    >> optEllipsis
-    >> optional (" : " >> termParser)) " }"
+@[builtinTermParser] def structInst :=
+  leading_parser bracket "{"
+    (ppHardSpace >> optional (atomic (termParser >> " with "))
+     >> manyIndent (group (structInstField >> optional ", "))
+     >> optEllipsis
+     >> optional (" : " >> termParser)) " }"
 def typeSpec := leading_parser " : " >> termParser
 def optType : Parser := optional typeSpec
 @[builtinTermParser] def explicit := leading_parser "@" >> termParser maxPrec
@@ -102,8 +102,9 @@ def binderDefault := leading_parser " := " >> termParser
 def explicitBinder (requireType := false) := ppGroup $ leading_parser "(" >> many1 binderIdent >> binderType requireType >> optional (binderTactic <|> binderDefault) >> ")"
 def implicitBinder (requireType := false) := ppGroup $ leading_parser "{" >> many1 binderIdent >> binderType requireType >> "}"
 def instBinder := ppGroup $ leading_parser "[" >> optIdent >> termParser >> "]"
-def bracketedBinder (requireType := false) := withAntiquot (mkAntiquot "bracketedBinder" none (anonymous := false)) <|
-  explicitBinder requireType <|> implicitBinder requireType <|> instBinder
+def bracketedBinder (requireType := false) :=
+  withAntiquot (mkAntiquot "bracketedBinder" none (anonymous := false)) <|
+    explicitBinder requireType <|> implicitBinder requireType <|> instBinder
 
 /-
 It is feasible to support dependent arrows such as `{α} → α → α` without sacrificing the quality of the error messages for the longer case.
@@ -157,8 +158,9 @@ def optExprPrecedence := optional (atomic ":" >> termParser maxPrec)
 @[builtinTermParser] def quotedName := leading_parser nameLit
 @[builtinTermParser] def doubleQuotedName := leading_parser "`" >> checkNoWsBefore >> nameLit
 
-def simpleBinderWithoutType := nodeWithAntiquot "simpleBinder" `Lean.Parser.Term.simpleBinder (anonymous := true)
-  (many1 binderIdent >> pushNone)
+def simpleBinderWithoutType :=
+  nodeWithAntiquot "simpleBinder" `Lean.Parser.Term.simpleBinder (anonymous := true)
+    (many1 binderIdent >> pushNone)
 
 /- Remark: we use `checkWsBefore` to ensure `let x[i] := e; b` is not parsed as `let x [i] := e; b` where `[i]` is an `instBinder`. -/
 def letIdLhs    : Parser := ident >> checkWsBefore "expected space before binders" >> many (ppSpace >> (simpleBinderWithoutType <|> bracketedBinder)) >> optType
@@ -199,10 +201,11 @@ def matchAltsWhereDecls := leading_parser matchAlts >> optional whereDecls
 
 def namedArgument  := leading_parser atomic ("(" >> ident >> " := ") >> termParser >> ")"
 def ellipsis       := leading_parser ".."
-@[builtinTermParser] def app      := trailing_parser:(maxPrec-1) many1 $
-  checkWsBefore "expected space" >>
-  checkColGt "expected to be indented" >>
-  (namedArgument <|> ellipsis <|> termParser maxPrec)
+@[builtinTermParser] def app :=
+  trailing_parser:(maxPrec-1) many1 $
+    checkWsBefore "expected space" >>
+    checkColGt "expected to be indented" >>
+    (namedArgument <|> ellipsis <|> termParser maxPrec)
 
 @[builtinTermParser] def proj     := trailing_parser checkNoWsBefore >> "." >> (fieldIdx <|> ident)
 @[builtinTermParser] def arrayRef := trailing_parser checkNoWsBefore >> "[" >> termParser >>"]"

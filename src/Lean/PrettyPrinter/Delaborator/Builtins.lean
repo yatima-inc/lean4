@@ -324,7 +324,8 @@ def delabLam : Delab :=
     let ppTypes ← getPPOption getPPBinderTypes
     let expl ← getPPOption getPPExplicit
     -- leave lambda implicit if possible
-    let blockImplicitLambda := expl ||
+    let blockImplicitLambda :=
+      expl ||
       e.binderInfo == BinderInfo.default ||
       Elab.Term.blockImplicitLambda stxBody ||
       curNames.any (fun n => hasIdent n.getId stxBody);

@@ -121,8 +121,8 @@ unsafe def pureUnsafe [Monad m] (a : α) : NondetT m α :=
 protected constant pure [Monad m] (a : α) : NondetT m α
 
 @[inline]
-protected def failure [Monad m] : NondetT m α := id (α := m (Alts m α)) $
-  pure Alts.nil
+protected def failure [Monad m] : NondetT m α :=
+  id (α := m (Alts m α)) <| pure Alts.nil
 
 instance [Monad m] : Monad (NondetT m) where
   bind x f := NondetT.join (NondetT.map f x)
