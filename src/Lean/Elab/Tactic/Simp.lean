@@ -140,7 +140,9 @@ where
   }
   let loc := expandOptLocation stx[4]
   match loc with
-  | Location.target => simpTarget ctx
+  | Location.targets hyps type => 
+    -- TODO stopped here  
+      simpTarget ctx
   | Location.localDecls userNames => userNames.forM (simpLocalDecl ctx)
   | Location.wildcard => simpAll ctx
 
