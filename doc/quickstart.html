@@ -171,21 +171,25 @@
 <p>These instructions will walk you through setting up Lean using the &quot;basic&quot; setup and VS Code as the editor.
 See <a href="./setup.html">Setup</a> for other ways and more details on setting up Lean.</p>
 <ol>
-<li>Install the latest Lean 4 nightly through <a href="https://github.com/Kha/elan"><code>elan</code></a>: in any bash-compatible shell, run</li>
-</ol>
+<li>Install the latest Lean 4 nightly through <a href="https://github.com/Kha/elan"><code>elan</code></a>: in any bash-compatible shell, run
 <pre><code class="language-sh">$ curl https://raw.githubusercontent.com/Kha/elan/master/elan-init.sh -sSf | sh -s -- --default-toolchain leanprover/lean4:nightly
 </code></pre>
+</li>
+</ol>
 <p>See the <code>elan</code> link above for other installation options and details.</p>
 <ol>
 <li>Install <a href="https://code.visualstudio.com/">VS Code</a>.</li>
-<li>Open VS Code and install the <code>lean4</code> extension. <img src="images/code-ext.png" alt="installing the vscode-lean4 extension" /></li>
-<li>Create a new file with the extension <code>.lean</code> and add the following code:</li>
-</ol>
+<li>Open VS Code and install the <code>lean4</code> extension.<br />
+<img src="images/code-ext.png" alt="installing the vscode-lean4 extension" /></li>
+<li>Create a new file with the extension <code>.lean</code> and add the following code:
 <pre><code class="language-lean">import Leanpkg
 
 #eval Leanpkg.leanVersionString
 </code></pre>
-<p>You should get a syntax-highlighted file with an &quot;infoview&quot; on the right that tells you the installed Lean version when placing your cursor on the last line. <img src="images/code-success.png" alt="successful setup" /></p>
+</li>
+</ol>
+<p>You should get a syntax-highlighted file with a &quot;Lean Infoview&quot; on the right that tells you the installed Lean version when placing your cursor on the last line.<br />
+<img src="images/code-success.png" alt="successful setup" /></p>
 <ol>
 <li>You are set up! Try opening a Lean package with a <code>leanpkg.toml</code>. You can create your own packages using <code>leanpkg init</code> on the command line.
 Packages <strong>have</strong> to be opened using &quot;File &gt; Open Folder...&quot; for imports to work.
