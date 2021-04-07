@@ -2718,7 +2718,7 @@ We can make this more precise by looking at the commands above unfold to:</p>
 notation:50 lhs:51 &quot; = &quot; rhs:51 =&gt; Eq lhs rhs
 notation:80 lhs:81 &quot; ^ &quot; rhs:80 =&gt; HPow.hPow lhs rhs
 notation:100 &quot;-&quot; arg:100 =&gt; Neg.neg arg
-notation:1000 arg:1000 &quot;⁻¹&quot; =&gt; Inv.inv arg  -- `max` is a shorthand for precedence 1000
+notation:1024 arg:1024 &quot;⁻¹&quot; =&gt; Inv.inv arg  -- `max` is a shorthand for precedence 1024
 </code></pre>
 <p>It turns out that all commands from the first code block are in fact command <em>macros</em> translating to the more general <code>notation</code> command.
 We will learn about writing such macros below.
