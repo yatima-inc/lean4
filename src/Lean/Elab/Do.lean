@@ -1127,6 +1127,23 @@ def ensureEOS (doElems : List Syntax) : M Unit :=
   unless doElems.isEmpty do
     throwError "must be last element in a 'do' sequence"
 
+@[builtinTermElab liftMethodHelper] def elabLiftMethodHelper : TermElab := fun stx expectedType? => do
+  match stx with
+  | `(liftMethod% $m $a $term) =>
+     if let some mvarId := (← getMCtx).findUserName? m.getId then
+       let some a ← isLocalIdent? a | throwError "unexpected error: auxiliary local variable not found"
+       let mvarDecl ← getMVarDecl mvarId
+       let e ← elabTermEnsuringType term mvarDecl.type
+       if let some e ← checkAssignment mvarId #[] e then
+         assignExprMVar mvarId e
+         return a
+       else
+         -- TODO improve error message
+         throwErrorAt term "invalid method lift"
+     else
+      throwError "unexpected error: auxiliary metavariable not found"
+  | _ => throwUnsupportedSyntax
+
 private partial def expandLiftMethodAux (inQuot : Bool) : Syntax → StateT (List Syntax) MacroM Syntax
   | stx@(Syntax.node k args) =>
     if liftMethodDelimiter k then
@@ -1134,9 +1151,9 @@ private partial def expandLiftMethodAux (inQuot : Bool) : Syntax → StateT (Lis
     else if k == `Lean.Parser.Term.liftMethod && !inQuot then withFreshMacroScope do
       let term := args[1]
       let term ← expandLiftMethodAux inQuot term
-      let auxDoElem ← `(doElem| let a ← $term:term)
+      let auxDoElem ← `(doElem| let a ← ?m)
       modify fun s => s ++ [auxDoElem]
-      `(a)
+      `(liftMethod% m a $term:term)
     else do
       let inAntiquot := stx.isAntiquot && !stx.isEscapedAntiquot
       let args ← args.mapM (expandLiftMethodAux (inQuot && !inAntiquot || stx.isQuot))
