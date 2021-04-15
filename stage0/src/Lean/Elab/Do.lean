@@ -634,7 +634,8 @@ private def expandDoIf? (stx : Syntax) : MacroM (Option Syntax) := match stx wit
       e ← withRef cond <| match cond with
         | `(doIfCond|let $pat := $d) => `(doElem| match%$i $d:term with | $pat:term => $t | _ => $e)
         | `(doIfCond|let $pat ← $d)  => `(doElem| match%$i ← $d    with | $pat:term => $t | _ => $e)
-        | _                          => `(doElem| if%$i $cond:doIfCond then $t else $e)
+        | `(doIfCond|$cond:doIfProp) => `(doElem| if%$i $cond:doIfProp then $t else $e)
+        | _                          => `(doElem| if%$i $(Syntax.missing) then $t else $e)
       eIsSeq := false
     return some e
   | _ => pure none
@@ -1451,7 +1452,8 @@ mutual
 
   partial def doSeqToCode : List Syntax → M CodeBlock
     | [] => do liftMacroM mkPureUnitAction
-    | doElem::doElems => withRef doElem do
+    | doElem::doElems => withIncRecDepth <| withRef doElem do
+      checkMaxHeartbeats "'do'-expander"
       match (← liftMacroM <| expandMacro? doElem) with
       | some doElem => doSeqToCode (doElem::doElems)
       | none =>
