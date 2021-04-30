@@ -1797,11 +1797,9 @@ This causes class inference to chain through instances recursively, backtracking
   default := fun _ =&gt; arbitrary
 </code></pre>
 <p>As an exercise, try defining default instances for other types, such as <code>List</code> and <code>Sum</code> types.</p>
-<p>The Lean standard library contains the definition <code>inferInstance</code>. It has type <code>{α : Type u} → [i : α] → α</code>,
+<p>The Lean standard library contains the definition <code>inferInstance</code>. It has type <code>{α : Sort u} → [i : α] → α</code>,
 and is useful for triggering the type class resolution procedure when the expected type is an instance.</p>
-<pre><code class="language-lean">#check @inferInstance  -- {α : Type u} → [i : α] → α
-
-#check (inferInstance : Inhabited Nat) -- Inhabited Nat
+<pre><code class="language-lean">#check (inferInstance : Inhabited Nat) -- Inhabited Nat
 
 def foo : Inhabited (Nat × Nat) :=
   inferInstance
@@ -1915,7 +1913,7 @@ instance [HMul α β γ] : HMul α (Array β) (Array γ) where
 
 #eval hMul 4 3                    -- 12
 #eval hMul 4 #[2, 3, 4]           -- #[8, 12, 16]
-#eval hMul (-2) #[3, -1, 4]       -- #[-6, 2, -4]
+#eval hMul (-2) #[3, -1, 4]       -- #[-6, 2, -8]
 #eval hMul 2 #[#[2, 3], #[0, 4]]  -- #[#[4, 6], #[0, 8]]
 <span class="boring">end Ex
 </span></code></pre>
@@ -2128,7 +2126,7 @@ It is defined as</p>
 <p>but its execution time representation is optimized, and it is similar to C++ <code>std::vector&lt;T&gt;</code> and Rust <code>Vec&lt;T&gt;</code>.
 The Lean type checker has no special support for reducing <code>Array</code>s.</p>
 <p>You can create arrays in several ways. You can create a small array by listing consecutive values between
-<code>#[</code> and <code>]</code> and separated by colons, as shown in the following examples.</p>
+<code>#[</code> and <code>]</code> and separated by commas, as shown in the following examples.</p>
 <pre><code class="language-lean">#check #[1, 2, 3] -- Array Nat
 
 #check #[] -- Array ?m
