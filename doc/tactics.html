@@ -463,7 +463,7 @@ where
 <p>If you love Lean 3 <code>begin ... end</code> tactic blocks and commas, you can define this notation
 in Lean 4 using macros in a few lines of code.</p>
 <pre><code class="language-lean">open Lean in
-macro &quot;begin &quot; ts:tactic,*,? &quot;end&quot;%i : term =&gt; do
+macro &quot;begin &quot; ts:tactic,*,? i:&quot;end&quot; : term =&gt; do
   -- preserve position of the last token, which is used
   -- as the error position in case of an unfinished proof
   `(by { $[$ts:tactic]* }%$i)
