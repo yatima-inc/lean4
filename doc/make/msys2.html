@@ -179,13 +179,34 @@ MSYS2 has a package management system, <a href="https://wiki.archlinux.org/index
 <p>Here are the commands to install all dependencies needed to compile Lean on your machine.</p>
 <pre><code class="language-bash">pacman -S make mingw-w64-x86_64-cmake mingw-w64-x86_64-ccache mingw-w64-x86_64-gcc git
 </code></pre>
+<p>Then make sure the following is included in your PATH:</p>
+<pre><code class="language-bash">export PATH=$PATH:/mingw64/bin
+</code></pre>
+<p>You should now be able to run these commands:</p>
+<pre><code class="language-bash">gcc --version
+cmake --version
+</code></pre>
 <p>Then follow the <a href="index.html">generic build instructions</a> in the MSYS2 MinGW shell, using
 <code>cmake ../.. -G &quot;Unix Makefiles&quot;</code> instead of <code>cmake ../..</code>. This ensures that cmake will call <code>sh</code> instead
 of <code>cmd.exe</code> for script tasks.</p>
 <h2><a class="header" href="#install-lean" id="install-lean">Install lean</a></h2>
 <p>You can use the <code>install</code> ninja/make target to install Lean into, by default,
-<code>C:\\User Programs (x86)\\LEAN</code>. To change this, add <code>-DCMAKE_INSTALL_PREFIX=path/you/want</code>
-to your cmake invocation.</p>
+<code>./build/release/stage1/msys64/lean/</code>. To change this, add <code>-DCMAKE_INSTALL_PREFIX=path/you/want</code>
+to your initial cmake invocation.</p>
+<h2><a class="header" href="#running" id="running">Running</a></h2>
+<p>You can run <code>lean --version</code> to see if your binaries work.</p>
+<p>If you want a version that can run independently of your MSYS install
+then you need to copy the following dependent DLL's from where ever
+they are installed in your MSYS setup:</p>
+<ul>
+<li>libgcc_s_seh-1.dll</li>
+<li>libstdc++-6.dll</li>
+<li>libgmp-10.dll</li>
+<li>libwinpthread-1.dll</li>
+</ul>
+<p>The following linux command will do that:</p>
+<pre><code class="language-bash">cp $(ldd lean.exe | cut -f3 -d' ' | grep mingw) .
+</code></pre>
 
                     </main>
 
