@@ -3191,6 +3191,112 @@ def person1 : Person := {
 #eval println! &quot;person1: {person1}&quot;
 </code></pre>
 <h1><a class="header" href="#metaprogramming" id="metaprogramming">Metaprogramming</a></h1>
+<p>Macros are a language feature that allows writing code that writes other code (metaprogramming).</p>
+<p>In Lean 4, macros are used pervasively. So much so that core language features such as <code>do</code> notation
+is implemented via macros! As a language user, macros are useful to easily
+embed domain-specific languages and to generate code at compile-time, to name a few uses.</p>
+<h4><a class="header" href="#balanced-parentheses-as-an-embedded-domain-specific-language" id="balanced-parentheses-as-an-embedded-domain-specific-language">Balanced Parentheses as an Embedded Domain Specific Language</a></h4>
+<p>Let's look at how to use macros to extend the Lean 4 parser and embed a language for building <em>balanced parentheses</em>.
+This language accepts strings given by the <a href="https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form">BNF grammar</a></p>
+<pre><code>Dyck := 
+  &quot;(&quot; Dyck &quot;)&quot; 
+  | &quot;{&quot; Dyck '}'
+  | &quot;End&quot;
+</code></pre>
+<p>We begin by defining an inductive data type of the grammar we wish to parse:</p>
+<pre><code class="language-lean ignore">inductive Dyck: Type :=
+   | Round : Dyck -&gt; Dyck -- ( &lt;inner&gt; )
+   | Flower : Dyck -&gt; Dyck -- { &lt;inner&gt; }
+   | End : Dyck
+</code></pre>
+<p>We begin by declaring a <em>syntax category</em> using the <code>declare_syntax_cat &lt;category&gt;</code> command.
+This names our grammar and allows us to specify parsing rules associated with our grammar.</p>
+<pre><code class="language-lean ignore">declare_syntax_cat brack
+</code></pre>
+<p>Next, we specify the grammar using the <code>syntax &lt;parse rule&gt;</code> command:</p>
+<pre><code class="language-lean ignore">syntax &quot;End&quot; : brack
+</code></pre>
+<p>The above means that the string &quot;End&quot; lives in syntax category <code>brack</code>.</p>
+<p>Similarly, we declare the rules <code>&quot;(&quot; Dyck &quot;)&quot;</code> and <code>&quot;{&quot; Dyck &quot;}&quot;</code> using the rules:</p>
+<pre><code class="language-lean ignore">syntax &quot;(&quot; brack &quot;)&quot; : brack
+syntax &quot;{&quot; brack &quot;}&quot; : brack
+</code></pre>
+<p>Finally, we need a way to build <em>Lean 4 terms</em> from this grammar -- that is, we must translate out of this
+grammar into a <code>Dyck</code> value, which is a Lean 4 term. For this, we create a piece of syntax,
+called <code>fromBrack% brack : term</code>, which receives a <code>brack</code> and produces a <code>term</code>.</p>
+<pre><code class="language-lean ignore">-- auxiliary notation for translating `brack` into `term`
+syntax &quot;fromBrack% &quot; brack : term
+</code></pre>
+<p>To specify the transformation rules, we use <code>macro_rules</code> to declare how the syntax <code>fromBrack% &lt;brack&gt;</code>
+produces terms. This is written using a pattern-matching style syntax, where the left-hand side
+declares the pattern to be matched, and the right-hand side declares the production. Syntax placeholders (antiquotations)
+are introduced via the <code>$&lt;var-name&gt;</code> syntax. The right-hand side is
+an arbitrary Lean term that we are producing.</p>
+<pre><code class="language-lean ignore">macro_rules
+  | `(fromBrack% End) =&gt; `(Dyck.End)
+  | `(fromBrack% ( $b )) =&gt; `(Dyck.Round (fromBrack% $b)) -- recurse
+  | `(fromBrack% { $b }) =&gt; `(Dyck.Flower (fromBrack% $b)) -- recurse
+</code></pre>
+<pre><code class="language-lean ignore">def bar : Dyck := fromBrack% End
+#print bar
+/-
+def bar : Dyck :=
+Dyck.End
+-/
+
+def foo : Dyck := fromBrack% {(End)}
+#print foo
+/-
+Dyck.Flower (Dyck.Round (Dyck.End))
+-/
+</code></pre>
+<p>In summary, we've seen:</p>
+<ul>
+<li>How to declare a syntax category for the Dyck grammar.</li>
+<li>How to specify parse trees of this grammar using <code>syntax</code></li>
+<li>How to translate out of this grammar into Lean 4 terms using <code>macro_rules</code>.</li>
+</ul>
+<p>The full program listing is given below:</p>
+<pre><code class="language-lean">inductive Dyck: Type :=
+   | Round : Dyck -&gt; Dyck -- ( &lt;inner&gt; )
+   | Flower : Dyck -&gt; Dyck -- { &lt;inner&gt; }
+   | End : Dyck
+
+
+-- | declare Dyck grammar parse trees
+declare_syntax_cat brack
+syntax &quot;End&quot; : brack
+syntax &quot;(&quot; brack &quot;)&quot; : brack
+syntax &quot;{&quot; brack &quot;}&quot; : brack
+
+
+-- auxiliary notation for translating `brack` into `term`
+syntax &quot;fromBrack% &quot; brack : term
+
+-- | rules to translate dyck grammar into inductive value of type Dyck.
+macro_rules
+  | `(fromBrack% End) =&gt; `(Dyck.End)
+  | `(fromBrack% ( $b )) =&gt; `(Dyck.Round (fromBrack% $b)) -- recurse
+  | `(fromBrack% { $b }) =&gt; `(Dyck.Flower (fromBrack% $b)) -- recurse
+
+-- | tests
+def bar : Dyck := fromBrack% End
+#print bar
+/-
+def bar : Dyck :=
+Dyck.End
+-/
+
+def foo : Dyck := fromBrack% {(End)}
+#print foo
+/-
+Dyck.Flower (Dyck.Round Dyck.End)
+-/
+</code></pre>
+<h2><a class="header" href="#references" id="references">References</a></h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2001.10490">Hygenic Macro Expansion for Theorem Proving Languages</a></li>
+</ul>
 <h1><a class="header" href="#declaring-new-types" id="declaring-new-types">Declaring New Types</a></h1>
 <p>In Lean's library, every concrete type other than the universes and every type constructor other than the dependent function type is
 an instance of a general family of type constructions known as <em>inductive types</em>. It is remarkable that it is possible to develop
