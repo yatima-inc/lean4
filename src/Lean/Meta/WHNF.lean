@@ -604,6 +604,15 @@ def unfoldDefinition (e : Expr) : MetaM Expr := do
   let some e ← unfoldDefinition? e | throwError "failed to unfold definition{indentExpr e}"
   return e
 
+partial def unfoldDef (e : Expr) : MetaM Expr :=
+  match e.getAppFn with
+  | Expr.const declName lvls _ => do
+      let (some (cinfo@(ConstantInfo.defnInfo _))) ← getConstNoEx? declName | pure e
+      deltaDefinition cinfo lvls
+        (fun _ => pure e)
+        (fun e' => pure (mkAppN e' e.getAppArgs))
+  | _ => return e
+
 @[specialize] partial def whnfHeadPred (e : Expr) (pred : Expr → MetaM Bool) : MetaM Expr :=
   whnfEasyCases e fun e => do
     let e ← whnfCore e
