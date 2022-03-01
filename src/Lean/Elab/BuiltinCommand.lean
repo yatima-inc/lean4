@@ -226,6 +226,19 @@ def printLit (lit : Literal) : String :=
   | Literal.natVal val => toString val
   | Literal.strVal val => val
 
+def getPrefix (name : Name) : String :=
+  match name with
+  | Name.anonymous => "_"
+  | Name.str Name.anonymous s _ => s ++ "_"
+  | Name.str p _ _ => getPrefix p
+  | Name.num p _ _  => getPrefix p
+
+def printName (name : Name) : String :=
+  match name with
+  | Name.anonymous => "_"
+  | Name.str _ s _ => s
+  | Name.num p s _ => getPrefix p ++ toString s
+
 def parens? (expr : Expr) (str : String) : String :=
   match expr with
   | Expr.bvar _ _ => str
@@ -238,16 +251,16 @@ def parens? (expr : Expr) (str : String) : String :=
 mutual
 partial def printExprAux (printDom? : Bool) (expr : Expr) (names : List Name) : String :=
   match expr with
-  | Expr.bvar n _ => "^" ++ toString (names.get! n)
-  | Expr.fvar n _ => "#" ++ toString n.name
-  | Expr.mvar n _ => "?" ++ toString n.name
+  | Expr.bvar n _ => "^" ++ printName (names.get! n)
+  | Expr.fvar n _ => "#" ++ printName n.name
+  | Expr.mvar n _ => "?" ++ printName n.name
   | Expr.sort l _ => "Sort " ++ toString l
   | Expr.const n ls _ => "$" ++ toString n ++ printLvls ls
   | Expr.app f a _ => printApp printDom? f names [a]
   | Expr.lam n d b _ => printLam printDom? b names [(n, d)]
   | Expr.forallE n d b _ => printAll printDom? b names [(n, d)]
   | Expr.letE n t e b _ =>
-    "let (" ++ toString n ++ " : " ++ printExprAux printDom? t names ++ ") := " ++
+    "let (" ++ printName n ++ " : " ++ printExprAux printDom? t names ++ ") := " ++
     printExprAux printDom? e names ++ " in " ++ printExprAux printDom? b (n :: names)
   | Expr.lit l _ => printLit l
   | Expr.mdata m e _ => "MData. " ++ printExprAux printDom? e names
@@ -258,11 +271,11 @@ partial def printLam (printDom? : Bool) (expr : Expr) (names : List Name) (binds
   | Expr.lam n d b _ => printLam printDom? b names ((n, d) :: binds)
   | _ => if printDom?
     then
-      let fold : String := List.foldl (fun str (nam, expr) names => "(" ++ toString nam ++ " : " ++ printExprAux printDom? expr names ++ ") " ++ str (nam :: names)) (λ _ => "=> ") binds names
+      let fold : String := List.foldl (fun str (nam, expr) names => "(" ++ printName nam ++ " : " ++ printExprAux printDom? expr names ++ ") " ++ str (nam :: names)) (λ _ => "=> ") binds names
       let names : List Name := List.append (List.map (fun (nam, _) => nam) binds) names
       "λ " ++ fold ++ printExprAux printDom? expr names
     else
-      let fold : String := List.foldl (fun str (nam, _) names => toString nam ++ " " ++ str (nam :: names)) (λ _ => "=> ") binds names
+      let fold : String := List.foldl (fun str (nam, _) names => printName nam ++ " " ++ str (nam :: names)) (λ _ => "=> ") binds names
       let names : List Name := List.append (List.map (fun (nam, _) => nam) binds) names
       "λ " ++ fold ++ printExprAux printDom? expr names
 
@@ -270,7 +283,7 @@ partial def printAll (printDom? : Bool) (expr : Expr) (names : List Name) (binds
   match expr with
   | Expr.forallE n d b _ => printAll printDom? b names ((n, d) :: binds)
   | _ =>
-    let fold : String := List.foldl (fun str (nam, expr) names => "(" ++ toString nam ++ " : " ++ printExprAux printDom? expr names ++ ") " ++ str (nam :: names)) (λ _ => "-> ") binds names
+    let fold : String := List.foldl (fun str (nam, expr) names => "(" ++ printName nam ++ " : " ++ printExprAux printDom? expr names ++ ") " ++ str (nam :: names)) (λ _ => "-> ") binds names
     let names : List Name := List.append (List.map (fun (nam, _) => nam) binds) names
     "∀ " ++ fold ++ printExprAux printDom? expr names
 
@@ -292,7 +305,7 @@ def elabCheckCore (ignoreStuckTC : Bool) : CommandElab
     let explicitE := printExpr false unfoldE
     let explicitType := printExpr false type
     unless e.isSyntheticSorry do
-      logInfoAt tk m!"✓ {e} :=\n  {unfoldE}\nexplicitly:\n  {explicitE}\ntype:\n  {type}\nexplicitly (type):\n {explicitType}\n\n"
+      logInfoAt tk m!"✓ {e} :=\n  {unfoldE}\nexplicitly:\n  {explicitE}\ntype:\n  {type}\nexplicitly (type):\n  {explicitType}\n\n"
   | _ => throwUnsupportedSyntax
 
 @[builtinCommandElab Lean.Parser.Command.check] def elabCheck : CommandElab := elabCheckCore (ignoreStuckTC := true)
