@@ -224,7 +224,7 @@ def printLvls (ls : List Level) : String :=
 def printLit (lit : Literal) : String :=
   match lit with
   | Literal.natVal val => toString val
-  | Literal.strVal val => val
+  | Literal.strVal val => "\"" ++ val ++ "\""
 
 def getPrefix (name : Name) : String :=
   match name with
@@ -300,12 +300,15 @@ def elabCheckCore (ignoreStuckTC : Bool) : CommandElab
     let e ← Term.elabTerm term none
     Term.synthesizeSyntheticMVarsNoPostponing (ignoreStuckTC := ignoreStuckTC)
     let (e, _) ← Term.levelMVarToParam (← instantiateMVars e)
+    let e := e.getAppFn
     let type ← inferType e
     let unfoldE ← unfoldDef e
     let explicitE := printExpr false unfoldE
     let explicitType := printExpr false type
+    let whnfE ← whnf e
+    let reducedE := printExpr false whnfE
     unless e.isSyntheticSorry do
-      logInfoAt tk m!"✓ {e} :=\n  {unfoldE}\nexplicitly:\n  {explicitE}\ntype:\n  {type}\nexplicitly (type):\n  {explicitType}\n\n"
+      logInfoAt tk m!"✓ {e} :=\n  {unfoldE}\nexplicitly:\n  {explicitE}\ntype:\n  {type}\nexplicitly (type):\n  {explicitType}\nreduced:\n  {reducedE}\n\n"
   | _ => throwUnsupportedSyntax
 
 @[builtinCommandElab Lean.Parser.Command.check] def elabCheck : CommandElab := elabCheckCore (ignoreStuckTC := true)

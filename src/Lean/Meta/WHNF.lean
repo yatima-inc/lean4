@@ -605,12 +605,12 @@ def unfoldDefinition (e : Expr) : MetaM Expr := do
   return e
 
 partial def unfoldDef (e : Expr) : MetaM Expr :=
-  match e.getAppFn with
+  match e with
   | Expr.const declName lvls _ => do
       let (some (cinfo@(ConstantInfo.defnInfo _))) ← getConstNoEx? declName | pure e
       deltaDefinition cinfo lvls
         (fun _ => pure e)
-        (fun e' => pure (mkAppN e' e.getAppArgs))
+        (fun e' => pure e')
   | _ => return e
 
 @[specialize] partial def whnfHeadPred (e : Expr) (pred : Expr → MetaM Bool) : MetaM Expr :=
