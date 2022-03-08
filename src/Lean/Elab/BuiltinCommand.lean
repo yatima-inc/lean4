@@ -7,6 +7,7 @@ import Lean.DocString
 import Lean.Util.CollectLevelParams
 import Lean.Elab.Command
 import Lean.Elab.Open
+import Lean.ToString
 
 namespace Lean.Elab.Command
 
@@ -216,97 +217,19 @@ private def replaceBinderAnnotation (binder : Syntax) : CommandElabM Bool := do
 
 open Meta
 
-def printLvls (ls : List Level) : String :=
-  match ls with
-  | l::ls' => "[" ++ toString l ++ (List.foldr (fun lvl str => ", " ++ toString lvl ++ str) "]" ls')
-  | [] => ""
-
-def printLit (lit : Literal) : String :=
-  match lit with
-  | Literal.natVal val => toString val
-  | Literal.strVal val => "\"" ++ val ++ "\""
-
-def getPrefix (name : Name) : String :=
-  match name with
-  | Name.anonymous => "_"
-  | Name.str Name.anonymous s _ => s ++ "_"
-  | Name.str p _ _ => getPrefix p
-  | Name.num p _ _  => getPrefix p
-
-def printName (name : Name) : String :=
-  match name with
-  | Name.anonymous => "_"
-  | Name.str _ s _ => s
-  | Name.num p s _ => getPrefix p ++ toString s
-
-def parens? (expr : Expr) (str : String) : String :=
-  match expr with
-  | Expr.bvar _ _ => str
-  | Expr.fvar _ _ => str
-  | Expr.mvar _ _ => str
-  | Expr.sort _ _ => str
-  | Expr.const _ _ _ => str
-  | Expr.lit _ _ => str
-  | _ => "(" ++ str ++ ")"
-mutual
-partial def printExprAux (printDom? : Bool) (expr : Expr) (names : List Name) : String :=
-  match expr with
-  | Expr.bvar n _ => "^" ++ printName (names.get! n)
-  | Expr.fvar n _ => "#" ++ printName n.name
-  | Expr.mvar n _ => "?" ++ printName n.name
-  | Expr.sort l _ => "Sort " ++ toString l
-  | Expr.const n ls _ => "$" ++ toString n ++ printLvls ls
-  | Expr.app f a _ => printApp printDom? f names [a]
-  | Expr.lam n d b _ => printLam printDom? b names [(n, d)]
-  | Expr.forallE n d b _ => printAll printDom? b names [(n, d)]
-  | Expr.letE n t e b _ =>
-    "let (" ++ printName n ++ " : " ++ printExprAux printDom? t names ++ ") := " ++
-    printExprAux printDom? e names ++ " in " ++ printExprAux printDom? b (n :: names)
-  | Expr.lit l _ => printLit l
-  | Expr.mdata m e _ => "MData. " ++ printExprAux printDom? e names
-  | Expr.proj n i e _ => "Proj " ++ toString n ++ " " ++ toString i ++ ". " ++ printExprAux printDom? e names
-
-partial def printLam (printDom? : Bool) (expr : Expr) (names : List Name) (binds : List (Name × Expr)) : String :=
-  match expr with
-  | Expr.lam n d b _ => printLam printDom? b names ((n, d) :: binds)
-  | _ => if printDom?
-    then
-      let fold : String := List.foldl (fun str (nam, expr) names => "(" ++ printName nam ++ " : " ++ printExprAux printDom? expr names ++ ") " ++ str (nam :: names)) (λ _ => "=> ") binds names
-      let names : List Name := List.append (List.map (fun (nam, _) => nam) binds) names
-      "λ " ++ fold ++ printExprAux printDom? expr names
-    else
-      let fold : String := List.foldl (fun str (nam, _) names => printName nam ++ " " ++ str (nam :: names)) (λ _ => "=> ") binds names
-      let names : List Name := List.append (List.map (fun (nam, _) => nam) binds) names
-      "λ " ++ fold ++ printExprAux printDom? expr names
-
-partial def printAll (printDom? : Bool) (expr : Expr) (names : List Name) (binds : List (Name × Expr)) : String :=
-  match expr with
-  | Expr.forallE n d b _ => printAll printDom? b names ((n, d) :: binds)
-  | _ =>
-    let fold : String := List.foldl (fun str (nam, expr) names => "(" ++ printName nam ++ " : " ++ printExprAux printDom? expr names ++ ") " ++ str (nam :: names)) (λ _ => "-> ") binds names
-    let names : List Name := List.append (List.map (fun (nam, _) => nam) binds) names
-    "∀ " ++ fold ++ printExprAux printDom? expr names
-
-partial def printApp (printDom? : Bool) (expr : Expr) (names : List Name) (args : List Expr) : String :=
-  match expr with
-  | Expr.app f a _ => printApp printDom? f names (a :: args)
-  | _ => parens? expr (printExprAux printDom? expr names) ++ (List.foldr (fun arg str => " " ++ parens? arg (printExprAux printDom? arg names) ++ str) "" args)
-end
-
-def printExpr (printDom? : Bool) (expr : Expr) : String := printExprAux printDom? expr []
-
 def elabCheckCore (ignoreStuckTC : Bool) : CommandElab
   | `(#check%$tk $term) => withoutModifyingEnv $ runTermElabM (some `_check) fun _ => do
     let e ← Term.elabTerm term none
     Term.synthesizeSyntheticMVarsNoPostponing (ignoreStuckTC := ignoreStuckTC)
     let (e, _) ← Term.levelMVarToParam (← instantiateMVars e)
     let e := e.getAppFn
+    let env ← getEnv
     let type ← inferType e
     let unfoldE ← unfoldDef e
-    let explicitE := printExpr false unfoldE
-    let explicitType := printExpr false type
+    let explicitE := Lean.toStringExpr false unfoldE env
+    let explicitType := Lean.toStringExpr false type env
     let whnfE ← whnf e
-    let reducedE := printExpr false whnfE
+    let reducedE := Lean.toStringExpr false whnfE env
     unless e.isSyntheticSorry do
       logInfoAt tk m!"✓ {e} :=\n  {unfoldE}\nexplicitly:\n  {explicitE}\ntype:\n  {type}\nexplicitly (type):\n  {explicitType}\nreduced:\n  {reducedE}\n\n"
   | _ => throwUnsupportedSyntax
