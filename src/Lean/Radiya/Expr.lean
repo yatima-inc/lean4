@@ -1,19 +1,15 @@
 import Lean.Radiya.Ipld.Cid
 import Lean.Radiya.Univ
 
-namespace Lean.Radiya
+import Lean.Expr
+open Lean (Literal)
 
-abbrev Name := String
+namespace Lean.Radiya
 
 inductive DefinitionSafety where
   | safe
   | unsa
   | part
-  deriving Inhabited, BEq
-
-inductive Literal where
-  | natVal (val : Nat)
-  | strVal (val : String)
   deriving Inhabited, BEq
 
 inductive LitType where
