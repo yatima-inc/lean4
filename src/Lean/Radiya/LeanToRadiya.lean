@@ -1,5 +1,6 @@
 import Lean.Radiya.Expr
 import Lean.Expr
+import Lean.Environment
 
 namespace List
 
@@ -14,12 +15,7 @@ end List
 
 namespace Lean.Radiya
 
-abbrev ConstMap := Nat
-
 def nameToCid (nam : Name) : Cid := panic! "TODO"
-
-def findConstInfo (nam : Name) (constMap : ConstMap) : Const :=
-  Const.theoremC (TheoremC.mk 0 (panic! "TODO") (panic! "TODO"))
 
 def leanLevelToRadiya (levelParams : List Name) (lvl : Lean.Level) : Univ :=
   match lvl with
@@ -30,7 +26,74 @@ def leanLevelToRadiya (levelParams : List Name) (lvl : Lean.Level) : Univ :=
   | Lean.Level.param nam _ => Univ.param (List.getIdxEx levelParams nam)
   | Lean.Level.mvar _ _ => panic! "Unfilled level metavariable"
 
-def leanExprToRadiya (lean : Lean.Expr) (constMap : ConstMap) (levelParams : List Name) : Expr :=
+mutual
+partial def findConstInfo (nam : Name) (constMap : Lean.ConstMap) : Const :=
+  match constMap.find?' nam with
+  | some (ConstantInfo.axiomInfo struct) =>
+    let cid := default
+    let level := default
+    let type := default
+    Const.axiomC { cid, level, type }
+  | some (ConstantInfo.thmInfo struct) =>
+    let level := default
+    let expr := default
+    let type := default
+    Const.theoremC { level, expr, type }
+  | some (ConstantInfo.opaqueInfo struct) =>
+    let cid := default
+    let level := default
+    let expr := default
+    let type := default
+    let is_unsafe := default
+    Const.opaque { cid, level, expr, type, is_unsafe }
+  | some (ConstantInfo.defnInfo struct) =>
+    let cid := default
+    let level := default
+    let expr := default
+    let type := default
+    let safety := default
+    Const.defn { cid, level, expr, type, safety }
+  | some (ConstantInfo.ctorInfo struct) =>
+    let cid := default
+    let level := default
+    let type := default
+    let ctor_idx := default
+    let num_params := default
+    let num_fields := default
+    let is_unsafe := default
+    Const.ctor { cid, level, type, ctor_idx, num_params, num_fields, is_unsafe }
+  | some (ConstantInfo.inductInfo struct) =>
+    let cid := default
+    let level := default
+    let type := default
+    let num_params := default
+    let num_indices := default
+    let ctors := default
+    let is_rec := default
+    let is_unsafe := default
+    let is_reflexive := default
+    let is_nested := default
+    Const.induct { cid, level, type, num_params, num_indices, ctors, is_rec, is_unsafe, is_reflexive, is_nested }
+  | some (ConstantInfo.recInfo struct) =>
+    let cid := default
+    let level := default
+    let type := default
+    let num_params := default
+    let num_indices := default
+    let num_motives := default
+    let num_minors := default
+    let rules := default
+    let k := default
+    let is_unsafe := default
+    Const.recursor { cid, level, type, num_params, num_indices, num_motives, num_minors, rules, k, is_unsafe }
+  | some (ConstantInfo.quotInfo struct) =>
+    let level := default
+    let type := default
+    let kind := default
+    Const.quotient { level, type, kind }
+  | none => panic! "Unknown constant"
+
+partial def leanExprToRadiya (lean : Lean.Expr) (constMap : Lean.ConstMap) (levelParams : List Name) : Expr :=
   match lean with
   | Lean.Expr.bvar idx _ => Expr.var idx
   | Lean.Expr.sort lvl _ => Expr.sort (leanLevelToRadiya levelParams lvl)
@@ -48,5 +111,6 @@ def leanExprToRadiya (lean : Lean.Expr) (constMap : ConstMap) (levelParams : Lis
   | Lean.Expr.proj .. => panic! "Projections TODO"
   | Lean.Expr.fvar .. => panic! "Unbound variable"
   | Lean.Expr.mvar .. => panic! "Unfilled metavariable"
+end
 
 end Lean.Radiya

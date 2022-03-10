@@ -1,27 +1,14 @@
 import Lean.Radiya.Ipld.Cid
 import Lean.Radiya.Univ
 
-import Lean.Expr
-open Lean (Literal)
+import Lean.Declaration
+open Lean (DefinitionSafety Literal QuotKind)
 
 namespace Lean.Radiya
-
-inductive DefinitionSafety where
-  | safe
-  | unsa
-  | part
-  deriving Inhabited, BEq
 
 inductive LitType where
   | natTyp
   | strTyp
-  deriving Inhabited, BEq
-
-inductive QuotKind where
-  | type
-  | ctor
-  | lift
-  | ind
   deriving Inhabited, BEq
 
 -- Lean does not support mutual blocks with structure and inductive, so we have to parametrize
@@ -118,6 +105,9 @@ mutual
   | fix   : Expr → Expr
   deriving Inhabited
 end
+
+instance : Inhabited Const where
+  default := Const.theoremC (TheoremC.mk 0 default default)
 
 def extractConstType (k : Const) : Expr :=
   match k with

@@ -292,7 +292,7 @@ inductive QuotKind where
   | ctor  -- `Quot.mk`
   | lift  -- `Quot.lift`
   | ind   -- `Quot.ind`
-  deriving Inhabited
+  deriving Inhabited, BEq
 
 structure QuotVal extends ConstantVal where
   kind : QuotKind

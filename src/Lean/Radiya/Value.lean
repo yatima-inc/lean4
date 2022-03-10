@@ -47,8 +47,8 @@ mutual
     | Const.defn x =>
       match x.safety with
       | DefinitionSafety.safe => eval x.expr [] univs
-      | DefinitionSafety.part => mkConst const univs
-      | DefinitionSafety.unsa => panic! "Unsafe definition found"
+      | DefinitionSafety.«partial» => mkConst const univs
+      | DefinitionSafety.«unsafe» => panic! "Unsafe definition found"
     | _ => mkConst const univs
 
   partial def applyConst (k : Const) (univs : List Univ) (arg : Thunk Value) (args : List (Thunk Value)) : Value :=
