@@ -35,13 +35,16 @@ def leanExprToRadiya (lean : Lean.Expr) (constMap : ConstMap) (levelParams : Lis
   | Lean.Expr.bvar idx _ => Expr.var idx
   | Lean.Expr.sort lvl _ => Expr.sort (leanLevelToRadiya levelParams lvl)
   | Lean.Expr.const nam lvls _ => Expr.const (findConstInfo nam constMap) (List.map (leanLevelToRadiya levelParams) lvls)
-  | Lean.Expr.app fnc arg _ => Expr.app (leanExprToRadiya fnc constMap) (leanExprToRadiya arg constMap)
-  | Lean.Expr.lam _ bnd bod _ => Expr.lam (leanExprToRadiya bnd constMap) (leanExprToRadiya bod constMap)
-  | Lean.Expr.forallE _ dom img _ => Expr.pi (leanExprToRadiya dom constMap) (leanExprToRadiya img constMap)
+  | Lean.Expr.app fnc arg _ => Expr.app (leanExprToRadiya fnc constMap levelParams) (leanExprToRadiya arg constMap levelParams)
+  | Lean.Expr.lam _ bnd bod _ => Expr.lam (leanExprToRadiya bnd constMap levelParams) (leanExprToRadiya bod constMap levelParams)
+  | Lean.Expr.forallE _ dom img _ => Expr.pi (leanExprToRadiya dom constMap levelParams) (leanExprToRadiya img constMap levelParams)
   | Lean.Expr.letE _ typ exp bod _ =>
-    Expr.letE (leanExprToRadiya typ constMap) (leanExprToRadiya exp constMap) (leanExprToRadiya bod constMap)
+    Expr.letE
+     (leanExprToRadiya typ constMap levelParams)
+     (leanExprToRadiya exp constMap levelParams)
+     (leanExprToRadiya bod constMap levelParams)
   | Lean.Expr.lit lit _ => Expr.lit lit
-  | Lean.Expr.mdata _ e _ => leanExprToRadiya e constMap
+  | Lean.Expr.mdata _ e _ => leanExprToRadiya e constMap levelParams
   | Lean.Expr.proj .. => panic! "Projections TODO"
   | Lean.Expr.fvar .. => panic! "Unbound variable"
   | Lean.Expr.mvar .. => panic! "Unfilled metavariable"
