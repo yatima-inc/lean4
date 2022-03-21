@@ -16,6 +16,8 @@ end List
 namespace Lean.Radiya
 
 def nameToCid (nam : Name) : Cid := panic! "TODO"
+def exprToCid (e : Lean.Expr) : Cid := panic! "TODO"
+def combineCid (a : Cid) (b : Cid) : Cid := panic! "TODO"
 
 def leanLevelToRadiya (levelParams : List Name) (lvl : Lean.Level) : Univ :=
   match lvl with
@@ -30,33 +32,33 @@ mutual
 partial def findConstInfo (nam : Name) (constMap : Lean.ConstMap) : Const :=
   match constMap.find?' nam with
   | some (ConstantInfo.axiomInfo struct) =>
-    let cid := default
-    let level := default
-    let type := default
+    let cid := combineCid (nameToCid struct.name) (exprToCid struct.type)
+    let level := struct.levelParams.length
+    let type := leanExprToRadiya struct.type constMap struct.levelParams
     Const.axiomC { cid, level, type }
   | some (ConstantInfo.thmInfo struct) =>
-    let level := default
-    let expr := default
-    let type := default
+    let level := struct.levelParams.length
+    let expr := leanExprToRadiya struct.value constMap struct.levelParams
+    let type := leanExprToRadiya struct.type constMap struct.levelParams
     Const.theoremC { level, expr, type }
   | some (ConstantInfo.opaqueInfo struct) =>
-    let cid := default
-    let level := default
-    let expr := default
-    let type := default
+    let cid := combineCid (nameToCid struct.name) (exprToCid struct.type)
+    let level := struct.levelParams.length
+    let expr := leanExprToRadiya struct.value constMap struct.levelParams
+    let type := leanExprToRadiya struct.type constMap struct.levelParams
     let is_unsafe := default
     Const.opaque { cid, level, expr, type, is_unsafe }
   | some (ConstantInfo.defnInfo struct) =>
-    let cid := default
-    let level := default
-    let expr := default
-    let type := default
-    let safety := default
+    let cid := combineCid (nameToCid struct.name) (exprToCid struct.type)
+    let level := struct.levelParams.length
+    let expr := leanExprToRadiya struct.value constMap struct.levelParams
+    let type := leanExprToRadiya struct.type constMap struct.levelParams
+    let safety := struct.safety
     Const.defn { cid, level, expr, type, safety }
   | some (ConstantInfo.ctorInfo struct) =>
     let cid := default
-    let level := default
-    let type := default
+    let level := struct.levelParams.length
+    let type := leanExprToRadiya struct.type constMap struct.levelParams
     let ctor_idx := default
     let num_params := default
     let num_fields := default
@@ -64,8 +66,8 @@ partial def findConstInfo (nam : Name) (constMap : Lean.ConstMap) : Const :=
     Const.ctor { cid, level, type, ctor_idx, num_params, num_fields, is_unsafe }
   | some (ConstantInfo.inductInfo struct) =>
     let cid := default
-    let level := default
-    let type := default
+    let level := struct.levelParams.length
+    let type := leanExprToRadiya struct.type constMap struct.levelParams
     let num_params := default
     let num_indices := default
     let ctors := default
@@ -76,8 +78,8 @@ partial def findConstInfo (nam : Name) (constMap : Lean.ConstMap) : Const :=
     Const.induct { cid, level, type, num_params, num_indices, ctors, is_rec, is_unsafe, is_reflexive, is_nested }
   | some (ConstantInfo.recInfo struct) =>
     let cid := default
-    let level := default
-    let type := default
+    let level := struct.levelParams.length
+    let type := leanExprToRadiya struct.type constMap struct.levelParams
     let num_params := default
     let num_indices := default
     let num_motives := default
@@ -87,8 +89,8 @@ partial def findConstInfo (nam : Name) (constMap : Lean.ConstMap) : Const :=
     let is_unsafe := default
     Const.recursor { cid, level, type, num_params, num_indices, num_motives, num_minors, rules, k, is_unsafe }
   | some (ConstantInfo.quotInfo struct) =>
-    let level := default
-    let type := default
+    let level := struct.levelParams.length
+    let type := leanExprToRadiya struct.type constMap struct.levelParams
     let kind := default
     Const.quotient { level, type, kind }
   | none => panic! "Unknown constant"
