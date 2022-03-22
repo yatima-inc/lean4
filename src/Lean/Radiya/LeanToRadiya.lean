@@ -16,7 +16,8 @@ end List
 namespace Lean.Radiya
 
 def nameToCid (nam : Name) : Cid := panic! "TODO"
-def exprToCid (e : Lean.Expr) : Cid := panic! "TODO"
+def leanExprToCid (e : Lean.Expr) : Cid := panic! "TODO"
+def inductiveToCid (induct : Lean.InductiveVal) : Cid := panic! "TODO"
 def combineCid (a : Cid) (b : Cid) : Cid := panic! "TODO"
 
 def leanLevelToRadiya (levelParams : List Name) (lvl : Lean.Level) : Univ :=
@@ -32,7 +33,7 @@ mutual
 partial def findConstInfo (nam : Name) (constMap : Lean.ConstMap) : Const :=
   match constMap.find?' nam with
   | some (ConstantInfo.axiomInfo struct) =>
-    let cid := combineCid (nameToCid struct.name) (exprToCid struct.type)
+    let cid := combineCid (nameToCid struct.name) (leanExprToCid struct.type)
     let level := struct.levelParams.length
     let type := leanExprToRadiya struct.type constMap struct.levelParams
     Const.axiomC { cid, level, type }
@@ -42,56 +43,56 @@ partial def findConstInfo (nam : Name) (constMap : Lean.ConstMap) : Const :=
     let type := leanExprToRadiya struct.type constMap struct.levelParams
     Const.theoremC { level, expr, type }
   | some (ConstantInfo.opaqueInfo struct) =>
-    let cid := combineCid (nameToCid struct.name) (exprToCid struct.type)
+    let cid := combineCid (nameToCid struct.name) (leanExprToCid struct.type)
     let level := struct.levelParams.length
     let expr := leanExprToRadiya struct.value constMap struct.levelParams
     let type := leanExprToRadiya struct.type constMap struct.levelParams
-    let is_unsafe := default
+    let is_unsafe := struct.isUnsafe
     Const.opaque { cid, level, expr, type, is_unsafe }
   | some (ConstantInfo.defnInfo struct) =>
-    let cid := combineCid (nameToCid struct.name) (exprToCid struct.type)
+    let cid := combineCid (nameToCid struct.name) (leanExprToCid struct.type)
     let level := struct.levelParams.length
     let expr := leanExprToRadiya struct.value constMap struct.levelParams
     let type := leanExprToRadiya struct.type constMap struct.levelParams
     let safety := struct.safety
     Const.defn { cid, level, expr, type, safety }
   | some (ConstantInfo.ctorInfo struct) =>
-    let cid := default
+    let cid := default -- TODO
     let level := struct.levelParams.length
     let type := leanExprToRadiya struct.type constMap struct.levelParams
-    let ctor_idx := default
-    let num_params := default
-    let num_fields := default
-    let is_unsafe := default
+    let ctor_idx := struct.cidx
+    let num_params := struct.numParams
+    let num_fields := struct.numFields
+    let is_unsafe := struct.isUnsafe
     Const.ctor { cid, level, type, ctor_idx, num_params, num_fields, is_unsafe }
   | some (ConstantInfo.inductInfo struct) =>
-    let cid := default
+    let cid := inductiveToCid struct
     let level := struct.levelParams.length
     let type := leanExprToRadiya struct.type constMap struct.levelParams
-    let num_params := default
-    let num_indices := default
-    let ctors := default
-    let is_rec := default
-    let is_unsafe := default
-    let is_reflexive := default
-    let is_nested := default
+    let num_params := struct.numParams
+    let num_indices := struct.numIndices
+    let ctors := default -- TODO (is this field really necessary?)
+    let is_rec := struct.isRec
+    let is_unsafe := struct.isUnsafe
+    let is_reflexive := struct.isReflexive
+    let is_nested := struct.isNested
     Const.induct { cid, level, type, num_params, num_indices, ctors, is_rec, is_unsafe, is_reflexive, is_nested }
   | some (ConstantInfo.recInfo struct) =>
-    let cid := default
+    let cid := default -- TODO
     let level := struct.levelParams.length
     let type := leanExprToRadiya struct.type constMap struct.levelParams
-    let num_params := default
-    let num_indices := default
-    let num_motives := default
-    let num_minors := default
-    let rules := default
-    let k := default
-    let is_unsafe := default
+    let num_params := struct.numParams
+    let num_indices := struct.numIndices
+    let num_motives := struct.numMotives
+    let num_minors := struct.numMinors
+    let rules := default -- TODO
+    let k := struct.k
+    let is_unsafe := struct.isUnsafe
     Const.recursor { cid, level, type, num_params, num_indices, num_motives, num_minors, rules, k, is_unsafe }
   | some (ConstantInfo.quotInfo struct) =>
     let level := struct.levelParams.length
     let type := leanExprToRadiya struct.type constMap struct.levelParams
-    let kind := default
+    let kind := struct.kind
     Const.quotient { level, type, kind }
   | none => panic! "Unknown constant"
 
