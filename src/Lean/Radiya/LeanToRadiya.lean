@@ -15,6 +15,8 @@ end List
 
 namespace Lean.Radiya
 
+abbrev ConstMap := SMap Name Const
+
 def nameToCid (nam : Name) : Cid := panic! "TODO"
 def leanExprToCid (e : Lean.Expr) : Cid := panic! "TODO"
 def inductiveToCid (induct : Lean.InductiveVal) : Cid := panic! "TODO"
@@ -29,88 +31,118 @@ def leanLevelToRadiya (levelParams : List Name) (lvl : Lean.Level) : Univ :=
   | Lean.Level.param nam _ => Univ.param (List.getIdxEx levelParams nam)
   | Lean.Level.mvar _ _ => panic! "Unfilled level metavariable"
 
-mutual
-partial def findConstInfo (nam : Name) (constMap : Lean.ConstMap) : Const :=
-  match constMap.find?' nam with
-  | some (ConstantInfo.axiomInfo struct) =>
-    let cid := combineCid (nameToCid struct.name) (leanExprToCid struct.type)
-    let level := struct.levelParams.length
-    let type := leanExprToRadiya struct.type constMap struct.levelParams
-    Const.axiomC { cid, level, type }
-  | some (ConstantInfo.thmInfo struct) =>
-    let level := struct.levelParams.length
-    let expr := leanExprToRadiya struct.value constMap struct.levelParams
-    let type := leanExprToRadiya struct.type constMap struct.levelParams
-    Const.theoremC { level, expr, type }
-  | some (ConstantInfo.opaqueInfo struct) =>
-    let cid := combineCid (nameToCid struct.name) (leanExprToCid struct.type)
-    let level := struct.levelParams.length
-    let expr := leanExprToRadiya struct.value constMap struct.levelParams
-    let type := leanExprToRadiya struct.type constMap struct.levelParams
-    let is_unsafe := struct.isUnsafe
-    Const.opaque { cid, level, expr, type, is_unsafe }
-  | some (ConstantInfo.defnInfo struct) =>
-    let cid := combineCid (nameToCid struct.name) (leanExprToCid struct.type)
-    let level := struct.levelParams.length
-    let expr := leanExprToRadiya struct.value constMap struct.levelParams
-    let type := leanExprToRadiya struct.type constMap struct.levelParams
-    let safety := struct.safety
-    Const.defn { cid, level, expr, type, safety }
-  | some (ConstantInfo.ctorInfo struct) =>
-    let cid := default -- TODO
-    let level := struct.levelParams.length
-    let type := leanExprToRadiya struct.type constMap struct.levelParams
-    let ctor_idx := struct.cidx
-    let num_params := struct.numParams
-    let num_fields := struct.numFields
-    let is_unsafe := struct.isUnsafe
-    Const.ctor { cid, level, type, ctor_idx, num_params, num_fields, is_unsafe }
-  | some (ConstantInfo.inductInfo struct) =>
-    let cid := inductiveToCid struct
-    let level := struct.levelParams.length
-    let type := leanExprToRadiya struct.type constMap struct.levelParams
-    let num_params := struct.numParams
-    let num_indices := struct.numIndices
-    let ctors := default -- TODO (is this field really necessary?)
-    let is_rec := struct.isRec
-    let is_unsafe := struct.isUnsafe
-    let is_reflexive := struct.isReflexive
-    let is_nested := struct.isNested
-    Const.induct { cid, level, type, num_params, num_indices, ctors, is_rec, is_unsafe, is_reflexive, is_nested }
-  | some (ConstantInfo.recInfo struct) =>
-    let cid := default -- TODO
-    let level := struct.levelParams.length
-    let type := leanExprToRadiya struct.type constMap struct.levelParams
-    let num_params := struct.numParams
-    let num_indices := struct.numIndices
-    let num_motives := struct.numMotives
-    let num_minors := struct.numMinors
-    let rules := default -- TODO
-    let k := struct.k
-    let is_unsafe := struct.isUnsafe
-    Const.recursor { cid, level, type, num_params, num_indices, num_motives, num_minors, rules, k, is_unsafe }
-  | some (ConstantInfo.quotInfo struct) =>
-    let level := struct.levelParams.length
-    let type := leanExprToRadiya struct.type constMap struct.levelParams
-    let kind := struct.kind
-    Const.quotient { level, type, kind }
-  | none => panic! "Unknown constant"
+abbrev ConvM := StateT ConstMap Id
+instance : Monad ConvM := let i := inferInstanceAs (Monad ConvM); { pure := i.pure, bind := i.bind }
 
-partial def leanExprToRadiya (lean : Lean.Expr) (constMap : Lean.ConstMap) (levelParams : List Name) : Expr :=
+mutual
+partial def toRadiyaConstMap (nam : Name) (leanMap : Lean.ConstMap) : ConvM ConstMap := do
+  let insertConst := fun nam const => do
+      let _ ← addConstInfo nam const leanMap
+      pure default
+  SMap.forM leanMap insertConst
+  StateT.get
+
+partial def addConstInfo (nam : Name) (constInfo : ConstantInfo) (leanMap : Lean.ConstMap) : ConvM Const := do
+  let radiyaMap ← StateT.get
+  match radiyaMap.find?' nam with
+  | some const => pure const
+  | none => do
+    let const ← match constInfo with
+    | ConstantInfo.axiomInfo struct => do
+      let cid := combineCid (nameToCid struct.name) (leanExprToCid struct.type)
+      let level := struct.levelParams.length
+      let type ← leanExprToRadiya struct.type leanMap struct.levelParams
+      pure $ Const.axiomC { cid, level, type }
+    | ConstantInfo.thmInfo struct => do
+      let level := struct.levelParams.length
+      let expr ← leanExprToRadiya struct.value leanMap struct.levelParams
+      let type ← leanExprToRadiya struct.type leanMap struct.levelParams
+      pure $ Const.theoremC { level, expr, type }
+    | ConstantInfo.opaqueInfo struct => do
+      let cid := combineCid (nameToCid struct.name) (leanExprToCid struct.type)
+      let level := struct.levelParams.length
+      let expr ← leanExprToRadiya struct.value leanMap struct.levelParams
+      let type ← leanExprToRadiya struct.type leanMap struct.levelParams
+      let is_unsafe := struct.isUnsafe
+      Const.opaque { cid, level, expr, type, is_unsafe }
+    | ConstantInfo.defnInfo struct => do
+      let cid := combineCid (nameToCid struct.name) (leanExprToCid struct.type)
+      let level := struct.levelParams.length
+      let expr ← leanExprToRadiya struct.value leanMap struct.levelParams
+      let type ← leanExprToRadiya struct.type leanMap struct.levelParams
+      let safety := struct.safety
+      pure $ Const.defn { cid, level, expr, type, safety }
+    | ConstantInfo.ctorInfo struct => do
+      let cid := default -- TODO
+      let level := struct.levelParams.length
+      let type ← leanExprToRadiya struct.type leanMap struct.levelParams
+      let ctor_idx := struct.cidx
+      let num_params := struct.numParams
+      let num_fields := struct.numFields
+      let is_unsafe := struct.isUnsafe
+      pure $ Const.ctor { cid, level, type, ctor_idx, num_params, num_fields, is_unsafe }
+    | ConstantInfo.inductInfo struct => do
+      let cid := inductiveToCid struct
+      let level := struct.levelParams.length
+      let type ← leanExprToRadiya struct.type leanMap struct.levelParams
+      let num_params := struct.numParams
+      let num_indices := struct.numIndices
+      let ctors := default -- TODO (is this field really necessary?)
+      let is_rec := struct.isRec
+      let is_unsafe := struct.isUnsafe
+      let is_reflexive := struct.isReflexive
+      let is_nested := struct.isNested
+      pure $ Const.induct { cid, level, type, num_params, num_indices, ctors, is_rec, is_unsafe, is_reflexive, is_nested }
+    | ConstantInfo.recInfo struct => do
+      let cid := default -- TODO
+      let level := struct.levelParams.length
+      let type ← leanExprToRadiya struct.type leanMap struct.levelParams
+      let num_params := struct.numParams
+      let num_indices := struct.numIndices
+      let num_motives := struct.numMotives
+      let num_minors := struct.numMinors
+      let rules := default -- TODO
+      let k := struct.k
+      let is_unsafe := struct.isUnsafe
+      pure $ Const.recursor { cid, level, type, num_params, num_indices, num_motives, num_minors, rules, k, is_unsafe }
+    | ConstantInfo.quotInfo struct => do
+      let level := struct.levelParams.length
+      let type ← leanExprToRadiya struct.type leanMap struct.levelParams
+      let kind := struct.kind
+      pure $ Const.quotient { level, type, kind }
+    let radiyaMap ← StateT.get
+    StateT.set $ SMap.insert' radiyaMap nam const
+    pure const
+
+partial def leanExprToRadiya (lean : Lean.Expr) (leanMap : Lean.ConstMap) (levelParams : List Name) : ConvM Expr :=
   match lean with
-  | Lean.Expr.bvar idx _ => Expr.var idx
-  | Lean.Expr.sort lvl _ => Expr.sort (leanLevelToRadiya levelParams lvl)
-  | Lean.Expr.const nam lvls _ => Expr.const (findConstInfo nam constMap) (List.map (leanLevelToRadiya levelParams) lvls)
-  | Lean.Expr.app fnc arg _ => Expr.app (leanExprToRadiya fnc constMap levelParams) (leanExprToRadiya arg constMap levelParams)
-  | Lean.Expr.lam _ bnd bod _ => Expr.lam (leanExprToRadiya bnd constMap levelParams) (leanExprToRadiya bod constMap levelParams)
-  | Lean.Expr.forallE _ dom img _ => Expr.pi (leanExprToRadiya dom constMap levelParams) (leanExprToRadiya img constMap levelParams)
-  | Lean.Expr.letE _ typ exp bod _ =>
-    Expr.letE
-     (leanExprToRadiya typ constMap levelParams)
-     (leanExprToRadiya exp constMap levelParams)
-     (leanExprToRadiya bod constMap levelParams)
-  | Lean.Expr.lit lit _ => Expr.lit lit
-  | Lean.Expr.mdata _ e _ => leanExprToRadiya e constMap levelParams
+  | Lean.Expr.bvar idx _ => pure $ Expr.var idx
+  | Lean.Expr.sort lvl _ => pure $ Expr.sort (leanLevelToRadiya levelParams lvl)
+  | Lean.Expr.const nam lvls _ => do
+    match leanMap.find?' nam with
+    | some const =>
+      let const ← addConstInfo nam const leanMap
+      pure $ Expr.const const (List.map (leanLevelToRadiya levelParams) lvls)
+    | none => panic! "Unknown constant"
+  | Lean.Expr.app fnc arg _ => do
+    let fnc ← leanExprToRadiya fnc leanMap levelParams
+    let arg ← leanExprToRadiya arg leanMap levelParams
+    pure $ Expr.app fnc arg
+  | Lean.Expr.lam _ bnd bod _ => do
+    let bnd ← leanExprToRadiya bnd leanMap levelParams
+    let bod ← leanExprToRadiya bod leanMap levelParams
+    pure $ Expr.lam bnd bod
+  | Lean.Expr.forallE _ dom img _ => do
+    let dom ← leanExprToRadiya dom leanMap levelParams
+    let img ← leanExprToRadiya img leanMap levelParams
+    pure $ Expr.pi dom img
+  | Lean.Expr.letE _ typ exp bod _ => do
+    let typ ← leanExprToRadiya typ leanMap levelParams
+    let exp ← leanExprToRadiya exp leanMap levelParams
+    let bod ← leanExprToRadiya bod leanMap levelParams
+    pure $ Expr.letE typ exp bod
+  | Lean.Expr.lit lit _ => pure $ Expr.lit lit
+  | Lean.Expr.mdata _ e _ => leanExprToRadiya e leanMap levelParams
   | Lean.Expr.proj .. => panic! "Projections TODO"
   | Lean.Expr.fvar .. => panic! "Unbound variable"
   | Lean.Expr.mvar .. => panic! "Unfilled metavariable"
