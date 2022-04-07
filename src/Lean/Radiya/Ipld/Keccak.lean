@@ -30,18 +30,19 @@ def toArrayUInt64LE (bytes : ByteArray) : Array UInt64 :=
   then arr
   else arr.push word
 
+def pushUInt64LE (bytes : ByteArray) (word : UInt64) : ByteArray :=
+  let bytes := bytes.push $ UInt64.toUInt8 word
+  let bytes := bytes.push $ UInt64.toUInt8 $ word >>> 0x8
+  let bytes := bytes.push $ UInt64.toUInt8 $ word >>> 0x10
+  let bytes := bytes.push $ UInt64.toUInt8 $ word >>> 0x18
+  let bytes := bytes.push $ UInt64.toUInt8 $ word >>> 0x20
+  let bytes := bytes.push $ UInt64.toUInt8 $ word >>> 0x28
+  let bytes := bytes.push $ UInt64.toUInt8 $ word >>> 0x30
+  let bytes := bytes.push $ UInt64.toUInt8 $ word >>> 0x38
+  bytes
+
 def fromArrayUInt64LE (arr : Array UInt64) : ByteArray :=
-  let push_word := λ bytes word =>
-    let bytes := bytes.push $ UInt64.toUInt8 word
-    let bytes := bytes.push $ UInt64.toUInt8 $ word >>> 0x8
-    let bytes := bytes.push $ UInt64.toUInt8 $ word >>> 0x10
-    let bytes := bytes.push $ UInt64.toUInt8 $ word >>> 0x18
-    let bytes := bytes.push $ UInt64.toUInt8 $ word >>> 0x20
-    let bytes := bytes.push $ UInt64.toUInt8 $ word >>> 0x28
-    let bytes := bytes.push $ UInt64.toUInt8 $ word >>> 0x30
-    let bytes := bytes.push $ UInt64.toUInt8 $ word >>> 0x38
-    bytes
-  Array.foldl push_word empty arr
+  Array.foldl pushUInt64LE empty arr
 
 end ByteArray
 

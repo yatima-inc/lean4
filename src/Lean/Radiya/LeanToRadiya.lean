@@ -1,4 +1,6 @@
 import Lean.Radiya.Expr
+import Lean.Radiya.Ipld.Keccak
+import Lean.Radiya.Ipld.Cid
 import Lean.Expr
 import Lean.Environment
 
@@ -17,7 +19,19 @@ namespace Lean.Radiya
 
 abbrev ConstMap := SMap Name Const
 
-def nameToCid (nam : Name) : Cid := panic! "TODO"
+-- As it stands, it is using Keccak256. Should be parametrized on hash functions later
+def nameToCid (nam : Name) : Cid :=
+  -- Should we use `Name.hash` or our own encoding of names?
+  let namHash := Name.hash nam
+  let digest := Keccak.keccak256 $ ByteArray.pushUInt64LE ByteArray.empty namHash
+  -- TODO: Correct the following 4 values
+  let size := 0
+  let code := 0
+  let version := 0
+  let codec := 0
+  let multihash := Multihash.mk size code digest
+  Cid.mk version codec multihash
+
 def leanExprToCid (e : Lean.Expr) : Cid := panic! "TODO"
 def inductiveToCid (induct : Lean.InductiveVal) : Cid := panic! "TODO"
 def combineCid (a : Cid) (b : Cid) : Cid := panic! "TODO"
