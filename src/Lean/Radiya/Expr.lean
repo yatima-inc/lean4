@@ -52,7 +52,7 @@ structure InductiveC (Expr : Type) where
   type : Expr
   num_params : Nat
   num_indices : Nat
-  ctors : List (ConstructorC Expr)
+  is_unit : Bool
   is_rec : Bool
   is_unsafe : Bool
   is_reflexive : Bool

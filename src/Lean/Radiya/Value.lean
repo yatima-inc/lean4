@@ -115,10 +115,7 @@ def equalConst (k k' : Const) : Bool :=
 
 def isUnit (lvl : Nat) (type : Value) : Bool :=
   match type with
-  | Value.app (Neutral.const (Const.induct induct) ..) _ =>
-    match induct.ctors with
-    | [ctor] => ctor.num_fields == 0
-    | _ => false
+  | Value.app (Neutral.const (Const.induct induct) ..) _ => induct.is_unit
   | _ => false
 
 def isProp (lvl : Nat) (type : Value) : Bool :=

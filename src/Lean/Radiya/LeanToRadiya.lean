@@ -19,6 +19,13 @@ namespace Lean.Radiya
 
 abbrev ConstMap := SMap Name Const
 
+structure Context where
+  env : Lean.Environment
+  constMap : Lean.ConstMap := {}
+
+abbrev ConvM := ReaderT Context <| StateT ConstMap Id
+instance : Monad ConvM := let i := inferInstanceAs (Monad ConvM); { pure := i.pure, bind := i.bind }
+
 -- As it stands, it is using Keccak256. Should be parametrized on hash functions later
 def nameToCid (nam : Name) : Cid :=
   -- Should we use `Name.hash` or our own encoding of names?
@@ -36,6 +43,17 @@ def leanExprToCid (e : Lean.Expr) : Cid := panic! "TODO"
 def inductiveToCid (induct : Lean.InductiveVal) : Cid := panic! "TODO"
 def combineCid (a : Cid) (b : Cid) : Cid := panic! "TODO"
 
+def inductiveIsUnitLike (ctors : List Name) : ConvM Bool :=
+  match ctors with
+  | [ctor] => do
+    match Lean.Environment.find? (← read).env ctor with
+    | some info =>
+      match info with
+      | ConstantInfo.ctorInfo cval => pure (cval.numFields != 0)
+      | _ => pure false
+    | none => pure false
+  | _ => pure false
+
 def leanLevelToRadiya (levelParams : List Name) (lvl : Lean.Level) : Univ :=
   match lvl with
   | Lean.Level.zero _ => Univ.zero
@@ -45,16 +63,17 @@ def leanLevelToRadiya (levelParams : List Name) (lvl : Lean.Level) : Univ :=
   | Lean.Level.param nam _ => Univ.param (List.getIdxEx levelParams nam)
   | Lean.Level.mvar _ _ => panic! "Unfilled level metavariable"
 
-abbrev ConvM := ReaderT Lean.ConstMap <| StateT ConstMap Id
-instance : Monad ConvM := let i := inferInstanceAs (Monad ConvM); { pure := i.pure, bind := i.bind }
-
 mutual
+partial def leanRuleToRadiya (rules : Lean.RecursorRule) : ConvM (RecursorRule Expr) := do
+  let cid := default -- TODO
+  let rhs ← leanExprToRadiya rules.rhs []
+  pure $ RecursorRule.mk cid rules.nfields rhs
+
 partial def toRadiyaConstMap (nam : Name) : ConvM ConstMap := do
-  let leanMap ← read
   let insertConst := fun nam const => do
-      let _ ← addConstInfo nam const leanMap
+      let _ ← addConstInfo nam const
       pure default
-  SMap.forM leanMap insertConst
+  SMap.forM (← read).constMap insertConst
   get
 
 partial def addConstInfo (nam : Name) (constInfo : ConstantInfo)  : ConvM Const := do
@@ -102,12 +121,12 @@ partial def addConstInfo (nam : Name) (constInfo : ConstantInfo)  : ConvM Const 
       let type ← leanExprToRadiya struct.type struct.levelParams
       let num_params := struct.numParams
       let num_indices := struct.numIndices
-      let ctors := default -- TODO (is this field really necessary?)
+      let is_unit ← inductiveIsUnitLike struct.ctors
       let is_rec := struct.isRec
       let is_unsafe := struct.isUnsafe
       let is_reflexive := struct.isReflexive
       let is_nested := struct.isNested
-      pure $ Const.induct { cid, level, type, num_params, num_indices, ctors, is_rec, is_unsafe, is_reflexive, is_nested }
+      pure $ Const.induct { cid, level, type, num_params, num_indices, is_unit, is_rec, is_unsafe, is_reflexive, is_nested }
     | ConstantInfo.recInfo struct => do
       let cid := default -- TODO
       let level := struct.levelParams.length
@@ -116,7 +135,7 @@ partial def addConstInfo (nam : Name) (constInfo : ConstantInfo)  : ConvM Const 
       let num_indices := struct.numIndices
       let num_motives := struct.numMotives
       let num_minors := struct.numMinors
-      let rules := default -- TODO
+      let rules ← List.mapM leanRuleToRadiya struct.rules
       let k := struct.k
       let is_unsafe := struct.isUnsafe
       pure $ Const.recursor { cid, level, type, num_params, num_indices, num_motives, num_minors, rules, k, is_unsafe }
@@ -132,10 +151,9 @@ partial def leanExprToRadiya (lean : Lean.Expr) (levelParams : List Name) : Conv
   | Lean.Expr.bvar idx _ => pure $ Expr.var idx
   | Lean.Expr.sort lvl _ => pure $ Expr.sort (leanLevelToRadiya levelParams lvl)
   | Lean.Expr.const nam lvls _ => do
-    let leanMap ← read
-    match leanMap.find?' nam with
+    match (← read).constMap.find?' nam with
     | some const =>
-      let const ← addConstInfo nam const leanMap
+      let const ← addConstInfo nam const
       pure $ Expr.const const (List.map (leanLevelToRadiya levelParams) lvls)
     | none => panic! "Unknown constant"
   | Lean.Expr.app fnc arg _ => do
