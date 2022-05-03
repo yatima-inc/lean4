@@ -113,19 +113,40 @@ def equalConst (k k' : Const) : Bool :=
   | Const.defn x, Const.defn x' => x.cid == x'.cid
   | _, _ => false
 
-def isUnit (lvl : Nat) (type : Value) : Bool :=
+def isUnit (type : Value) : Bool :=
   match type with
   | Value.app (Neutral.const (Const.induct induct) ..) _ => induct.is_unit
   | _ => false
 
-def isProp (lvl : Nat) (type : Value) : Bool :=
-  false -- TODO
+def applyType (type : Value) (args : List (Thunk Value)) : Value :=
+  match type, args with
+  | Value.pi dom img env univs, arg :: args =>
+    applyType (eval img (arg :: env) univs) args
+  | _, _ => type
+
+partial def isProp (lvl : Nat) (type : Value) : Bool :=
+  match type with
+  | Value.pi dom img env univs =>
+    -- A pi type is a proposition if and only if its image is a proposition
+    let var := mkVar lvl dom
+    isProp (lvl + 1) (eval img (var :: env) univs)
+  | Value.app neu args =>
+    let type :=
+      match neu with
+      | Neutral.const k us => Thunk.mk (fun _ => eval (extractConstType k) [] us)
+      | Neutral.var _ typ => typ
+    match applyType type.get args with
+    | Value.sort u => isZero u
+    | _ => false
+  | Value.lty _ => false
+  | Value.sort _ => false
+  | _ => false -- these are actually impossible cases
 
 mutual
   -- It is assumed here that the values are typechecked, have both the same type
   -- and their original unevaluated terms both lived in the same environment
   partial def equal (lvl : Nat) (term term' type : Value) : Bool :=
-    if isUnit lvl type || isProp lvl type then true else
+    if isUnit type || isProp lvl type then true else
     match term, term' with
     | Value.lit lit, Value.lit lit' => lit == lit'
     | Value.lty lty, Value.lty lty' => lty == lty'
